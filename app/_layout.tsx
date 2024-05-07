@@ -1,20 +1,16 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Login";
-import TabOneScreen from "./(tabs)";
-import TabTwoScreen from "./(tabs)/two";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Profile from "./Profile";
+import Map from "./Map";
+import Signup from "./Signup";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -54,11 +50,10 @@ export default function RootLayout() {
 
 const Stack = createNativeStackNavigator();
 
-const LoggedInStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-  const [user, setUser] = useState<User | null>();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(
     () => onAuthStateChanged(FirebaseAuth, (user) => setUser(user)),
@@ -66,30 +61,18 @@ function RootLayoutNav() {
   );
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator>
-        {user ? (
-          <Stack.Screen name="(tabs)" component={LoggedInLayout} />
-        ) : (
+    <NavigationContainer independent>
+      {user ? (
+        <Tab.Navigator>
+          <Tab.Screen name="Profile" component={Profile} />
+          <Tab.Screen name="Map" component={Map} />
+        </Tab.Navigator>
+      ) : (
+        <Stack.Navigator>
           <Stack.Screen name="Login" component={Login} />
-        )}
-      </Stack.Navigator>
-    </ThemeProvider>
+          <Stack.Screen name="Signup" component={Signup} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
   );
-}
-
-function LoggedInLayout() {
-  return (
-    <LoggedInStack.Navigator>
-      <LoggedInStack.Screen name="index" component={TabOneScreen} />
-      {/* <LoggedInStack.Screen name="modal" options={{ presentation: "modal" }} /> */}
-    </LoggedInStack.Navigator>
-  );
-}
-
-{
-  /* <Stack>
-  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-  <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-</Stack> */
 }

@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import { View } from "../components/Themed";
 import { TextInput } from "react-native-gesture-handler";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,20 +25,6 @@ const Login = () => {
     }
   };
 
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        FirebaseAuth,
-        email,
-        password
-      );
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <View style={styles.container}>
       <TextInput
@@ -60,7 +43,10 @@ const Login = () => {
         onChange={(e) => setPassword(e.nativeEvent.text)}
       />
       <Button title="Login" onPress={() => signIn()} />
-      <Button title="Create account" onPress={() => signUp()} />
+      <Button
+        title="Create account"
+        onPress={() => navigation.navigate("Signup")}
+      />
     </View>
   );
 };
