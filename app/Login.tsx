@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Button, StyleSheet } from "react-native";
-import { View } from "../components/Themed";
+import { Button, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { User, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
@@ -22,7 +21,9 @@ const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
         email,
         password
       );
-      if (response.user) dispatch(setUser(response.user.toJSON() as User));
+      if (response.user.emailVerified)
+        dispatch(setUser(response.user.toJSON() as User));
+      else alert("You need to verify your email first!");
     } catch (error) {
       console.error(error);
     } finally {

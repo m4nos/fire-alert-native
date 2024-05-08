@@ -1,6 +1,9 @@
 import { Button, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { TextInput } from "react-native-gesture-handler";
 import { NavigationProp } from "@react-navigation/native";
 import { FirebaseAuth } from "../firebase";
@@ -12,17 +15,21 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
   const signUp = async () => {
     setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        FirebaseAuth,
-        email,
-        password
-      );
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    const resp = await createUserWithEmailAndPassword(
+      FirebaseAuth,
+      email,
+      password
+    );
+
+    await sendEmailVerification(resp.user, {
+      handleCodeInApp: true,
+      url: "https://fire-alert-d86d4.firebaseapp.com",
+    })
+      .then(() => alert("email verification sent!"))
+      .catch((error) => console.log("error", error))
+      .finally(() => navigation.navigate("Login"));
+    // .catch((error) => console.error(error))
+    // .finally(() => setLoading(false));
   };
   return (
     <View>

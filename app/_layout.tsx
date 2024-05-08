@@ -13,6 +13,7 @@ import Signup from "./Signup";
 import { FirebaseAuth } from "../firebase";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import Navigation from "./Navigation";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -51,33 +52,10 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const Stack = createNativeStackNavigator();
-
-const Tab = createBottomTabNavigator();
-
 function RootLayoutNav() {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(
-    () => onAuthStateChanged(FirebaseAuth, (user) => setUser(user)),
-    []
-  );
-
   return (
     <Provider store={store}>
-      <NavigationContainer independent>
-        {user ? (
-          <Tab.Navigator>
-            <Tab.Screen name="Profile" component={Profile} />
-            <Tab.Screen name="Map" component={Map} />
-          </Tab.Navigator>
-        ) : (
-          <Stack.Navigator>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+      <Navigation />
     </Provider>
   );
 }
