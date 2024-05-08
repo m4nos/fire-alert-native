@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Button, StyleSheet } from "react-native";
 import { View } from "../components/Themed";
 import { TextInput } from "react-native-gesture-handler";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { User, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
+import { NavigationProp } from "@react-navigation/native";
+import { useAppDispatch } from "../store/hooks";
+import { setUser } from "../store/slices/user.slice";
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const signIn = async () => {
     setLoading(true);
@@ -18,6 +22,7 @@ const Login = ({ navigation }) => {
         email,
         password
       );
+      if (response.user) dispatch(setUser(response.user.toJSON() as User));
     } catch (error) {
       console.error(error);
     } finally {

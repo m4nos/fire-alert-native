@@ -6,11 +6,14 @@ import { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Login";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { FirebaseAuth } from "../firebase";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Profile from "./Profile";
 import Map from "./Map";
 import Signup from "./Signup";
+import { FirebaseAuth } from "../firebase";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -61,18 +64,20 @@ function RootLayoutNav() {
   );
 
   return (
-    <NavigationContainer independent>
-      {user ? (
-        <Tab.Navigator>
-          <Tab.Screen name="Profile" component={Profile} />
-          <Tab.Screen name="Map" component={Map} />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer independent>
+        {user ? (
+          <Tab.Navigator>
+            <Tab.Screen name="Profile" component={Profile} />
+            <Tab.Screen name="Map" component={Map} />
+          </Tab.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </Provider>
   );
 }

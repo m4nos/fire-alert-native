@@ -41,4 +41,4 @@ expo-env.d.ts
 # @end expo-cli
 
 # firebase
-firebase.ts
+firebase.config.ts

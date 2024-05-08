@@ -1,13 +1,12 @@
 import { Button, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { FirebaseAuth } from "../firebase";
 import { TextInput } from "react-native-gesture-handler";
 import { NavigationProp } from "@react-navigation/native";
+import { FirebaseAuth } from "../firebase";
 
 const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -34,13 +33,6 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
           placeholder="Email"
           autoCapitalize="none"
           onChange={(e) => setEmail(e.nativeEvent.text)}
-        />
-        <TextInput
-          value={username}
-          style={styles.input}
-          placeholder="Username"
-          autoCapitalize="none"
-          onChange={(e) => setUsername(e.nativeEvent.text)}
         />
         <TextInput
           value={password}
