@@ -8,7 +8,7 @@ import Map from "./Map";
 import Signup from "./Signup";
 import Login from "./Login";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
 import { setUser } from "../store/slices/user.slice";
 
@@ -23,7 +23,7 @@ const Navigation = () => {
   useEffect(
     () =>
       onAuthStateChanged(FirebaseAuth, (user) => {
-        if (user?.emailVerified) dispatch(setUser(user));
+        if (user?.emailVerified) dispatch(setUser(user.toJSON() as User));
       }),
     []
   );

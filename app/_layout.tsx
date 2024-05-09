@@ -1,19 +1,11 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
-import { useEffect, useState } from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "./Login";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Profile from "./Profile";
-import Map from "./Map";
-import Signup from "./Signup";
-import { FirebaseAuth } from "../firebase";
+import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 import Navigation from "./Navigation";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,8 +46,10 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <Provider store={store}>
-      <Navigation />
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
+    </GestureHandlerRootView>
   );
 }
