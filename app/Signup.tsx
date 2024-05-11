@@ -1,12 +1,13 @@
 import { Button, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
+import { FirebaseAuth, FirebaseStore } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
 import { TextInput } from "react-native-gesture-handler";
 import { NavigationProp } from "@react-navigation/native";
-import { FirebaseAuth } from "../firebase";
 
 const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [email, setEmail] = useState("");
@@ -15,22 +16,40 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
   const signUp = async () => {
     setLoading(true);
-    const resp = await createUserWithEmailAndPassword(
-      FirebaseAuth,
-      email,
-      password
-    );
 
-    await sendEmailVerification(resp.user, {
-      handleCodeInApp: true,
-      url: "https://fire-alert-d86d4.firebaseapp.com",
-    })
-      .then(() => alert("email verification sent!"))
-      .catch((error) => console.log("error", error))
-      .finally(() => navigation.navigate("Login"));
-    // .catch((error) => console.error(error))
-    // .finally(() => setLoading(false));
+    try {
+      const createUserResponse = await createUserWithEmailAndPassword(
+        FirebaseAuth,
+        email,
+        password
+      ).catch((error) => {
+        throw new Error(error);
+      });
+
+      await addDoc(collection(FirebaseStore, "users"), {
+        email,
+      }).catch((error) => {
+        throw new Error(error);
+      });
+
+      await sendEmailVerification(createUserResponse.user, {
+        handleCodeInApp: true,
+        url: "https://fire-alert-d86d4.firebaseapp.com",
+      })
+        .then(() => {
+          setLoading(false);
+          alert("email verification sent!");
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <View>
       <View style={styles.container}>

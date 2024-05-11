@@ -1,25 +1,34 @@
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
-import { FirebaseAuth } from "../firebase";
+import { FirebaseAuth, FirebaseStore } from "../firebase";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { logoutUser } from "../store/slices/user.slice";
+import { collection, doc, getDoc } from "firebase/firestore";
 
-const Profile = () => {
+const Profile = async () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.user);
-  const [profileData, setProfileData] = useState(user);
+  const { user: fbUser } = useAppSelector((state) => state.user);
+  const docRef = collection(FirebaseStore, "users", { email: fbUser?.email });
+  const userSnap = await getDoc(docRef);
+  console.log(userSnap);
+  const [profileData, setProfileData] = useState();
 
   const handleSubmit = () => {
-    console.log(profileData?.phoneNumber);
+    console.log("profileData?.phoneNumber");
   };
   return (
     <View>
       <Text>Profile</Text>
-      <Text>welcome {user?.email}</Text>
+      <Text>welcome {fbUser?.email}</Text>
       <TextInput
         placeholder="Phone number"
-        value={user?.phoneNumber!}
-        onChange={(e) => console.log("psolas")}
+        // value={profileData?.phoneNumber!}
+        // onChange={(e) =>
+        //   setProfileData((prev) => ({
+        //     ...prev,
+        //     phoneNumber: e.nativeEvent?.text,
+        //   }))
+        // }
       />
       <Button title="Submit" onPress={handleSubmit} />
       <Button
