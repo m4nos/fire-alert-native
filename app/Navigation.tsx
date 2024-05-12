@@ -10,27 +10,28 @@ import Login from "./Login";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
-import { setUser } from "../store/slices/user.slice";
+import { setFirebaseUser } from "../store/slices/user.slice";
 
 const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
-  const user = useAppSelector((state) => state.user);
+  const { firebaseUser } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   useEffect(
     () =>
       onAuthStateChanged(FirebaseAuth, (user) => {
-        if (user?.emailVerified) dispatch(setUser(user.toJSON() as User));
+        if (user?.emailVerified)
+          dispatch(setFirebaseUser(user.toJSON() as User));
       }),
     []
   );
 
   return (
     <NavigationContainer independent>
-      {user.user ? (
+      {firebaseUser ? (
         <Tab.Navigator>
           <Tab.Screen name="Profile" component={Profile} />
           <Tab.Screen name="Map" component={Map} />

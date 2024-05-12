@@ -5,7 +5,7 @@ import { User, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
 import { NavigationProp } from "@react-navigation/native";
 import { useAppDispatch } from "../store/hooks";
-import { setUser } from "../store/slices/user.slice";
+import { setFirebaseUser } from "../store/slices/user.slice";
 
 const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +22,7 @@ const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
         password
       );
       if (response.user.emailVerified)
-        dispatch(setUser(response.user.toJSON() as User));
+        dispatch(setFirebaseUser(response.user.toJSON() as User));
       else alert("You need to verify your email first!");
     } catch (error) {
       console.error(error);
