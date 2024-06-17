@@ -1,47 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { FirebaseAuth } from "../firebase";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  FireAlertUser,
   fetchFireAlertUser,
   logoutUser,
   setFireAlertUser,
-  setUser,
 } from "../store/slices/user.slice";
 
+type UserProfileFields = {
+  email: string;
+  phoneNumber: string;
+};
+
+interface SetPhoneNumberAction {
+  type: typeof actionTypes.SET_PHONE_NUMBER;
+  payload: string;
+}
+
+interface SetUserDataAction {
+  type: typeof actionTypes.SET_USER_DATA;
+  payload: {
+    email: string;
+    phoneNumber: string;
+  };
+}
+
+export type UserAction = SetPhoneNumberAction | SetUserDataAction;
+
+export const initialState = {
+  email: "",
+  phoneNumber: "",
+};
+
+export const actionTypes = {
+  SET_USER_DATA: "SET_USER_DATA",
+  SET_PHONE_NUMBER: "SET_PHONE_NUMBER",
+} as const;
+
+export const userReducer = (state: UserProfileFields, action: UserAction) => {
+  switch (action.type) {
+    case actionTypes.SET_PHONE_NUMBER:
+      return { ...state, phoneNumber: action.payload };
+    case actionTypes.SET_USER_DATA:
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+};
+
 const Profile = () => {
-  const dispatch = useAppDispatch();
+  const storeDispatch = useAppDispatch();
   const { firebaseUser, user } = useAppSelector((state) => state.user);
 
-  const [profileData, setProfileData] = useState<FireAlertUser>();
+  const [profile, dispatch] = useReducer(userReducer, initialState);
 
   useEffect(() => {
-    const fetchData = async () =>
-      await dispatch(fetchFireAlertUser(firebaseUser?.email!));
+    const fetchUser = async () => {
+      if (firebaseUser && firebaseUser.email)
+        return await storeDispatch(fetchFireAlertUser(firebaseUser.email));
+    };
     if (!user) {
-      fetchData().then((user) => setProfileData(user.payload as FireAlertUser));
+      fetchUser()
+        .then((user) => {
+          dispatch({
+            type: actionTypes.SET_USER_DATA,
+            payload: user?.payload as UserProfileFields,
+          });
+        })
+        .catch((error) => console.error(error));
     }
   }, [firebaseUser, user]);
 
   const handleSubmit = async () => {
-    console.log(profileData);
-    await dispatch(setFireAlertUser(profileData!));
-    dispatch(setUser(profileData!));
+    await storeDispatch(setFireAlertUser(profile));
   };
 
   return (
     <View>
-      <Text>Profilse</Text>
-      <Text>welcome {profileData?.email}</Text>
+      <Text>Profile</Text>
+      <Text>welcome {profile?.email}</Text>
       <TextInput
         placeholder="Phone number"
-        value={profileData?.phoneNumber}
-        onChange={(e) =>
-          setProfileData((prev) => ({
-            ...prev,
-            phoneNumber: e.nativeEvent.text,
-          }))
+        value={profile?.phoneNumber}
+        onChangeText={(text) =>
+          dispatch({ type: actionTypes.SET_PHONE_NUMBER, payload: text })
         }
       />
 
@@ -49,7 +92,9 @@ const Profile = () => {
       <Button
         title="Log out"
         onPress={() =>
-          FirebaseAuth.signOut().then(() => dispatch(logoutUser()))
+          FirebaseAuth.signOut()
+            .then(() => storeDispatch(logoutUser()))
+            .catch((error) => console.log(error))
         }
       />
     </View>
