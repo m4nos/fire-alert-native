@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { User } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   doc,
@@ -8,7 +8,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { FirebaseStore } from "../../firebase";
+import { FirebaseAuth, FirebaseStore } from "../../firebase";
 
 export interface FireAlertUser {
   phoneNumber: string;
@@ -38,7 +38,7 @@ const userSlice = createSlice({
       state.firebaseUser = action.payload;
       console.log("user set");
     },
-    logoutUser: (state) => {
+    clearUser: (state) => {
       state.firebaseUser = null;
       state.user = null;
       console.log("user deleted");
@@ -71,6 +71,23 @@ const userSlice = createSlice({
       });
   },
 });
+
+export const checkAuthStatus = createAsyncThunk(
+  // FIXME: this thunk causes many rerenders
+  "user/checkAuthStatus",
+  async (_, { dispatch }) => {
+    return new Promise((resolve) => {
+      onAuthStateChanged(FirebaseAuth, (user) => {
+        if (user) {
+          dispatch(setFirebaseUser(user.toJSON() as User));
+        } else {
+          dispatch(clearUser());
+        }
+        resolve(user);
+      });
+    });
+  }
+);
 
 export const fetchFireAlertUser = createAsyncThunk(
   "user/fetchFireAlertUser",
@@ -133,4 +150,4 @@ export const setFireAlertUser = createAsyncThunk(
 );
 
 export default userSlice.reducer;
-export const { setFirebaseUser, logoutUser, setUser } = userSlice.actions;
+export const { setFirebaseUser, clearUser, setUser } = userSlice.actions;

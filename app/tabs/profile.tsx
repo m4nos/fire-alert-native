@@ -1,12 +1,13 @@
 import React, { useEffect, useReducer } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { FirebaseAuth } from "../firebase";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { FirebaseAuth } from "../../firebase";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
+  clearUser,
   fetchFireAlertUser,
-  logoutUser,
   setFireAlertUser,
-} from "../store/slices/user.slice";
+} from "../../store/slices/user.slice";
+import { router } from "expo-router";
 
 type UserProfileFields = {
   email: string;
@@ -93,7 +94,8 @@ const Profile = () => {
         title="Log out"
         onPress={() =>
           FirebaseAuth.signOut()
-            .then(() => storeDispatch(logoutUser()))
+            .then(() => storeDispatch(clearUser()))
+            .then(() => router.push("/auth/login"))
             .catch((error) => console.log(error))
         }
       />

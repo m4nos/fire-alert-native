@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { User, signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseAuth } from "../firebase";
-import { NavigationProp } from "@react-navigation/native";
-import { useAppDispatch } from "../store/hooks";
-import { setFirebaseUser } from "../store/slices/user.slice";
+import { Link, router, useNavigation } from "expo-router";
+import { FirebaseAuth } from "../../firebase";
+import { useAppDispatch } from "../../store/hooks";
+import { setFirebaseUser } from "../../store/slices/user.slice";
 
-const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const signIn = async () => {
     setLoading(true);
@@ -21,9 +22,10 @@ const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
         email,
         password
       );
-      if (response.user.emailVerified)
+      if (response.user.emailVerified) {
         dispatch(setFirebaseUser(response.user.toJSON() as User));
-      else alert("You need to verify your email first!");
+        router.push("/tabs/profile");
+      } else alert("You need to verify your email first!");
     } catch (error) {
       console.error(error);
     } finally {
@@ -38,7 +40,7 @@ const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
         style={styles.input}
         placeholder="Email"
         autoCapitalize="none"
-        onChange={(e) => setEmail(e.nativeEvent.text)}
+        onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         value={password}
@@ -46,13 +48,21 @@ const Login = ({ navigation }: { navigation: NavigationProp<any> }) => {
         placeholder="Password"
         secureTextEntry
         autoCapitalize="none"
-        onChange={(e) => setPassword(e.nativeEvent.text)}
+        onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Login" onPress={() => signIn()} />
-      <Button
-        title="Create account"
-        onPress={() => navigation.navigate("Signup")}
-      />
+      <TouchableOpacity
+        onPress={() => signIn()}
+        disabled={loading}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/auth/signup")}
+      >
+        <Text style={styles.buttonText}>Create account</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -63,7 +73,18 @@ const styles = StyleSheet.create({
     display: "flex",
     backgroundColor: "#fefefe",
   },
-  input: {},
+  input: {
+    width: 300,
+    margin: 5,
+    padding: 5,
+    borderRadius: 20,
+  },
+  button: {
+    padding: 10,
+  },
+  buttonText: {
+    margin: "auto",
+  },
 });
 
 export default Login;

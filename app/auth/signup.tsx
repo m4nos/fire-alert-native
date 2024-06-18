@@ -1,6 +1,5 @@
 import { Button, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
-import { FirebaseAuth, FirebaseStore } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -8,8 +7,10 @@ import {
 import { collection, addDoc } from "firebase/firestore";
 import { TextInput } from "react-native-gesture-handler";
 import { NavigationProp } from "@react-navigation/native";
+import { FirebaseAuth, FirebaseStore } from "../../firebase";
+import { router } from "expo-router";
 
-const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +45,7 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
           throw new Error(error);
         });
 
-      navigation.navigate("Login");
+      router.push("/auth/login");
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +70,7 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
           onChange={(e) => setPassword(e.nativeEvent.text)}
         />
         <Button title="Signup" onPress={() => signUp()} />
-        <Button title="Log in" onPress={() => navigation.navigate("Login")} />
+        <Button title="Log in" onPress={() => router.push("/auth/login")} />
       </View>
     </View>
   );
