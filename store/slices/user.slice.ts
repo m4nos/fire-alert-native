@@ -72,23 +72,6 @@ const userSlice = createSlice({
   },
 });
 
-export const checkAuthStatus = createAsyncThunk(
-  // FIXME: this thunk causes many rerenders
-  "user/checkAuthStatus",
-  async (_, { dispatch }) => {
-    return new Promise((resolve) => {
-      onAuthStateChanged(FirebaseAuth, (user) => {
-        if (user) {
-          dispatch(setFirebaseUser(user.toJSON() as User));
-        } else {
-          dispatch(clearUser());
-        }
-        resolve(user);
-      });
-    });
-  }
-);
-
 export const fetchFireAlertUser = createAsyncThunk(
   "user/fetchFireAlertUser",
   async (email: string) => {
