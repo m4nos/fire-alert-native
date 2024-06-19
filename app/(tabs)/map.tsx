@@ -1,9 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useRef } from "react";
-import MapView from "react-native-maps";
+import React, { useEffect, useRef } from "react";
+import MapView, { Marker } from "react-native-maps";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchMarkers } from "../../store/slices/map.slice";
 
 const map = () => {
+  const dispatch = useAppDispatch();
+
   const mapRef = useRef(null);
+
+  const { markers } = useAppSelector((state) => state.map);
+  console.log(markers);
+
+  useEffect(() => {
+    dispatch(fetchMarkers());
+  }, []);
+
   return (
     <View>
       <MapView
@@ -16,7 +28,18 @@ const map = () => {
         mapType="terrain"
         ref={mapRef}
         style={{ width: "100%", height: "100%" }}
-      ></MapView>
+      >
+        {!!markers.length &&
+          markers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+            />
+          ))}
+      </MapView>
     </View>
   );
 };
