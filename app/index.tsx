@@ -14,10 +14,10 @@ const Index = () => {
   onAuthStateChanged(FirebaseAuth, () => {
     if (firebaseUser) {
       dispatch(setFirebaseUser(firebaseUser.toJSON() as User));
-      router.replace("/tabs/profile"); // Use replace to avoid adding to history stack
+      router.replace("/(tabs)/profile"); // Use replace to avoid adding to history stack
     } else {
       dispatch(clearUser());
-      router.replace("/auth/login");
+      router.replace("/(auth)/login");
     }
   });
 

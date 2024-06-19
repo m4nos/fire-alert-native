@@ -24,7 +24,7 @@ const Login = () => {
       );
       if (response.user.emailVerified) {
         dispatch(setFirebaseUser(response.user.toJSON() as User));
-        router.push("/tabs/profile");
+        router.replace("/(tabs)/profile");
       } else alert("You need to verify your email first!");
     } catch (error) {
       console.error(error);
@@ -59,7 +59,7 @@ const Login = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/auth/signup")}
+        onPress={() => router.push("/(auth)/signup")}
       >
         <Text style={styles.buttonText}>Create account</Text>
       </TouchableOpacity>

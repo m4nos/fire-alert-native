@@ -95,7 +95,7 @@ const Profile = () => {
         onPress={() =>
           FirebaseAuth.signOut()
             .then(() => storeDispatch(clearUser()))
-            .then(() => router.push("/auth/login"))
+            .then(() => router.replace("/(auth)/login"))
             .catch((error) => console.log(error))
         }
       />

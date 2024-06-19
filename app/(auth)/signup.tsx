@@ -45,7 +45,7 @@ const Signup = () => {
           throw new Error(error);
         });
 
-      router.push("/auth/login");
+      router.push("/(auth)/login");
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +70,7 @@ const Signup = () => {
           onChange={(e) => setPassword(e.nativeEvent.text)}
         />
         <Button title="Signup" onPress={() => signUp()} />
-        <Button title="Log in" onPress={() => router.push("/auth/login")} />
+        <Button title="Log in" onPress={() => router.push("/(auth)/login")} />
       </View>
     </View>
   );
