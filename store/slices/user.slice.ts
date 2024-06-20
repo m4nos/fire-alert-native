@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { User, onAuthStateChanged } from "firebase/auth";
+import { User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -8,11 +8,13 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { FirebaseAuth, FirebaseStore } from "../../firebase";
+import { FirebaseStore } from "../../firebase";
+import { Coordinates } from "../types/map.types";
 
 export interface FireAlertUser {
   phoneNumber: string;
   email: string;
+  // location: Coordinates;
   [key: string]: any; // Add index signature to accommodate dynamic keys
 }
 

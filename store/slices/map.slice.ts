@@ -2,17 +2,23 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { FirebaseStore } from "../../firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 
+const EventType = {
+  training: "TRAINING",
+  wildfire: "WILDFIRE",
+} as const;
+
 type Marker = {
   id: string;
+  type: typeof EventType;
   latitude: number;
   longitude: number;
 };
 
-interface MapState {
+type MapState = {
   markers: Marker[];
   loading: boolean;
   error?: Error;
-}
+};
 
 const initialState: MapState = {
   markers: [],
