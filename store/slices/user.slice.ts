@@ -74,35 +74,36 @@ const userSlice = createSlice({
   },
 });
 
-export const fetchFireAlertUser = createAsyncThunk(
-  "user/fetchFireAlertUser",
-  async (email: string) => {
-    try {
-      // Perform query to find user document with matching email
-      const userQuery = query(
-        collection(FirebaseStore, "users"),
-        where("email", "==", email)
-      );
-      const querySnapshot = await getDocs(userQuery);
+export const fetchFireAlertUser = createAsyncThunk<
+  FireAlertUser | null,
+  string
+>("user/fetchFireAlertUser", async (uid: string) => {
+  try {
+    // Perform query to find user document with matching uid
+    const userQuery = query(
+      collection(FirebaseStore, "users"),
+      where("uid", "==", uid)
+    );
+    const querySnapshot = await getDocs(userQuery);
 
-      console.log("fetched");
+    console.log("fetched");
+    console.log(querySnapshot);
 
-      // Check if any matching documents were found
-      if (!querySnapshot.empty) {
-        // Get the first document (assuming unique email)
-        const userDoc = querySnapshot.docs[0];
-        // Extract user data from document
-        const userData = userDoc.data();
-        return userData as FireAlertUser;
-      } else {
-        // No matching user found
-        return null;
-      }
-    } catch (error: any) {
-      throw new Error(error);
+    // Check if any matching documents were found
+    if (!querySnapshot.empty) {
+      // Get the first document (assuming unique uid)
+      const userDoc = querySnapshot.docs[0];
+      // Extract user data from document
+      const userData = userDoc.data() as FireAlertUser;
+      return userData;
+    } else {
+      // No matching user found
+      return null;
     }
+  } catch (error: any) {
+    throw new Error(error);
   }
-);
+});
 
 export const setFireAlertUser = createAsyncThunk(
   "user/setFireAlertUser",

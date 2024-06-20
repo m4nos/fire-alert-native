@@ -19,7 +19,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const createUserResponse = await createUserWithEmailAndPassword(
+      const { user } = await createUserWithEmailAndPassword(
         FirebaseAuth,
         email,
         password
@@ -29,11 +29,12 @@ const Signup = () => {
 
       await addDoc(collection(FirebaseStore, "users"), {
         email,
+        uid: user.uid,
       }).catch((error) => {
         throw new Error(error);
       });
 
-      await sendEmailVerification(createUserResponse.user, {
+      await sendEmailVerification(user, {
         handleCodeInApp: true,
         url: "https://fire-alert-d86d4.firebaseapp.com",
       })

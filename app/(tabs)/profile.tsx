@@ -14,15 +14,11 @@ import { Coordinates } from "../../store/types/map.types";
 type UserProfileFields = {
   email: string;
   phoneNumber: string;
-  // location: Coordinates;
+  location: Coordinates;
 };
 type HydrateUserDataAction = {
   type: typeof actionTypes.HYDRATE_USER_DATA;
-  payload: {
-    email: string;
-    phoneNumber: string;
-    // location: Coordinates;
-  };
+  payload: UserProfileFields;
 };
 
 type SetPhoneNumberAction = {
@@ -30,16 +26,14 @@ type SetPhoneNumberAction = {
   payload: string;
 };
 
-// type SetLocationAction = {
-//   type: typeof actionTypes.SET_LOCATION;
-//   payload: {
-//     location: Coordinates;
-//   };
-// };
+type SetLocationAction = {
+  type: typeof actionTypes.SET_LOCATION;
+  payload: Coordinates;
+};
 
 type UserAction =
   | SetPhoneNumberAction
-  // | SetLocationAction
+  | SetLocationAction
   | HydrateUserDataAction;
 
 const initialState = {
@@ -54,7 +48,7 @@ const initialState = {
 export const actionTypes = {
   HYDRATE_USER_DATA: "HYDRATE_USER_DATA",
   SET_PHONE_NUMBER: "SET_PHONE_NUMBER",
-  // SET_LOCATION: "SET_LOCATION",
+  SET_LOCATION: "SET_LOCATION",
 } as const;
 
 export const userFormReducer = (
@@ -64,8 +58,8 @@ export const userFormReducer = (
   switch (action.type) {
     case actionTypes.SET_PHONE_NUMBER:
       return { ...state, phoneNumber: action.payload };
-    // case actionTypes.SET_LOCATION:
-    //   return { ...state, location: action.payload };
+    case actionTypes.SET_LOCATION:
+      return { ...state, location: action.payload };
     case actionTypes.HYDRATE_USER_DATA:
       return { ...state, ...action.payload };
     default:
@@ -80,16 +74,13 @@ const Profile = () => {
   const [profileForm, dispatch] = useReducer(userFormReducer, initialState);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (firebaseUser && firebaseUser.email)
-        return await storeDispatch(fetchFireAlertUser(firebaseUser.email)); // TODO: use uid instead
-    };
-    if (!user) {
-      fetchUser()
+    if (!user && firebaseUser) {
+      storeDispatch(fetchFireAlertUser(firebaseUser.uid))
         .then((user) => {
+          console.log(user);
           dispatch({
             type: actionTypes.HYDRATE_USER_DATA,
-            payload: user?.payload as UserProfileFields,
+            payload: user.payload as UserProfileFields,
           });
         })
         .catch((error) => console.error(error));
@@ -111,7 +102,7 @@ const Profile = () => {
           dispatch({ type: actionTypes.SET_PHONE_NUMBER, payload: text })
         }
       />
-      {/* <LocationInput value={profileForm?.location} /> */}
+      <LocationInput value={profileForm?.location} />
 
       <Button title="Submit" onPress={handleSubmit} />
       <Button
