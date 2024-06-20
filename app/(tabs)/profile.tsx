@@ -8,7 +8,7 @@ import {
   setFireAlertUser,
 } from "../../store/slices/user.slice";
 import { router } from "expo-router";
-import LocationInput from "../../components/LocationInput/LocationInput";
+import LocationInput from "../../components/Profile/LocationInput/LocationInput";
 import { Coordinates } from "../../store/types/map.types";
 
 type UserProfileFields = {
@@ -26,12 +26,12 @@ type SetPhoneNumberAction = {
   payload: string;
 };
 
-type SetLocationAction = {
+export type SetLocationAction = {
   type: typeof actionTypes.SET_LOCATION;
   payload: Coordinates;
 };
 
-type UserAction =
+export type UserAction =
   | SetPhoneNumberAction
   | SetLocationAction
   | HydrateUserDataAction;
@@ -77,7 +77,6 @@ const Profile = () => {
     if (!user && firebaseUser) {
       storeDispatch(fetchFireAlertUser(firebaseUser.uid))
         .then((user) => {
-          console.log(user);
           dispatch({
             type: actionTypes.HYDRATE_USER_DATA,
             payload: user.payload as UserProfileFields,
@@ -102,7 +101,7 @@ const Profile = () => {
           dispatch({ type: actionTypes.SET_PHONE_NUMBER, payload: text })
         }
       />
-      <LocationInput value={profileForm?.location} />
+      <LocationInput value={profileForm?.location} dispatch={dispatch} />
 
       <Button title="Submit" onPress={handleSubmit} />
       <Button

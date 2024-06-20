@@ -6,7 +6,6 @@ import {
 } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { TextInput } from "react-native-gesture-handler";
-import { NavigationProp } from "@react-navigation/native";
 import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { router } from "expo-router";
 

@@ -87,7 +87,6 @@ export const fetchFireAlertUser = createAsyncThunk<
     const querySnapshot = await getDocs(userQuery);
 
     console.log("fetched");
-    console.log(querySnapshot);
 
     // Check if any matching documents were found
     if (!querySnapshot.empty) {
