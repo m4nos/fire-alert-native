@@ -65,6 +65,7 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
   "user/fetchAppUser",
   async (uid: string, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       // Perform query to find user document with matching uid
       const userQuery = query(
         collection(FirebaseStore, "users"),
@@ -87,6 +88,8 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
       }
     } catch (error: any) {
       throw new Error(error);
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );

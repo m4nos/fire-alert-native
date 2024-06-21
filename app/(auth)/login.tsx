@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { User, signInWithEmailAndPassword } from "firebase/auth";
-import { Link, router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { FirebaseAuth } from "../../firebase";
 import { useAppDispatch } from "../../store/hooks";
 import { setFirebaseUser } from "../../store/slices/user.slice";
@@ -14,6 +14,7 @@ const Login = () => {
   const dispatch = useAppDispatch();
 
   const signIn = async () => {
+    // TODO: make this a thunk action
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(

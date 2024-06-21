@@ -1,11 +1,3 @@
-import { Dispatch } from "react";
-import { Coordinates } from "../../../store/types/map.types";
-import { SetLocationAction, UserAction } from "../../../app/(tabs)/profile";
+import LocationInput from "./LocationInput";
 
-/**
- * @package
- */
-export type LocationInputProps = {
-  value: Coordinates;
-  dispatch: Dispatch<SetLocationAction>;
-};
+export default LocationInput;

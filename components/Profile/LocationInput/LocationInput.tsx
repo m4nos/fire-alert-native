@@ -1,8 +1,8 @@
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
-import { LocationInputProps } from ".";
-import { actionTypes } from "../../../app/(tabs)/profile";
 import * as Location from "expo-location";
+import { profileActionTypes } from "../profile.reducer";
+import { LocationInputProps } from "./types";
 
 const LocationInput = ({ value, dispatch }: LocationInputProps) => {
   const handleLocationAccess = async () => {
@@ -16,7 +16,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
       const { latitude, longitude } = location.coords;
 
       dispatch({
-        type: actionTypes.SET_LOCATION,
+        type: profileActionTypes.SET_LOCATION,
         payload: { latitude, longitude },
       });
     } catch (error) {}

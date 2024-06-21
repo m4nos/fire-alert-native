@@ -14,6 +14,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // TODO: make this a thunk action
   const signUp = async () => {
     setLoading(true);
 
