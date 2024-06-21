@@ -12,7 +12,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
 
   const signIn = async () => {
     setLoading(true);

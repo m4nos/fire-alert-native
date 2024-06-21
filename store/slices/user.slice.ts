@@ -9,25 +9,11 @@ import {
   where,
 } from "firebase/firestore";
 import { FirebaseStore } from "../../firebase";
-import { Coordinates } from "../types/map.types";
-
-export interface FireAlertUser {
-  phoneNumber: string;
-  email: string;
-  // location: Coordinates;
-  [key: string]: any; // Add index signature to accommodate dynamic keys
-}
-
-interface UserState {
-  firebaseUser: User | null;
-  user: FireAlertUser | null;
-  loading: boolean;
-  error: Error | null;
-}
+import { AppUser, UserState } from "../types/user.types";
 
 const initialState: UserState = {
   firebaseUser: null,
-  user: null,
+  appUser: null,
   loading: false,
   error: null,
 };
@@ -42,72 +28,74 @@ const userSlice = createSlice({
     },
     clearUser: (state) => {
       state.firebaseUser = null;
-      state.user = null;
+      state.appUser = null;
       console.log("user deleted");
     },
-    setUser: (state, action) => (state.user = action.payload),
+    setAppUser: (state, action) => (state.appUser = action.payload),
+    setLoading: (state, action) => (state.loading = action.payload),
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchFireAlertUser.pending, (state) => {
+    builder.addCase(fetchAppUser.pending, (state) => {
       state.loading = true;
       state.error = null;
     }),
-      builder.addCase(fetchFireAlertUser.rejected, (state, action) => {
+      builder.addCase(fetchAppUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as Error;
       }),
-      builder.addCase(fetchFireAlertUser.fulfilled, (state, action) => {
+      builder.addCase(fetchAppUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.appUser = action.payload;
       }),
-      builder.addCase(setFireAlertUser.pending, (state) => {
+      builder.addCase(updateAppUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       }),
-      builder.addCase(setFireAlertUser.rejected, (state, action) => {
+      builder.addCase(updateAppUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as Error;
       }),
-      builder.addCase(setFireAlertUser.fulfilled, (state) => {
+      builder.addCase(updateAppUser.fulfilled, (state) => {
         state.loading = false;
       });
   },
 });
 
-export const fetchFireAlertUser = createAsyncThunk<
-  FireAlertUser | null,
-  string
->("user/fetchFireAlertUser", async (uid: string) => {
-  try {
-    // Perform query to find user document with matching uid
-    const userQuery = query(
-      collection(FirebaseStore, "users"),
-      where("uid", "==", uid)
-    );
-    const querySnapshot = await getDocs(userQuery);
-
-    console.log("fetched");
-
-    // Check if any matching documents were found
-    if (!querySnapshot.empty) {
-      // Get the first document (assuming unique uid)
-      const userDoc = querySnapshot.docs[0];
-      // Extract user data from document
-      const userData = userDoc.data() as FireAlertUser;
-      return userData;
-    } else {
-      // No matching user found
-      return null;
-    }
-  } catch (error: any) {
-    throw new Error(error);
-  }
-});
-
-export const setFireAlertUser = createAsyncThunk(
-  "user/setFireAlertUser",
-  async (profileData: FireAlertUser) => {
+export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
+  "user/fetchAppUser",
+  async (uid: string, { dispatch }) => {
     try {
+      // Perform query to find user document with matching uid
+      const userQuery = query(
+        collection(FirebaseStore, "users"),
+        where("uid", "==", uid)
+      );
+      const querySnapshot = await getDocs(userQuery);
+
+      console.log("fetched");
+
+      // Check if any matching documents were found
+      if (!querySnapshot.empty) {
+        // Get the first document (assuming unique uid)
+        const userDoc = querySnapshot.docs[0];
+        // Extract user data from document
+        const userData = userDoc.data() as AppUser;
+        return userData;
+      } else {
+        // No matching user found
+        return null;
+      }
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+);
+
+export const updateAppUser = createAsyncThunk(
+  "user/updateAppUser",
+  async (profileData: Partial<AppUser>, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
       // Query Firestore to find the document with the user's email
       const userQuery = query(
         collection(FirebaseStore, "users"),
@@ -130,9 +118,12 @@ export const setFireAlertUser = createAsyncThunk(
     } catch (error) {
       console.error("Error updating user data: ", error);
       throw error; // Rethrow the error to handle it in the calling code
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
 
 export default userSlice.reducer;
-export const { setFirebaseUser, clearUser, setUser } = userSlice.actions;
+export const { setFirebaseUser, clearUser, setAppUser, setLoading } =
+  userSlice.actions;

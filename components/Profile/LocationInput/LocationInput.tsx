@@ -12,7 +12,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
         return alert("Permission to access location was denied");
       }
 
-      let location = await Location.getCurrentPositionAsync({});
+      let location = await Location.getCurrentPositionAsync();
       const { latitude, longitude } = location.coords;
 
       dispatch({

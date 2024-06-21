@@ -4,8 +4,8 @@ import { FirebaseAuth } from "../../firebase";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   clearUser,
-  fetchFireAlertUser,
-  setFireAlertUser,
+  fetchAppUser,
+  updateAppUser,
 } from "../../store/slices/user.slice";
 import { router } from "expo-router";
 import LocationInput from "../../components/Profile/LocationInput/LocationInput";
@@ -69,13 +69,13 @@ export const userFormReducer = (
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();
-  const { firebaseUser, user } = useAppSelector((state) => state.user);
+  const { firebaseUser, appUser } = useAppSelector((state) => state.user);
 
   const [profileForm, dispatch] = useReducer(userFormReducer, initialState);
 
   useEffect(() => {
-    if (!user && firebaseUser) {
-      storeDispatch(fetchFireAlertUser(firebaseUser.uid))
+    if (!appUser && firebaseUser) {
+      storeDispatch(fetchAppUser(firebaseUser.uid))
         .then((user) => {
           dispatch({
             type: actionTypes.HYDRATE_USER_DATA,
@@ -84,14 +84,14 @@ const Profile = () => {
         })
         .catch((error) => console.error(error));
     }
-  }, [firebaseUser, user]);
+  }, [firebaseUser, appUser]);
 
   const handleSubmit = async () => {
-    await storeDispatch(setFireAlertUser(profileForm));
+    await storeDispatch(updateAppUser(profileForm));
   };
 
   return (
-    <View>
+    <View style={{ flex: 1, gap: 10 }}>
       <Text>Profile</Text>
       <Text>welcome {profileForm?.email}</Text>
       <TextInput
