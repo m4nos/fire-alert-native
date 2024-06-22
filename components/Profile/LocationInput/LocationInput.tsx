@@ -1,10 +1,28 @@
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { profileActionTypes } from "../profile.reducer";
 import { LocationInputProps } from "./types";
+import { ReadableLocation } from "../../../services/useReverseGeocoding/types";
+import getReverseGeolocation from "../../../services/useReverseGeocoding";
 
 const LocationInput = ({ value, dispatch }: LocationInputProps) => {
+  const [readableLocation, setReadableLocation] = useState<ReadableLocation>();
+
+  useEffect(() => {
+    const fetchReadableLocation = async () => {
+      if (value.latitude !== 0 && value.longitude !== 0) {
+        const { city, province } = await getReverseGeolocation({
+          latitude: value.latitude,
+          longitude: value.longitude,
+        });
+        setReadableLocation({ city, province });
+      }
+    };
+
+    fetchReadableLocation();
+  });
+
   const handleLocationAccess = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -19,18 +37,17 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
         type: profileActionTypes.SET_LOCATION,
         payload: { latitude, longitude },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  console.log("value", value);
 
   return (
     <View>
       <Text>LocationInput</Text>
       {value.latitude !== 0 ? (
         <Text>
-          Location:{" "}
-          {`Latitude: ${value.latitude}, Longitude: ${value.longitude}`}
+          {`Location: ${readableLocation?.city}, ${readableLocation?.province}`}
         </Text>
       ) : (
         <Button title="Grant Location Access" onPress={handleLocationAccess} />

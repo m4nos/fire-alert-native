@@ -44,4 +44,5 @@ export const fetchMarkers = createAsyncThunk("map/fetchMarkers", async () => {
   }
 });
 
+export const { setMarker } = mapSlice.actions;
 export default mapSlice.reducer;

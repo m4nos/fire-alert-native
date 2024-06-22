@@ -63,9 +63,8 @@ const userSlice = createSlice({
 
 export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
   "user/fetchAppUser",
-  async (uid: string, { dispatch }) => {
+  async (uid: string) => {
     try {
-      dispatch(setLoading(true));
       // Perform query to find user document with matching uid
       const userQuery = query(
         collection(FirebaseStore, "users"),
@@ -88,17 +87,14 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
       }
     } catch (error: any) {
       throw new Error(error);
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 );
 
 export const updateAppUser = createAsyncThunk(
   "user/updateAppUser",
-  async (profileData: Partial<AppUser>, { dispatch }) => {
+  async (profileData: Partial<AppUser>) => {
     try {
-      dispatch(setLoading(true));
       // Query Firestore to find the document with the user's email
       const userQuery = query(
         collection(FirebaseStore, "users"),
@@ -121,8 +117,6 @@ export const updateAppUser = createAsyncThunk(
     } catch (error) {
       console.error("Error updating user data: ", error);
       throw error; // Rethrow the error to handle it in the calling code
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 );

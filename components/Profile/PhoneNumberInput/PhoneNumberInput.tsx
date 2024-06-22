@@ -8,6 +8,7 @@ const PhoneNumberInput = ({ value, dispatch }: PhonenumberInputProps) => {
     <View>
       <TextInput
         placeholder="Phone number"
+        keyboardType="number-pad"
         value={value}
         onChangeText={(text) =>
           dispatch({ type: profileActionTypes.SET_PHONE_NUMBER, payload: text })

@@ -45,4 +45,5 @@ export const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   }
 });
 
+export const { setEvent } = eventsSlice.actions;
 export default eventsSlice.reducer;
