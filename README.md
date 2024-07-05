@@ -46,3 +46,14 @@ fire-alert-app/
 ├── firebase.config.ts
 ├── package.json
 └── README.md
+```
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/yourusername/fire-alert-app.git
+cd fire-alert-app
+npm install
+```
+
