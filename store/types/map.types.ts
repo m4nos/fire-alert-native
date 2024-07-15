@@ -3,16 +3,10 @@ export type Coordinates = {
   longitude: number;
 };
 
-export const EventType = {
-  training: "TRAINING",
-  wildfire: "WILDFIRE",
-} as const;
-
 export type Marker = {
   id: string;
-  type: typeof EventType;
-  latitude: number;
-  longitude: number;
+  latitude: string;
+  longitude: string;
 };
 
 export type MapState = {

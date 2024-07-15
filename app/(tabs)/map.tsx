@@ -10,7 +10,6 @@ const map = () => {
   const mapRef = useRef(null);
 
   const { markers } = useAppSelector((state) => state.map);
-  console.log(markers);
 
   useEffect(() => {
     dispatch(fetchMarkers());
@@ -34,8 +33,8 @@ const map = () => {
             <Marker
               key={index}
               coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
+                latitude: Number(marker.latitude),
+                longitude: Number(marker.longitude),
               }}
             />
           ))}
