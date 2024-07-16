@@ -1,4 +1,4 @@
-# Fire Alert App
+# Fire Alert Native App
 
 Fire Alert is a React Native application designed for volunteer firefighting coordination. The app leverages Firebase for authentication, Firestore for database management, and various geolocation services to report and track fire incidents.
 
@@ -47,6 +47,7 @@ fire-alert-app/
 ├── package.json
 └── README.md
 ```
+
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -56,4 +57,3 @@ git clone https://github.com/yourusername/fire-alert-app.git
 cd fire-alert-app
 npm install
 ```
-
