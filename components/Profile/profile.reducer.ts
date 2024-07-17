@@ -5,6 +5,7 @@ export type UserProfileFields = {
   phoneNumber: string;
   location: Coordinates;
 };
+
 type HydrateUserDataAction = {
   type: typeof profileActionTypes.HYDRATE_USER_DATA;
   payload: UserProfileFields;
@@ -20,7 +21,7 @@ export type SetLocationAction = {
   payload: Coordinates;
 };
 
-export type UserAction =
+export type UserProfileAction =
   | SetPhoneNumberAction
   | SetLocationAction
   | HydrateUserDataAction;
@@ -42,7 +43,7 @@ export const profileActionTypes = {
 
 export const userFormReducer = (
   state: UserProfileFields,
-  action: UserAction
+  action: UserProfileAction
 ) => {
   switch (action.type) {
     case profileActionTypes.SET_PHONE_NUMBER:

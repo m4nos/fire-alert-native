@@ -15,7 +15,7 @@ import {
   userFormReducer,
 } from "../../components/Profile/profile.reducer";
 import { profileInitialState } from "../../components/Profile/profile.reducer";
-import PhoneNumberInput from "../../components/Profile/PhoneNumberInput";
+import PhoneNumberInput from "../../components/Profile/ProfileInput";
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();
@@ -55,7 +55,11 @@ const Profile = () => {
     <View style={{ flex: 1, gap: 10 }}>
       <Text>Profile</Text>
       <Text>welcome {profileForm?.email}</Text>
-      <PhoneNumberInput value={profileForm?.phoneNumber} dispatch={dispatch} />
+      <PhoneNumberInput
+        value={profileForm?.phoneNumber}
+        dispatch={dispatch}
+        actionType={profileActionTypes.SET_PHONE_NUMBER}
+      />
       <LocationInput value={profileForm?.location} dispatch={dispatch} />
       <TouchableOpacity
         onPress={handleSubmit}
