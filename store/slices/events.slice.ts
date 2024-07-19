@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { FirebaseStore } from "../../firebase";
 import { collection, getDocs, query } from "firebase/firestore";
-import { Events, EventsState } from "../types/events.types";
+import { Event, EventsState } from "../types/events.types";
 
 const initialState: EventsState = {
   events: [],
@@ -15,8 +15,9 @@ const eventsSlice = createSlice({
     setEvent: (state, action) => (state.events = action.payload),
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchEvents.pending, (state) => {
+    builder.addCase(fetchEvents.pending, (state, action) => {
       state.loading = true;
+      console.log("fetching events...", action.meta.requestStatus);
     }),
       builder.addCase(fetchEvents.rejected, (state, action) => {
         state.loading = false;
@@ -25,6 +26,7 @@ const eventsSlice = createSlice({
       builder.addCase(fetchEvents.fulfilled, (state, action) => {
         state.loading = false;
         state.events = action.payload;
+        console.log("fetched events", action.meta.requestStatus);
       });
   },
 });
@@ -37,7 +39,7 @@ export const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
     const events = eventsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as Events[];
+    })) as Event[];
 
     return events;
   } catch (error: any) {

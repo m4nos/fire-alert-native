@@ -57,8 +57,10 @@ const Profile = () => {
       <Text>welcome {profileForm?.email}</Text>
       <PhoneNumberInput
         value={profileForm?.phoneNumber}
+        placeholder="69..."
         dispatch={dispatch}
         actionType={profileActionTypes.SET_PHONE_NUMBER}
+        label="Phone number"
       />
       <LocationInput value={profileForm?.location} dispatch={dispatch} />
       <TouchableOpacity

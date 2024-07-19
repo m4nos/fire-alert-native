@@ -8,4 +8,5 @@ export type ProfileInputProps<
   actionType: T["type"];
   dispatch: Dispatch<T>;
   placeholder?: string;
+  label: string;
 };
