@@ -1,4 +1,11 @@
-import { Button, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import {
   createUserWithEmailAndPassword,
@@ -8,16 +15,16 @@ import { collection, addDoc } from "firebase/firestore";
 import { TextInput } from "react-native-gesture-handler";
 import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { router } from "expo-router";
+import Colors from "../../constants/Colors";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // TODO: make this a thunk action
+  // TODO: form validation
   const signUp = async () => {
-    setLoading(true);
-
     try {
       const { user } = await createUserWithEmailAndPassword(
         FirebaseAuth,
@@ -39,8 +46,7 @@ const Signup = () => {
         url: "https://fire-alert-d86d4.firebaseapp.com",
       })
         .then(() => {
-          setLoading(false);
-          alert("email verification sent!");
+          Alert.alert("email verification sent!");
         })
         .catch((error) => {
           throw new Error(error);
@@ -53,26 +59,39 @@ const Signup = () => {
   };
 
   return (
-    <View>
-      <View style={styles.container}>
-        <TextInput
-          value={email}
-          style={styles.input}
-          placeholder="Email"
-          autoCapitalize="none"
-          onChange={(e) => setEmail(e.nativeEvent.text)}
-        />
-        <TextInput
-          value={password}
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          autoCapitalize="none"
-          onChange={(e) => setPassword(e.nativeEvent.text)}
-        />
-        <Button title="Signup" onPress={() => signUp()} />
-        <Button title="Log in" onPress={() => router.push("/(auth)/login")} />
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        value={email}
+        style={styles.input}
+        autoCapitalize="none"
+        onChangeText={(text) => setEmail(text)}
+      />
+      <Text style={styles.label}>Password</Text>
+      <TextInput
+        value={password}
+        style={styles.input}
+        secureTextEntry
+        autoCapitalize="none"
+        onChangeText={(text) => setPassword(text)}
+      />
+      <Text style={styles.label}>Confirm password</Text>
+      <TextInput
+        value={confirmPassword}
+        style={styles.input}
+        secureTextEntry
+        autoCapitalize="none"
+        onChangeText={(text) => setConfirmPassword(text)}
+      />
+      <TouchableOpacity style={styles.button} onPress={() => signUp()}>
+        <Text style={styles.buttonText}>Sign up</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/(auth)/login")}
+      >
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -81,9 +100,34 @@ export default Signup;
 
 const styles = StyleSheet.create({
   container: {
-    margin: "auto",
+    padding: 40,
+    flex: 1,
+    justifyContent: "center",
     display: "flex",
-    backgroundColor: "#fefefe",
+    backgroundColor: Colors.light.secondary,
   },
-  input: {},
+  label: {
+    color: Colors.light.main,
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  input: {
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 2,
+    borderColor: Colors.light.main,
+    borderRadius: 20,
+  },
+  button: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 20,
+    borderColor: Colors.light.main,
+    marginBottom: 10,
+    backgroundColor: Colors.light.accent,
+  },
+  buttonText: {
+    margin: "auto",
+    color: Colors.light.secondary,
+  },
 });

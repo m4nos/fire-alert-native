@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { FirebaseAuth } from "../../firebase";
 import { useAppDispatch } from "../../store/hooks";
 import { setFirebaseUser } from "../../store/slices/user.slice";
+import Colors from "../../constants/Colors";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,17 +36,17 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         value={email}
         style={styles.input}
-        placeholder="Email"
         autoCapitalize="none"
         onChangeText={(text) => setEmail(text)}
       />
+      <Text style={styles.label}>Password</Text>
       <TextInput
         value={password}
         style={styles.input}
-        placeholder="Password"
         secureTextEntry
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
@@ -69,21 +70,35 @@ const Login = () => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: "auto",
+    padding: 40,
+    flex: 1,
+    justifyContent: "center",
     display: "flex",
-    backgroundColor: "#fefefe",
+    backgroundColor: Colors.light.secondary,
+  },
+  label: {
+    color: Colors.light.main,
+    marginLeft: 10,
+    marginBottom: 10,
   },
   input: {
-    width: 300,
-    margin: 5,
-    padding: 5,
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 2,
+    borderColor: Colors.light.main,
     borderRadius: 20,
   },
   button: {
     padding: 10,
+    borderWidth: 2,
+    borderRadius: 20,
+    borderColor: Colors.light.main,
+    marginBottom: 10,
+    backgroundColor: Colors.light.accent,
   },
   buttonText: {
     margin: "auto",
+    color: Colors.light.secondary,
   },
 });
 
