@@ -15,7 +15,7 @@ import {
   userFormReducer,
 } from "../../components/Profile/profile.reducer";
 import { profileInitialState } from "../../components/Profile/profile.reducer";
-import PhoneNumberInput from "../../components/Profile/ProfileInput";
+import ProfileInput from "../../components/Profile/ProfileInput";
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();
@@ -53,9 +53,8 @@ const Profile = () => {
 
   return (
     <View style={{ flex: 1, gap: 10 }}>
-      <Text>Profile</Text>
       <Text>welcome {profileForm?.email}</Text>
-      <PhoneNumberInput
+      <ProfileInput
         value={profileForm?.phoneNumber}
         placeholder="69..."
         dispatch={dispatch}
