@@ -9,11 +9,14 @@ import { TextInput } from "react-native-gesture-handler";
 import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { router } from "expo-router";
 import Colors from "../../constants/Colors";
+import CustomButton from "@components/Button";
+import { useAppSelector } from "@store/hooks";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { loading } = useAppSelector((state) => state.user);
 
   // TODO: make this a thunk action
   // TODO: form validation
@@ -76,15 +79,15 @@ const Signup = () => {
         autoCapitalize="none"
         onChangeText={(text) => setConfirmPassword(text)}
       />
-      <TouchableOpacity style={styles.button} onPress={() => signUp()}>
-        <Text style={styles.buttonText}>Sign up</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/(auth)/login")}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <CustomButton
+        handlePress={() => signUp()}
+        text="Sign up"
+        loading={loading}
+      />
+      <CustomButton
+        handlePress={() => router.push("/(auth)/login")}
+        text="Login"
+      />
     </View>
   );
 };

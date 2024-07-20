@@ -16,6 +16,7 @@ import {
   profileInitialState,
 } from "@components/Profile/profile.reducer";
 import ProfileInput from "@components/Profile/ProfileInput";
+import Colors from "constants/Colors";
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();
@@ -52,7 +53,7 @@ const Profile = () => {
       .catch((error) => console.log(error));
 
   return (
-    <View style={{ flex: 1, gap: 10 }}>
+    <View style={styles.container}>
       <Text>welcome {profileForm?.email}</Text>
       <ProfileInput
         value={profileForm?.phoneNumber}
@@ -79,6 +80,12 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 50,
+    backgroundColor: Colors.light.secondary,
+  },
   button: {
     padding: 10,
   },

@@ -7,6 +7,7 @@ import { FirebaseAuth } from "../../firebase";
 import { useAppDispatch } from "@store/hooks";
 import { setFirebaseUser } from "@store/slices/user.slice";
 import Colors from "../../constants/Colors";
+import CustomButton from "@components/Button";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -51,19 +52,15 @@ const Login = () => {
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity
-        onPress={() => signIn()}
-        disabled={loading}
-        style={styles.button}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/(auth)/signup")}
-      >
-        <Text style={styles.buttonText}>Create account</Text>
-      </TouchableOpacity>
+      <CustomButton
+        handlePress={() => signIn()}
+        text="Login"
+        loading={loading}
+      />
+      <CustomButton
+        handlePress={() => router.push("/(auth)/signup")}
+        text="Create account"
+      />
     </View>
   );
 };
