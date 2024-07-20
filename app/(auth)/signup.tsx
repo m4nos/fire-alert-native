@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Button,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import {
   createUserWithEmailAndPassword,

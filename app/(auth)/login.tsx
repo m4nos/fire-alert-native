@@ -4,8 +4,8 @@ import { TextInput } from "react-native-gesture-handler";
 import { User, signInWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
 import { FirebaseAuth } from "../../firebase";
-import { useAppDispatch } from "../../store/hooks";
-import { setFirebaseUser } from "../../store/slices/user.slice";
+import { useAppDispatch } from "@store/hooks";
+import { setFirebaseUser } from "@store/slices/user.slice";
 import Colors from "../../constants/Colors";
 
 const Login = () => {

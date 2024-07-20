@@ -1,5 +1,5 @@
 import { Redirect, useRouter } from "expo-router";
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector } from "@store/hooks";
 import { onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../firebase";
 

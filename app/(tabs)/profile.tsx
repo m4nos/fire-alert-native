@@ -1,21 +1,21 @@
 import React, { useEffect, useReducer } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FirebaseAuth } from "../../firebase";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
 import {
   clearUser,
   fetchAppUser,
   updateAppUser,
-} from "../../store/slices/user.slice";
+} from "@store/slices/user.slice";
 import { router } from "expo-router";
-import LocationInput from "../../components/Profile/LocationInput";
+import LocationInput from "@components/Profile/LocationInput";
 import {
   UserProfileFields,
   profileActionTypes,
   userFormReducer,
-} from "../../components/Profile/profile.reducer";
-import { profileInitialState } from "../../components/Profile/profile.reducer";
-import ProfileInput from "../../components/Profile/ProfileInput";
+  profileInitialState,
+} from "@components/Profile/profile.reducer";
+import ProfileInput from "@components/Profile/ProfileInput";
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();

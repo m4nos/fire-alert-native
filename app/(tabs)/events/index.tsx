@@ -1,8 +1,8 @@
 import { FlatList, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { fetchEvents } from "../../../store/slices/events.slice";
-import EventListItem from "../../../components/Events/EventListItem/EventListItem";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { fetchEvents } from "@store/slices/events.slice";
+import EventListItem from "@components/Events/EventListItem/EventListItem";
 
 const Events = () => {
   const dispatch = useAppDispatch();
@@ -12,8 +12,6 @@ const Events = () => {
   }, []);
 
   const { events } = useAppSelector((state) => state.events);
-
-  console.log(events);
 
   return (
     events && (

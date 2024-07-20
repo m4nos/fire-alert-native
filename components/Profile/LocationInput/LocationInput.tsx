@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { profileActionTypes } from "../profile.reducer";
 import { LocationInputProps } from "./types";
-import { ReadableLocation } from "../../../services/useReverseGeocoding/types";
-import getReverseGeolocation from "../../../services/useReverseGeocoding";
+import { ReadableLocation } from "@services/useReverseGeocoding/types";
+import getReverseGeolocation from "@services/useReverseGeocoding";
 
 const LocationInput = ({ value, dispatch }: LocationInputProps) => {
   const [readableLocation, setReadableLocation] = useState<ReadableLocation>();

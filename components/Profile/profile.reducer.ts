@@ -1,4 +1,4 @@
-import { Coordinates } from "../../store/types/map.types";
+import { Coordinates } from "@store/types/map.types";
 
 export type UserProfileFields = {
   email: string;
