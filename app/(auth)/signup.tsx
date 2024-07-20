@@ -10,49 +10,17 @@ import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { router } from "expo-router";
 import Colors from "../../constants/Colors";
 import CustomButton from "@components/Button";
-import { useAppSelector } from "@store/hooks";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { signUp } from "@store/slices/user.slice";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { loading } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
 
-  // TODO: make this a thunk action
   // TODO: form validation
-  const signUp = async () => {
-    try {
-      const { user } = await createUserWithEmailAndPassword(
-        FirebaseAuth,
-        email,
-        password
-      ).catch((error) => {
-        throw new Error(error);
-      });
-
-      await addDoc(collection(FirebaseStore, "users"), {
-        email,
-        uid: user.uid,
-      }).catch((error) => {
-        throw new Error(error);
-      });
-
-      await sendEmailVerification(user, {
-        handleCodeInApp: true,
-        url: "https://fire-alert-d86d4.firebaseapp.com",
-      })
-        .then(() => {
-          Alert.alert("email verification sent!");
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-
-      router.push("/(auth)/login");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -80,7 +48,7 @@ const Signup = () => {
         onChangeText={(text) => setConfirmPassword(text)}
       />
       <CustomButton
-        handlePress={() => signUp()}
+        handlePress={() => dispatch(signUp({ email, password }))}
         text="Sign up"
         loading={loading}
       />
@@ -113,17 +81,5 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.light.main,
     borderRadius: 20,
-  },
-  button: {
-    padding: 10,
-    borderWidth: 2,
-    borderRadius: 20,
-    borderColor: Colors.light.main,
-    marginBottom: 10,
-    backgroundColor: Colors.light.accent,
-  },
-  buttonText: {
-    margin: "auto",
-    color: Colors.light.secondary,
   },
 });

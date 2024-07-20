@@ -1,6 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { User } from "firebase/auth";
 import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  User,
+} from "firebase/auth";
+import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -8,8 +14,10 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { FirebaseStore } from "../../firebase";
+import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { AppUser, UserState } from "../types/user.types";
+import { router } from "expo-router";
+import { Alert } from "react-native";
 
 const initialState: UserState = {
   firebaseUser: null,
@@ -35,10 +43,36 @@ const userSlice = createSlice({
     setLoading: (state, action) => (state.loading = action.payload),
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAppUser.pending, (state) => {
+    // LOGIN //
+    builder.addCase(login.pending, (state) => {
       state.loading = true;
       state.error = null;
     }),
+      builder.addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as Error;
+      }),
+      builder.addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.firebaseUser = action.payload;
+      }),
+      // SIGNUP //
+      builder.addCase(signUp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(signUp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as Error;
+      }),
+      builder.addCase(signUp.fulfilled, (state) => {
+        state.loading = false;
+      }),
+      // FETCH APP USER //
+      builder.addCase(fetchAppUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      }),
       builder.addCase(fetchAppUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as Error;
@@ -47,6 +81,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.appUser = action.payload;
       }),
+      // UPDATE APP USER //
       builder.addCase(updateAppUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,6 +96,68 @@ const userSlice = createSlice({
   },
 });
 
+interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+export const login = createAsyncThunk<User | null, AuthCredentials>(
+  "user/login",
+  async ({ email, password }) => {
+    try {
+      const response = await signInWithEmailAndPassword(
+        FirebaseAuth,
+        email,
+        password
+      );
+      if (response.user.emailVerified) {
+        router.replace("/(tabs)/profile");
+        return response.user.toJSON() as User;
+      } else alert("You need to verify your email first!");
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
+  }
+);
+
+export const signUp = createAsyncThunk<User | null, AuthCredentials>(
+  "user/signUp",
+  async ({ email, password }) => {
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        FirebaseAuth,
+        email,
+        password
+      ).catch((error) => {
+        throw new Error(error);
+      });
+
+      await addDoc(collection(FirebaseStore, "users"), {
+        email,
+        uid: user.uid,
+      }).catch((error) => {
+        throw new Error(error);
+      });
+
+      await sendEmailVerification(user, {
+        handleCodeInApp: true,
+        url: "https://fire-alert-d86d4.firebaseapp.com",
+      })
+        .then(() => {
+          Alert.alert("email verification sent!");
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+
+      router.push("/(auth)/login");
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  }
+);
 export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
   "user/fetchAppUser",
   async (uid: string) => {
