@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { FirebaseStore } from '../../firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
-import { Event, EventsState } from '../types/events.types';
+import { createSlice } from '@reduxjs/toolkit';
+import { EventsState } from './events.types';
+import { fetchEvents } from '@store/events/events.thunk';
 
 const initialState: EventsState = {
   events: [],
@@ -29,22 +28,6 @@ const eventsSlice = createSlice({
         console.log('fetched events', action.meta.requestStatus);
       });
   },
-});
-
-export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
-  try {
-    const eventsCollection = query(collection(FirebaseStore, 'events'));
-    const eventsSnapshot = await getDocs(eventsCollection);
-
-    const events = eventsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Event[];
-
-    return events;
-  } catch (error: any) {
-    throw new Error(error);
-  }
 });
 
 export const { setEvent } = eventsSlice.actions;

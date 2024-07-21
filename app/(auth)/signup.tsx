@@ -4,8 +4,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import Colors from '../../constants/Colors';
 import CustomButton from '@components/Button';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { signUp } from '@store/slices/user.slice';
+import { useAppDispatch, useAppSelector } from 'features/hooks';
+import { signUp } from '@store/user/user.thunk';
 
 const Signup = () => {
   const [email, setEmail] = useState('');

@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchMarkers } from '@store/slices/map.slice';
+import { useAppDispatch, useAppSelector } from 'features/hooks';
+import { fetchMarkers } from '@store/map/map.thunk';
 
 const map = () => {
   const dispatch = useAppDispatch();

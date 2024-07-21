@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'expo-router';
-import { Event } from '@store/types/events.types';
+import { Event } from '@store/events/events.types';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Text } from 'react-native';
 

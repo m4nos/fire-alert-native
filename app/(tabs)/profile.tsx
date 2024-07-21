@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchAppUser, logout, updateAppUser } from '@store/slices/user.slice';
+import { useAppDispatch, useAppSelector } from 'features/hooks';
+import { fetchAppUser, logout, updateAppUser } from '@store/user/user.thunk';
 import LocationInput from '@components/Profile/LocationInput';
 import {
   UserProfileFields,

@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/user.slice';
-import mapReducer from './slices/map.slice';
-import eventsReducer from './slices/events.slice';
+import userReducer from './user/user.slice';
+import mapReducer from './map/map.slice';
+import eventsReducer from './events/events.slice';
 
 export const store = configureStore({
   reducer: {

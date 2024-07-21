@@ -1,8 +1,8 @@
-import { FlatList, StyleSheet } from "react-native";
-import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { fetchEvents } from "@store/slices/events.slice";
-import EventListItem from "@components/Events/EventListItem/EventListItem";
+import { FlatList, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from 'features/hooks';
+import EventListItem from '@components/Events/EventListItem/EventListItem';
+import { fetchEvents } from '@store/events/events.thunk';
 
 const Events = () => {
   const dispatch = useAppDispatch();
