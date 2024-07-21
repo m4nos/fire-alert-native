@@ -1,11 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import Colors from '../../constants/Colors';
-import CustomButton from '@components/Button';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import { signUp } from '@store/user/user.thunk';
+import { Button, TextInput } from 'react-native-paper';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -18,38 +16,41 @@ const Signup = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Email</Text>
       <TextInput
+        label="Email"
         value={email}
-        style={styles.input}
         autoCapitalize="none"
         onChangeText={(text) => setEmail(text)}
+        mode="outlined"
       />
-      <Text style={styles.label}>Password</Text>
       <TextInput
+        label="Password"
         value={password}
-        style={styles.input}
         secureTextEntry
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
+        mode="outlined"
       />
-      <Text style={styles.label}>Confirm password</Text>
       <TextInput
+        label="Confirm Password"
         value={confirmPassword}
-        style={styles.input}
         secureTextEntry
+        clearButtonMode="always"
         autoCapitalize="none"
         onChangeText={(text) => setConfirmPassword(text)}
+        mode="outlined"
       />
-      <CustomButton
-        handlePress={() => dispatch(signUp({ email, password }))}
-        text="Sign up"
+      <Button
+        onPress={() => dispatch(signUp({ email, password }))}
+        mode="contained"
         loading={loading}
-      />
-      <CustomButton
-        handlePress={() => router.push('/(auth)/login')}
-        text="Login"
-      />
+        disabled={loading}
+      >
+        Sign up
+      </Button>
+      <Button onPress={() => router.push('/(auth)/login')} mode="outlined">
+        Login
+      </Button>
     </View>
   );
 };
@@ -62,18 +63,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     display: 'flex',
-    backgroundColor: Colors.light.secondary,
-  },
-  label: {
-    color: Colors.light.main,
-    marginLeft: 10,
-    marginBottom: 10,
-  },
-  input: {
-    marginBottom: 20,
-    padding: 10,
-    borderWidth: 2,
-    borderColor: Colors.light.main,
-    borderRadius: 20,
+    gap: 20,
   },
 });

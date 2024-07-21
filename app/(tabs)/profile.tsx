@@ -9,8 +9,7 @@ import {
   userFormReducer,
   profileInitialState,
 } from '@components/Profile/profile.reducer';
-import ProfileInput from '@components/Profile/ProfileInput';
-import Colors from 'constants/Colors';
+import { Button, TextInput } from 'react-native-paper';
 
 const Profile = () => {
   const storeDispatch = useAppDispatch();
@@ -36,33 +35,32 @@ const Profile = () => {
     }
   }, [firebaseUser, appUser]);
 
-  const handleSubmit = async () =>
-    await storeDispatch(updateAppUser(profileForm));
-
   return (
     <View style={styles.container}>
       <Text>welcome {profileForm?.email}</Text>
-      <ProfileInput
-        value={profileForm?.phoneNumber}
-        placeholder="69..."
-        dispatch={reducerDispatch}
-        actionType={profileActionTypes.SET_PHONE_NUMBER}
+      <TextInput
         label="Phone number"
+        value={profileForm.phoneNumber}
+        keyboardType="number-pad"
+        onChangeText={(text) =>
+          reducerDispatch({
+            type: profileActionTypes.SET_PHONE_NUMBER,
+            payload: text,
+          })
+        }
+        mode="outlined"
       />
       <LocationInput value={profileForm?.location} dispatch={reducerDispatch} />
-      <TouchableOpacity
-        onPress={handleSubmit}
-        disabled={loading}
-        style={styles.button}
+      <Button
+        onPress={() => storeDispatch(updateAppUser(profileForm))}
+        loading={loading}
+        mode="contained"
       >
-        <Text style={styles.buttonText}>Save</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => storeDispatch(logout())}
-        style={styles.button}
-      >
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+        Save
+      </Button>
+      <Button onPress={() => storeDispatch(logout())} mode="outlined">
+        Logout
+      </Button>
     </View>
   );
 };
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 50,
-    backgroundColor: Colors.light.secondary,
+    gap: 20,
   },
   button: {
     padding: 10,

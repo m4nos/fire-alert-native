@@ -11,10 +11,10 @@ export const getReverseGeolocation = async ({
     );
     if (response.ok) {
       const data = await response.json();
-      const address = data.address;
-      const city: string = address.city || address.town || address.village;
-      const province: string = address.state;
-      return { city, province };
+      const { address } = data;
+      const district: string = address.state_district || address.state;
+      console.log('run');
+      return district;
     }
     throw new Error('No results found');
   } catch (error) {

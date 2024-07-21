@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
-import Colors from '../../constants/Colors';
-import CustomButton from '@components/Button';
 import { login } from '@store/user/user.thunk';
+import { Button, TextInput } from 'react-native-paper';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -15,30 +13,32 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Email</Text>
       <TextInput
+        label="Email"
         value={email}
-        style={styles.input}
         autoCapitalize="none"
         onChangeText={(text) => setEmail(text)}
-      />
-      <Text style={styles.label}>Password</Text>
+        mode="outlined"
+      ></TextInput>
       <TextInput
+        label="Password"
         value={password}
-        style={styles.input}
         secureTextEntry
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
-      />
-      <CustomButton
-        handlePress={() => dispatch(login({ email, password }))}
-        text="Login"
+        mode="outlined"
+      ></TextInput>
+      <Button
+        onPress={() => dispatch(login({ email, password }))}
+        mode="contained"
         loading={loading}
-      />
-      <CustomButton
-        handlePress={() => router.push('/(auth)/signup')}
-        text="Create account"
-      />
+        disabled={loading}
+      >
+        Login
+      </Button>
+      <Button onPress={() => router.push('/(auth)/signup')} mode="outlined">
+        Create account
+      </Button>
     </View>
   );
 };
@@ -49,19 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     display: 'flex',
-    backgroundColor: Colors.light.secondary,
-  },
-  label: {
-    color: Colors.light.main,
-    marginLeft: 10,
-    marginBottom: 10,
-  },
-  input: {
-    marginBottom: 20,
-    padding: 10,
-    borderWidth: 2,
-    borderColor: Colors.light.main,
-    borderRadius: 20,
+    gap: 20,
   },
 });
 

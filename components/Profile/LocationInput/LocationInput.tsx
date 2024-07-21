@@ -1,24 +1,25 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { profileActionTypes } from '../profile.reducer';
 import { LocationInputProps } from './types';
-import { ReadableLocation } from '@services/useReverseGeocoding/types';
 import getReverseGeolocation from '@services/useReverseGeocoding';
+import { IconButton, TextInput } from 'react-native-paper';
 
 const LocationInput = ({ value, dispatch }: LocationInputProps) => {
-  const [readableLocation, setReadableLocation] = useState<ReadableLocation>();
+  const [readableLocation, setReadableLocation] = useState<string>();
 
   useEffect(() => {
     const fetchReadableLocation = async () => {
       if (value.latitude !== 0 && value.longitude !== 0) {
-        const { city, province } = await getReverseGeolocation({
+        const district = await getReverseGeolocation({
           latitude: value.latitude,
           longitude: value.longitude,
         });
-        setReadableLocation({ city, province });
+        setReadableLocation(district);
       }
     };
+    console.log('lol');
 
     fetchReadableLocation();
   });
@@ -26,6 +27,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
   const handleLocationAccess = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log(status);
       if (status !== 'granted') {
         return alert('Permission to access location was denied');
       }
@@ -44,13 +46,22 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
 
   return (
     <View>
-      <Text>LocationInput</Text>
       {value.latitude !== 0 ? (
-        <Text>
-          {`Location: ${readableLocation?.city}, ${readableLocation?.province}`}
-        </Text>
+        <TextInput
+          label="Location"
+          value={readableLocation}
+          disabled
+          multiline
+          mode="outlined"
+          right={
+            <TextInput.Icon icon="refresh" onPress={handleLocationAccess} />
+          }
+        />
       ) : (
-        <Button title="Grant Location Access" onPress={handleLocationAccess} />
+        <View style={styles.container}>
+          <Text>Location</Text>
+          <IconButton icon="target" onPress={handleLocationAccess} />
+        </View>
       )}
     </View>
   );
@@ -58,4 +69,10 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
 
 export default LocationInput;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
