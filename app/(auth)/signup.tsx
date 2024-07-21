@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import { TextInput } from "react-native-gesture-handler";
-import { router } from "expo-router";
-import Colors from "../../constants/Colors";
-import CustomButton from "@components/Button";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { signUp } from "@store/slices/user.slice";
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { TextInput } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
+import Colors from '../../constants/Colors';
+import CustomButton from '@components/Button';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { signUp } from '@store/slices/user.slice';
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { loading } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
@@ -47,7 +47,7 @@ const Signup = () => {
         loading={loading}
       />
       <CustomButton
-        handlePress={() => router.push("/(auth)/login")}
+        handlePress={() => router.push('/(auth)/login')}
         text="Login"
       />
     </View>
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 40,
     flex: 1,
-    justifyContent: "center",
-    display: "flex",
+    justifyContent: 'center',
+    display: 'flex',
     backgroundColor: Colors.light.secondary,
   },
   label: {

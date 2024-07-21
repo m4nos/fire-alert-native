@@ -1,3 +1,3 @@
-import ProfileInput from "./ProfileInput";
+import ProfileInput from './ProfileInput';
 
 export default ProfileInput;

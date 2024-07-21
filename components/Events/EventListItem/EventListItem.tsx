@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "expo-router";
-import { Event } from "@store/types/events.types";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Text } from "react-native";
+import React from 'react';
+import { Link } from 'expo-router';
+import { Event } from '@store/types/events.types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Text } from 'react-native';
 
 const EventListItem = ({ event }: { event: Event }) => {
   return (

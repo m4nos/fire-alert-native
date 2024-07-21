@@ -1,10 +1,9 @@
-import React from "react";
-import { Tabs } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
-import Colors from "constants/Colors";
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
 
 const TabBarIcon = (props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
+  name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) => <FontAwesome size={20} {...props} />;
 
@@ -14,7 +13,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: 'Profile',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
@@ -22,7 +21,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="map"
         options={{
-          title: "Map",
+          title: 'Map',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="fire" color={color} />,
         }}
@@ -30,7 +29,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="events"
         options={{
-          title: "Events",
+          title: 'Events',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />

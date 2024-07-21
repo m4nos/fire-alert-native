@@ -1,3 +1,3 @@
-import EventListItem from "./EventListItem";
+import EventListItem from './EventListItem';
 
 export default EventListItem;

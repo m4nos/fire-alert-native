@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { FirebaseStore } from "../../firebase";
-import { collection, getDocs, query } from "firebase/firestore";
-import { MapState, Marker } from "../types/map.types";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { FirebaseStore } from '../../firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
+import { MapState, Marker } from '../types/map.types';
 
 const initialState: MapState = {
   markers: [],
@@ -9,7 +9,7 @@ const initialState: MapState = {
 };
 
 const mapSlice = createSlice({
-  name: "map",
+  name: 'map',
   initialState,
   reducers: {
     setMarker: (state, action) => (state.markers = action.payload),
@@ -29,9 +29,9 @@ const mapSlice = createSlice({
   },
 });
 
-export const fetchMarkers = createAsyncThunk("map/fetchMarkers", async () => {
+export const fetchMarkers = createAsyncThunk('map/fetchMarkers', async () => {
   try {
-    const markersCollection = query(collection(FirebaseStore, "markers"));
+    const markersCollection = query(collection(FirebaseStore, 'markers'));
     const markersSnapshot = await getDocs(markersCollection);
 
     const markers = markersSnapshot.docs.map((doc) => ({

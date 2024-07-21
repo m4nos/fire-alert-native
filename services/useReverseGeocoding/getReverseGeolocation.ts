@@ -16,9 +16,9 @@ export const getReverseGeolocation = async ({
       const province: string = address.state;
       return { city, province };
     }
-    throw new Error("No results found");
+    throw new Error('No results found');
   } catch (error) {
-    console.error("Error during reverse geocoding:", error);
+    console.error('Error during reverse geocoding:', error);
     throw error;
   }
 };

@@ -1,3 +1,3 @@
-import { getReverseGeolocation } from "./getReverseGeolocation";
+import { getReverseGeolocation } from './getReverseGeolocation';
 
 export default getReverseGeolocation;

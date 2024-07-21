@@ -1,3 +1,3 @@
-import LocationInput from "./LocationInput";
+import LocationInput from './LocationInput';
 
 export default LocationInput;

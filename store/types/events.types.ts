@@ -1,6 +1,6 @@
 export const EventType = {
-  training: "TRAINING",
-  wildfire: "WILDFIRE",
+  training: 'TRAINING',
+  wildfire: 'WILDFIRE',
 } as const;
 
 export type Event = {

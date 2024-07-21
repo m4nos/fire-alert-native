@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { router } from "expo-router";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { login } from "@store/slices/user.slice";
-import Colors from "../../constants/Colors";
-import CustomButton from "@components/Button";
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { login } from '@store/slices/user.slice';
+import Colors from '../../constants/Colors';
+import CustomButton from '@components/Button';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.user);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <View style={styles.container}>
@@ -36,7 +36,7 @@ const Login = () => {
         loading={loading}
       />
       <CustomButton
-        handlePress={() => router.push("/(auth)/signup")}
+        handlePress={() => router.push('/(auth)/signup')}
         text="Create account"
       />
     </View>
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 40,
     flex: 1,
-    justifyContent: "center",
-    display: "flex",
+    justifyContent: 'center',
+    display: 'flex',
     backgroundColor: Colors.light.secondary,
   },
   label: {

@@ -1,4 +1,4 @@
-import { Coordinates } from "@store/types/map.types";
+import { Coordinates } from '@store/types/map.types';
 
 export type UserProfileFields = {
   email: string;
@@ -27,8 +27,8 @@ export type UserProfileAction =
   | HydrateUserDataAction;
 
 export const profileInitialState = {
-  email: "",
-  phoneNumber: "",
+  email: '',
+  phoneNumber: '',
   location: {
     latitude: 0,
     longitude: 0,
@@ -36,9 +36,9 @@ export const profileInitialState = {
 };
 
 export const profileActionTypes = {
-  HYDRATE_USER_DATA: "HYDRATE_USER_DATA",
-  SET_PHONE_NUMBER: "SET_PHONE_NUMBER",
-  SET_LOCATION: "SET_LOCATION",
+  HYDRATE_USER_DATA: 'HYDRATE_USER_DATA',
+  SET_PHONE_NUMBER: 'SET_PHONE_NUMBER',
+  SET_LOCATION: 'SET_LOCATION',
 } as const;
 
 export const userFormReducer = (

@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { FirebaseStore } from "../../firebase";
-import { collection, getDocs, query } from "firebase/firestore";
-import { Event, EventsState } from "../types/events.types";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { FirebaseStore } from '../../firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
+import { Event, EventsState } from '../types/events.types';
 
 const initialState: EventsState = {
   events: [],
@@ -9,7 +9,7 @@ const initialState: EventsState = {
 };
 
 const eventsSlice = createSlice({
-  name: "events",
+  name: 'events',
   initialState,
   reducers: {
     setEvent: (state, action) => (state.events = action.payload),
@@ -17,7 +17,7 @@ const eventsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchEvents.pending, (state, action) => {
       state.loading = true;
-      console.log("fetching events...", action.meta.requestStatus);
+      console.log('fetching events...', action.meta.requestStatus);
     }),
       builder.addCase(fetchEvents.rejected, (state, action) => {
         state.loading = false;
@@ -26,14 +26,14 @@ const eventsSlice = createSlice({
       builder.addCase(fetchEvents.fulfilled, (state, action) => {
         state.loading = false;
         state.events = action.payload;
-        console.log("fetched events", action.meta.requestStatus);
+        console.log('fetched events', action.meta.requestStatus);
       });
   },
 });
 
-export const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
+export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
   try {
-    const eventsCollection = query(collection(FirebaseStore, "events"));
+    const eventsCollection = query(collection(FirebaseStore, 'events'));
     const eventsSnapshot = await getDocs(eventsCollection);
 
     const events = eventsSnapshot.docs.map((doc) => ({

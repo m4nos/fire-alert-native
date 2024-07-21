@@ -1,8 +1,8 @@
-import { StyleSheet, View } from "react-native";
-import React, { useEffect, useRef } from "react";
-import MapView, { Marker } from "react-native-maps";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { fetchMarkers } from "@store/slices/map.slice";
+import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import MapView, { Marker } from 'react-native-maps';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { fetchMarkers } from '@store/slices/map.slice';
 
 const map = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ const map = () => {
         }}
         mapType="terrain"
         ref={mapRef}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: '100%', height: '100%' }}
       >
         {!!markers.length &&
           markers.map((marker, index) => (

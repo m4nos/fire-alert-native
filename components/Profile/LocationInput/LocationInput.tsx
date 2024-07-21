@@ -1,10 +1,10 @@
-import { Button, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import * as Location from "expo-location";
-import { profileActionTypes } from "../profile.reducer";
-import { LocationInputProps } from "./types";
-import { ReadableLocation } from "@services/useReverseGeocoding/types";
-import getReverseGeolocation from "@services/useReverseGeocoding";
+import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import * as Location from 'expo-location';
+import { profileActionTypes } from '../profile.reducer';
+import { LocationInputProps } from './types';
+import { ReadableLocation } from '@services/useReverseGeocoding/types';
+import getReverseGeolocation from '@services/useReverseGeocoding';
 
 const LocationInput = ({ value, dispatch }: LocationInputProps) => {
   const [readableLocation, setReadableLocation] = useState<ReadableLocation>();
@@ -26,8 +26,8 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
   const handleLocationAccess = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        return alert("Permission to access location was denied");
+      if (status !== 'granted') {
+        return alert('Permission to access location was denied');
       }
 
       let location = await Location.getCurrentPositionAsync();

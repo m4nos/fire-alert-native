@@ -3,11 +3,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-} from "react-native";
-import React from "react";
-import Colors from "constants/Colors";
-import { CustomButtonProps } from "./types";
+} from 'react-native';
+import React from 'react';
+import Colors from 'constants/Colors';
+import { CustomButtonProps } from './types';
 
 const CustomButton = ({ handlePress, text, loading }: CustomButtonProps) => {
   return (
@@ -34,11 +33,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.accent,
   },
   buttonText: {
-    margin: "auto",
+    margin: 'auto',
     color: Colors.light.secondary,
   },
   activityIndicator: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     left: 40,
   },
