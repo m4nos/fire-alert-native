@@ -1,12 +1,6 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
 import { TextInput } from "react-native-gesture-handler";
-import { FirebaseAuth, FirebaseStore } from "../../firebase";
 import { router } from "expo-router";
 import Colors from "../../constants/Colors";
 import CustomButton from "@components/Button";

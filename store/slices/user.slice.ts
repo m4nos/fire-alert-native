@@ -1,10 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
   User,
-} from "firebase/auth";
+} from 'firebase/auth';
 import {
   addDoc,
   collection,
@@ -13,11 +13,11 @@ import {
   query,
   updateDoc,
   where,
-} from "firebase/firestore";
-import { FirebaseAuth, FirebaseStore } from "../../firebase";
-import { AppUser, UserState } from "../types/user.types";
-import { router } from "expo-router";
-import { Alert } from "react-native";
+} from 'firebase/firestore';
+import { FirebaseAuth, FirebaseStore } from '../../firebase';
+import { AppUser, UserState } from '../types/user.types';
+import { router } from 'expo-router';
+import { Alert } from 'react-native';
 
 const initialState: UserState = {
   firebaseUser: null,
@@ -27,23 +27,13 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
-  reducers: {
-    setFirebaseUser: (state, action: PayloadAction<User>) => {
-      state.firebaseUser = action.payload;
-      console.log("user set");
-    },
-    clearUser: (state) => {
-      state.firebaseUser = null;
-      state.appUser = null;
-      console.log("user deleted");
-    },
-    setAppUser: (state, action) => (state.appUser = action.payload),
-    setLoading: (state, action) => (state.loading = action.payload),
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    ///////////
     // LOGIN //
+    ///////////
     builder.addCase(login.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -56,7 +46,9 @@ const userSlice = createSlice({
         state.loading = false;
         state.firebaseUser = action.payload;
       }),
+      ////////////
       // SIGNUP //
+      ////////////
       builder.addCase(signUp.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -68,7 +60,25 @@ const userSlice = createSlice({
       builder.addCase(signUp.fulfilled, (state) => {
         state.loading = false;
       }),
+      ////////////
+      // LOGOUT //
+      ////////////
+      builder.addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as Error;
+      }),
+      builder.addCase(logout.fulfilled, (state) => {
+        state.loading = false;
+        state.appUser = null;
+        state.firebaseUser = null;
+      }),
+      ////////////////////
       // FETCH APP USER //
+      ////////////////////
       builder.addCase(fetchAppUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -81,7 +91,9 @@ const userSlice = createSlice({
         state.loading = false;
         state.appUser = action.payload;
       }),
+      /////////////////////
       // UPDATE APP USER //
+      /////////////////////
       builder.addCase(updateAppUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -102,7 +114,7 @@ interface AuthCredentials {
 }
 
 export const login = createAsyncThunk<User | null, AuthCredentials>(
-  "user/login",
+  'user/login',
   async ({ email, password }) => {
     try {
       const response = await signInWithEmailAndPassword(
@@ -111,9 +123,9 @@ export const login = createAsyncThunk<User | null, AuthCredentials>(
         password
       );
       if (response.user.emailVerified) {
-        router.replace("/(tabs)/profile");
+        router.replace('/(tabs)/profile');
         return response.user.toJSON() as User;
-      } else alert("You need to verify your email first!");
+      } else alert('You need to verify your email first!');
     } catch (error) {
       console.error(error);
     }
@@ -121,8 +133,8 @@ export const login = createAsyncThunk<User | null, AuthCredentials>(
   }
 );
 
-export const signUp = createAsyncThunk<User | null, AuthCredentials>(
-  "user/signUp",
+export const signUp = createAsyncThunk<void, AuthCredentials>(
+  'user/signUp',
   async ({ email, password }) => {
     try {
       const { user } = await createUserWithEmailAndPassword(
@@ -133,7 +145,7 @@ export const signUp = createAsyncThunk<User | null, AuthCredentials>(
         throw new Error(error);
       });
 
-      await addDoc(collection(FirebaseStore, "users"), {
+      await addDoc(collection(FirebaseStore, 'users'), {
         email,
         uid: user.uid,
       }).catch((error) => {
@@ -142,34 +154,41 @@ export const signUp = createAsyncThunk<User | null, AuthCredentials>(
 
       await sendEmailVerification(user, {
         handleCodeInApp: true,
-        url: "https://fire-alert-d86d4.firebaseapp.com",
+        url: 'https://fire-alert-d86d4.firebaseapp.com',
       })
         .then(() => {
-          Alert.alert("email verification sent!");
+          Alert.alert('email verification sent!');
         })
         .catch((error) => {
           throw new Error(error);
         });
 
-      router.push("/(auth)/login");
+      router.push('/(auth)/login');
     } catch (error) {
       console.log(error);
     }
-    return null;
   }
 );
+
+export const logout = createAsyncThunk<void>('user/logout', async () => {
+  try {
+    await FirebaseAuth.signOut();
+    router.replace('/(auth)/login');
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
-  "user/fetchAppUser",
+  'user/fetchAppUser',
   async (uid: string) => {
     try {
       // Perform query to find user document with matching uid
       const userQuery = query(
-        collection(FirebaseStore, "users"),
-        where("uid", "==", uid)
+        collection(FirebaseStore, 'users'),
+        where('uid', '==', uid)
       );
       const querySnapshot = await getDocs(userQuery);
-
-      console.log("fetched");
 
       // Check if any matching documents were found
       if (!querySnapshot.empty) {
@@ -189,13 +208,13 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
 );
 
 export const updateAppUser = createAsyncThunk(
-  "user/updateAppUser",
-  async (profileData: Partial<AppUser>) => {
+  'user/updateAppUser',
+  async (profileData: AppUser) => {
     try {
       // Query Firestore to find the document with the user's email
       const userQuery = query(
-        collection(FirebaseStore, "users"),
-        where("email", "==", profileData.email)
+        collection(FirebaseStore, 'users'),
+        where('email', '==', profileData.email)
       );
       const querySnapshot = await getDocs(userQuery);
 
@@ -203,21 +222,20 @@ export const updateAppUser = createAsyncThunk(
       if (!querySnapshot.empty) {
         // Get the first document (assuming unique email)
         const userDoc = querySnapshot.docs[0];
-        const userDocRef = doc(FirebaseStore, "users", userDoc.id);
+        const userDocRef = doc(FirebaseStore, 'users', userDoc.id);
 
         // Update the existing document with the new user data
         await updateDoc(userDocRef, profileData);
-        console.log("User data updated successfully");
+        console.log('User data updated successfully');
       } else {
-        console.log("No matching document found for the user email");
+        console.log('No matching document found for the user email');
       }
     } catch (error) {
-      console.error("Error updating user data: ", error);
+      console.error('Error updating user data: ', error);
       throw error; // Rethrow the error to handle it in the calling code
     }
   }
 );
 
 export default userSlice.reducer;
-export const { setFirebaseUser, clearUser, setAppUser, setLoading } =
-  userSlice.actions;
+export const {} = userSlice.actions;
