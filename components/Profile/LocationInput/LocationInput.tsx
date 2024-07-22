@@ -19,10 +19,9 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
         setReadableLocation(district);
       }
     };
-    console.log('lol');
 
     fetchReadableLocation();
-  });
+  }, [value.latitude, value.longitude]);
 
   const handleLocationAccess = async () => {
     try {

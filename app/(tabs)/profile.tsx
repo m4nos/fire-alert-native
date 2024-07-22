@@ -39,6 +39,17 @@ const Profile = () => {
     <View style={styles.container}>
       <Text>welcome {profileForm?.email}</Text>
       <TextInput
+        label="User name"
+        value={profileForm.userName}
+        onChangeText={(text) =>
+          reducerDispatch({
+            type: profileActionTypes.SET_USER_NAME,
+            payload: text,
+          })
+        }
+        mode="outlined"
+      />
+      <TextInput
         label="Phone number"
         value={profileForm.phoneNumber}
         keyboardType="number-pad"
@@ -51,6 +62,7 @@ const Profile = () => {
         mode="outlined"
       />
       <LocationInput value={profileForm?.location} dispatch={reducerDispatch} />
+
       <Button
         onPress={() => storeDispatch(updateAppUser(profileForm))}
         loading={loading.updateAppUser}
