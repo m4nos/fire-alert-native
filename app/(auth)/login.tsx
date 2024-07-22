@@ -31,8 +31,8 @@ const Login = () => {
       <Button
         onPress={() => dispatch(login({ email, password }))}
         mode="contained"
-        loading={loading}
-        disabled={loading}
+        loading={loading.login}
+        disabled={loading.login}
       >
         Login
       </Button>

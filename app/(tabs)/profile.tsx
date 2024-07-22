@@ -53,12 +53,16 @@ const Profile = () => {
       <LocationInput value={profileForm?.location} dispatch={reducerDispatch} />
       <Button
         onPress={() => storeDispatch(updateAppUser(profileForm))}
-        loading={loading}
+        loading={loading.updateAppUser}
         mode="contained"
       >
         Save
       </Button>
-      <Button onPress={() => storeDispatch(logout())} mode="outlined">
+      <Button
+        onPress={() => storeDispatch(logout())}
+        loading={loading.logout}
+        mode="outlined"
+      >
         Logout
       </Button>
     </View>

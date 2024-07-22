@@ -11,6 +11,12 @@ export type AppUser = {
 export type UserState = {
   firebaseUser: User | null;
   appUser: AppUser | null;
-  loading: boolean;
+  loading: {
+    login: boolean;
+    signUp: boolean;
+    logout: boolean;
+    fetchAppUser: boolean;
+    updateAppUser: boolean;
+  };
   error: Error | null;
 };

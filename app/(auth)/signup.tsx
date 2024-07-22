@@ -43,8 +43,8 @@ const Signup = () => {
       <Button
         onPress={() => dispatch(signUp({ email, password }))}
         mode="contained"
-        loading={loading}
-        disabled={loading}
+        loading={loading.signUp}
+        disabled={loading.signUp}
       >
         Sign up
       </Button>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { profileActionTypes } from '../profile.reducer';
@@ -29,7 +29,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       console.log(status);
       if (status !== 'granted') {
-        return alert('Permission to access location was denied');
+        return Alert.alert('Permission to access location was denied');
       }
 
       let location = await Location.getCurrentPositionAsync();
