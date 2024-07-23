@@ -11,6 +11,7 @@ export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
     const events = eventsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
+      date: String(new Date(doc.data().date.seconds)),
     })) as Event[];
 
     return events;

@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import { fetchMarkers } from '@store/map/map.thunk';
 
-const map = () => {
+const Map = () => {
   const dispatch = useAppDispatch();
 
   const mapRef = useRef(null);
@@ -43,6 +43,6 @@ const map = () => {
   );
 };
 
-export default map;
+export default Map;
 
 const styles = StyleSheet.create({});

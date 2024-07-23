@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { MD3LightTheme } from 'react-native-paper';
 
 const TabBarIcon = (props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -15,6 +16,7 @@ const TabsLayout = () => {
         options={{
           title: 'Profile',
           headerShown: false,
+          tabBarActiveTintColor: MD3LightTheme.colors.primary,
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
@@ -23,6 +25,7 @@ const TabsLayout = () => {
         options={{
           title: 'Map',
           headerShown: false,
+          tabBarActiveTintColor: MD3LightTheme.colors.primary,
           tabBarIcon: ({ color }) => <TabBarIcon name="fire" color={color} />,
         }}
       />
@@ -31,6 +34,7 @@ const TabsLayout = () => {
         options={{
           title: 'Events',
           headerShown: false,
+          tabBarActiveTintColor: MD3LightTheme.colors.primary,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),

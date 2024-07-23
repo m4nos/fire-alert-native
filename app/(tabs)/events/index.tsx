@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import EventListItem from '@components/Events/EventListItem/EventListItem';
@@ -13,16 +13,25 @@ const Events = () => {
 
   const { events } = useAppSelector((state) => state.events);
 
+  console.log(events[0]);
+
   return (
-    events && (
-      <FlatList
-        data={events}
-        renderItem={({ item }) => <EventListItem event={item} />}
-      />
-    )
+    <View style={styles.container}>
+      {events && (
+        <FlatList
+          data={events}
+          renderItem={({ item }) => <EventListItem event={item} />}
+        />
+      )}
+    </View>
   );
 };
 
 export default Events;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    paddingTop: 50,
+  },
+});
