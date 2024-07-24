@@ -107,6 +107,7 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
         const userDoc = querySnapshot.docs[0];
         // Extract user data from document
         const userData = userDoc.data() as AppUser;
+        console.log('user fetched!');
         return userData;
       } else {
         // No matching user found
@@ -137,7 +138,8 @@ export const updateAppUser = createAsyncThunk(
 
         // Update the existing document with the new user data
         await updateDoc(userDocRef, profileData);
-        console.log('User data updated successfully');
+        Alert.alert('User data updated successfully!');
+        console.log('User data updated successfully!');
       } else {
         console.log('No matching document found for the user email');
       }

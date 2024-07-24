@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, View } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import EventListItem from '@components/Events/EventListItem/EventListItem';
 import { fetchEvents } from '@store/events/events.thunk';
@@ -13,13 +13,26 @@ const Events = () => {
 
   const { events } = useAppSelector((state) => state.events);
 
-  console.log(events[0]);
+  // sort emergencies on top
+  const sortedEvents = useMemo(() => {
+    return events
+      ? [...events].sort((a, b) => {
+          if (a.type === 'EMERGENCY' && b.type !== 'EMERGENCY') {
+            return -1;
+          }
+          if (a.type !== 'EMERGENCY' && b.type === 'EMERGENCY') {
+            return 1;
+          }
+          return 0;
+        })
+      : [];
+  }, [events]);
 
   return (
     <View style={styles.container}>
       {events && (
         <FlatList
-          data={events}
+          data={sortedEvents}
           renderItem={({ item }) => <EventListItem event={item} />}
         />
       )}
