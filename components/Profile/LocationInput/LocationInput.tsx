@@ -1,32 +1,35 @@
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-import { profileActionTypes } from '../profile.reducer';
-import { LocationInputProps } from './types';
 import getReverseGeolocation from '@services/useReverseGeocoding';
-import { IconButton, TextInput } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
+import { useFormikContext } from 'formik';
+import { UserProfileFields } from '../ProfileInfo/types';
 
-const LocationInput = ({ value, dispatch }: LocationInputProps) => {
+const LocationInput = () => {
+  const { setFieldValue, values } = useFormikContext<UserProfileFields>();
+  const { latitude, longitude } = values.location;
+
   const [readableLocation, setReadableLocation] = useState<string>();
+  console.log(readableLocation);
 
   useEffect(() => {
     const fetchReadableLocation = async () => {
-      if (value.latitude !== 0 && value.longitude !== 0) {
+      if (latitude !== 0 && longitude !== 0) {
         const district = await getReverseGeolocation({
-          latitude: value.latitude,
-          longitude: value.longitude,
+          latitude,
+          longitude,
         });
         setReadableLocation(district);
       }
     };
 
     fetchReadableLocation();
-  }, [value.latitude, value.longitude]);
+  }, [latitude, longitude]);
 
   const handleLocationAccess = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log(status);
       if (status !== 'granted') {
         return Alert.alert('Permission to access location was denied');
       }
@@ -34,10 +37,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
       let location = await Location.getCurrentPositionAsync();
       const { latitude, longitude } = location.coords;
 
-      dispatch({
-        type: profileActionTypes.SET_LOCATION,
-        payload: { latitude, longitude },
-      });
+      setFieldValue('location', { latitude, longitude });
     } catch (error) {
       console.error(error);
     }
@@ -45,7 +45,7 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
 
   return (
     <View>
-      {value.latitude !== 0 ? (
+      {latitude !== 0 ? (
         <TextInput
           label="Location"
           value={readableLocation}
@@ -57,10 +57,14 @@ const LocationInput = ({ value, dispatch }: LocationInputProps) => {
           }
         />
       ) : (
-        <View style={styles.container}>
-          <Text>Location</Text>
-          <IconButton icon="target" onPress={handleLocationAccess} />
-        </View>
+        <TextInput
+          disabled
+          placeholder="give access to location"
+          mode="outlined"
+          right={
+            <TextInput.Icon icon="target" onPress={handleLocationAccess} />
+          }
+        />
       )}
     </View>
   );
