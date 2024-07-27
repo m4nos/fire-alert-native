@@ -59,7 +59,7 @@ const LocationInput = () => {
       ) : (
         <TextInput
           disabled
-          placeholder="give access to location"
+          placeholder="Grant access to location"
           mode="outlined"
           right={
             <TextInput.Icon icon="target" onPress={handleLocationAccess} />

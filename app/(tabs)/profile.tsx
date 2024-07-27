@@ -51,7 +51,7 @@ const Profile = () => {
       onSubmit={handleSubmit}
       enableReinitialize
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, isValid }) => (
         <View style={styles.container}>
           <Text>welcome {initialValues.email}</Text>
           <SegmentedButtons
@@ -64,9 +64,10 @@ const Profile = () => {
           />
           {segmentation === 'profile' ? <ProfileInfo /> : <EquipmentInfo />}
           <Button
-            onPress={() => handleSubmit}
+            onPress={() => handleSubmit()}
             loading={loading.updateAppUser}
             mode="contained"
+            disabled={!isValid}
           >
             Save
           </Button>

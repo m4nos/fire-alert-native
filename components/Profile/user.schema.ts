@@ -1,14 +1,20 @@
 import * as z from 'zod';
 import { UserProfileFields } from './ProfileInfo/types';
 
+const equipmentSchema = z.object({
+  car: z.string().optional(),
+});
+
 export const profileValidationSchema = z.object({
   userName: z.string().min(1, 'Username is required'),
-  phoneNumber: z.string().min(1, 'Phone number is required'),
+  phoneNumber: z
+    .string()
+    .length(10, 'Phone number must be exactly 10 characters long'),
   location: z.object({
-    latitude: z.string(),
-    longitude: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
   }),
-  equipment: z.string().optional(),
+  equipment: equipmentSchema,
 });
 
 export const initialValues: UserProfileFields = {

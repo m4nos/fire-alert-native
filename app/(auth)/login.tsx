@@ -39,6 +39,7 @@ const Login = () => {
         values,
         errors,
         touched,
+        isValid,
       }) => (
         <View style={styles.container}>
           <TextInput
@@ -72,7 +73,7 @@ const Login = () => {
             onPress={() => handleSubmit()}
             mode="contained"
             loading={loading.login}
-            disabled={loading.login}
+            disabled={loading.login || !isValid}
           >
             Login
           </Button>
@@ -91,12 +92,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     display: 'flex',
+    gap: 25,
   },
   input: {},
   errorText: {
     color: 'red',
     fontSize: 12,
-    marginBottom: 10,
+    top: -16,
+    marginBottom: -37,
   },
 });
 
