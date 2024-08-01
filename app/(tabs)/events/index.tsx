@@ -3,6 +3,8 @@ import React, { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import EventListItem from '@components/Events/EventListItem/EventListItem';
 import { fetchEvents } from '@store/events/events.thunk';
+import { FAB } from 'react-native-paper';
+import { router } from 'expo-router';
 
 const Events = () => {
   const dispatch = useAppDispatch();
@@ -12,7 +14,7 @@ const Events = () => {
   }, []);
 
   const { events } = useAppSelector((state) => state.events);
-
+  const { appUser } = useAppSelector((state) => state.user);
   // sort emergencies on top
   const sortedEvents = useMemo(() => {
     return events
@@ -28,12 +30,21 @@ const Events = () => {
       : [];
   }, [events]);
 
+  console.log(appUser);
+
   return (
     <View style={styles.container}>
       {events && (
         <FlatList
           data={sortedEvents}
           renderItem={({ item }) => <EventListItem event={item} />}
+        />
+      )}
+      {appUser?.isAdmin && (
+        <FAB
+          icon="plus"
+          style={styles.FAB}
+          onPress={() => router.push('/events/new-event')}
         />
       )}
     </View>
@@ -46,5 +57,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingTop: 50,
+  },
+  FAB: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    margin: 16,
   },
 });

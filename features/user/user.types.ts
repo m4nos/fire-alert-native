@@ -6,6 +6,7 @@ export type AppUser = {
   phoneNumber: string;
   email: string;
   location: Coordinates;
+  isAdmin?: boolean;
   [key: string]: any; // Add index signature to accommodate dynamic keys
 };
 

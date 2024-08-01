@@ -1,3 +1,5 @@
+import { Coordinates } from '@store/map/map.types';
+
 export const EventType = {
   TRAINING: 'TRAINING',
   EMERGENCY: 'EMERGENCY',
@@ -8,14 +10,16 @@ export type Event = {
   type: keyof typeof EventType;
   date: string;
   participants: number;
-  latitude: string;
-  longitude: string;
+  location: Coordinates;
   province: string;
   description: string;
 };
 
 export type EventsState = {
   events: Event[];
-  loading: boolean;
+  loading: {
+    fetchingEvents: boolean;
+    addingEvent: boolean;
+  };
   error?: Error;
 };
