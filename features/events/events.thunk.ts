@@ -1,6 +1,6 @@
 import { NewTrainingFormFields } from '@components/Events/NewTrainingForm/schema';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Event } from '@store/events/events.types';
+import { Event, EventType } from '@store/events/events.types';
 import { FirebaseStore } from 'firebase';
 import { addDoc, collection, getDocs, query } from 'firebase/firestore';
 
@@ -21,14 +21,19 @@ export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
   }
 });
 
-export const addEvent = createAsyncThunk(
-  'events/addEvent',
-  async (event: NewTrainingFormFields, { rejectWithValue }) => {
+export const createEvent = createAsyncThunk(
+  'events/createEvent',
+  async (
+    event: NewTrainingFormFields & {
+      organizer?: string;
+      type: keyof typeof EventType;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const docRef = await addDoc(collection(FirebaseStore, 'events'), event);
       return { ...event, id: docRef.id };
     } catch (error: any) {
-      console.error('Error adding document: ', error);
       return rejectWithValue(error.message);
     }
   }

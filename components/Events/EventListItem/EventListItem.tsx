@@ -9,27 +9,29 @@ const EventListItem = ({ event }: { event: Event }) => {
   return (
     <Link href={`/events/${event.id}`} asChild>
       <TouchableOpacity>
-        <Card.Title
-          title={`${event.type[0] + event.type.slice(1).toLowerCase()} at ${
-            event.province
-          }`}
-          subtitle={event.date}
-          left={() =>
-            event.type === EventType.TRAINING ? (
-              <FontAwesome
-                name="fire-extinguisher"
-                size={24}
-                color={MD3LightTheme.colors.primary}
-              />
-            ) : (
-              <MaterialCommunityIcons
-                name="fire-alert"
-                size={24}
-                color={MD3LightTheme.colors.error}
-              />
-            )
-          }
-        />
+        <Card>
+          <Card.Title
+            title={`${
+              event?.type?.[0] + event?.type?.slice(1).toLowerCase()
+            } at ${event?.province}`}
+            subtitle={event?.date}
+            left={() =>
+              event?.type === EventType.TRAINING ? (
+                <FontAwesome
+                  name="fire-extinguisher"
+                  size={24}
+                  color={MD3LightTheme.colors.primary}
+                />
+              ) : (
+                <MaterialCommunityIcons
+                  name="fire-alert"
+                  size={24}
+                  color={MD3LightTheme.colors.error}
+                />
+              )
+            }
+          />
+        </Card>
       </TouchableOpacity>
     </Link>
   );

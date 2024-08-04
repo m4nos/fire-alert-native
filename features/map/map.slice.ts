@@ -16,6 +16,7 @@ const mapSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchMarkers.pending, (state) => {
       state.loading = true;
+      console.log('fetching markers...');
     }),
       builder.addCase(fetchMarkers.rejected, (state, action) => {
         state.loading = false;
@@ -24,6 +25,7 @@ const mapSlice = createSlice({
       builder.addCase(fetchMarkers.fulfilled, (state, action) => {
         state.loading = false;
         state.markers = action.payload;
+        console.log('markers fetched!');
       });
   },
 });

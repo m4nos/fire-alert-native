@@ -32,6 +32,7 @@ const userSlice = createSlice({
     builder.addCase(login.pending, (state) => {
       state.loading.login = true;
       state.error = null;
+      console.log('logging in...');
     }),
       builder.addCase(login.rejected, (state, action) => {
         state.loading.login = false;
@@ -40,6 +41,7 @@ const userSlice = createSlice({
       builder.addCase(login.fulfilled, (state, action) => {
         state.loading.login = false;
         state.firebaseUser = action.payload;
+        console.log('logged in!');
       }),
       ////////////
       // SIGNUP //
@@ -47,6 +49,7 @@ const userSlice = createSlice({
       builder.addCase(signUp.pending, (state) => {
         state.loading.signUp = true;
         state.error = null;
+        console.log('signing up...');
       }),
       builder.addCase(signUp.rejected, (state, action) => {
         state.loading.signUp = false;
@@ -54,6 +57,7 @@ const userSlice = createSlice({
       }),
       builder.addCase(signUp.fulfilled, (state) => {
         state.loading.signUp = false;
+        console.log('signed up!');
       }),
       ////////////
       // LOGOUT //
@@ -61,6 +65,7 @@ const userSlice = createSlice({
       builder.addCase(logout.pending, (state) => {
         state.loading.logout = true;
         state.error = null;
+        console.log('logging out...');
       }),
       builder.addCase(logout.rejected, (state, action) => {
         state.loading.logout = false;
@@ -70,6 +75,7 @@ const userSlice = createSlice({
         state.loading.logout = false;
         state.appUser = null;
         state.firebaseUser = null;
+        console.log('logged out!');
       }),
       ////////////////////
       // FETCH APP USER //
@@ -77,6 +83,7 @@ const userSlice = createSlice({
       builder.addCase(fetchAppUser.pending, (state) => {
         state.loading.fetchAppUser = true;
         state.error = null;
+        console.log('fetching user...');
       }),
       builder.addCase(fetchAppUser.rejected, (state, action) => {
         state.loading.fetchAppUser = false;
@@ -85,6 +92,7 @@ const userSlice = createSlice({
       builder.addCase(fetchAppUser.fulfilled, (state, action) => {
         state.loading.fetchAppUser = false;
         state.appUser = action.payload;
+        console.log('user fetched!');
       }),
       /////////////////////
       // UPDATE APP USER //
@@ -92,6 +100,7 @@ const userSlice = createSlice({
       builder.addCase(updateAppUser.pending, (state) => {
         state.loading.updateAppUser = true;
         state.error = null;
+        console.log('updating user...');
       }),
       builder.addCase(updateAppUser.rejected, (state, action) => {
         state.loading.updateAppUser = false;
@@ -99,6 +108,7 @@ const userSlice = createSlice({
       }),
       builder.addCase(updateAppUser.fulfilled, (state) => {
         state.loading.updateAppUser = false;
+        console.log('user updated!');
       });
   },
 });

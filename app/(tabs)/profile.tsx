@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from 'features/hooks';
 import { fetchAppUser, logout, updateAppUser } from '@store/user/user.thunk';
 import { Button, SegmentedButtons } from 'react-native-paper';
@@ -41,7 +41,14 @@ const Profile = () => {
   }, [firebaseUser, appUser]);
 
   const handleSubmit = async (values: UserProfileFields) => {
-    await storeDispatch(updateAppUser(values));
+    await storeDispatch(updateAppUser(values))
+      .unwrap()
+      .then(() => {
+        Alert.alert('User data updated successfully!');
+      })
+      .catch((err) => {
+        Alert.alert(`Error: ${err}`);
+      });
   };
 
   return (

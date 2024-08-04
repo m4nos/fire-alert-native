@@ -11,7 +11,6 @@ const LocationInput = () => {
   const { latitude, longitude } = values.location;
 
   const [readableLocation, setReadableLocation] = useState<string>();
-  console.log(readableLocation);
 
   useEffect(() => {
     const fetchReadableLocation = async () => {

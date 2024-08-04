@@ -3,12 +3,13 @@ import React from 'react';
 import { Button, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { addEvent } from '@store/events/events.thunk';
-import { NewTrainingFormFields } from './schema';
+import { createEvent } from '@store/events/events.thunk';
+import { EventType } from '@store/events/events.types';
 
 const initialValues = {
   description: '',
   date: '',
+  type: EventType.TRAINING,
   location: {
     latitude: 0,
     longitude: 0,
@@ -20,8 +21,8 @@ const NewTrainingForm = () => {
   const { firebaseUser } = useAppSelector((state) => state.user);
   const { addingEvent } = useAppSelector((state) => state.events.loading);
 
-  const handleSubmit = async (values: NewTrainingFormFields) =>
-    await dispatch(addEvent({ ...values, organizer: firebaseUser?.uid }));
+  const handleSubmit = async (values: typeof initialValues) =>
+    await dispatch(createEvent({ ...values, organizer: firebaseUser?.uid }));
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>

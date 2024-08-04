@@ -29,12 +29,11 @@ const Events = () => {
         })
       : [];
   }, [events]);
-
-  console.log(appUser);
+  console.log(events.length);
 
   return (
     <View style={styles.container}>
-      {events && (
+      {!!events.length && (
         <FlatList
           data={sortedEvents}
           renderItem={({ item }) => <EventListItem event={item} />}

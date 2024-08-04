@@ -107,7 +107,6 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
         const userDoc = querySnapshot.docs[0];
         // Extract user data from document
         const userData = userDoc.data() as AppUser;
-        console.log('user fetched!');
         return userData;
       } else {
         // No matching user found
@@ -121,7 +120,7 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
 
 export const updateAppUser = createAsyncThunk(
   'user/updateAppUser',
-  async (profileData: AppUser) => {
+  async (profileData: AppUser, { rejectWithValue }) => {
     try {
       // Query Firestore to find the document with the user's email
       const userQuery = query(
@@ -132,20 +131,19 @@ export const updateAppUser = createAsyncThunk(
 
       // Check if any documents match the query
       if (!querySnapshot.empty) {
-        // Get the first document (assuming unique email)
+        // Get the first document
         const userDoc = querySnapshot.docs[0];
         const userDocRef = doc(FirebaseStore, 'users', userDoc.id);
 
         // Update the existing document with the new user data
         await updateDoc(userDocRef, profileData);
-        Alert.alert('User data updated successfully!');
-        console.log('User data updated successfully!');
+        return profileData;
       } else {
-        console.log('No matching document found for the user email');
+        return rejectWithValue('No matching document found for the user email');
       }
     } catch (error) {
       console.error('Error updating user data: ', error);
-      throw error; // Rethrow the error to handle it in the calling code
+      return rejectWithValue('An error occurred while updating user data');
     }
   }
 );
