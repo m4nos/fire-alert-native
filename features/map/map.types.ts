@@ -7,6 +7,7 @@ export type Marker = {
   id: string;
   latitude: string;
   longitude: string;
+  timestamp: number;
 };
 
 export type MapState = {

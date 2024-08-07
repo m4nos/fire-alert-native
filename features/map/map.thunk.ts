@@ -11,6 +11,7 @@ export const fetchMarkers = createAsyncThunk('map/fetchMarkers', async () => {
     const markers = markersSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
+      timestamp: doc.data().timestamp.seconds,
     })) as Marker[];
 
     return markers;
