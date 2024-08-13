@@ -12,7 +12,7 @@ const EventListItem = ({ event }: { event: Event }) => {
         <Card.Title
           title={`${
             event?.type?.[0] + event?.type?.slice(1).toLowerCase()
-          } at ${event?.province}`}
+          } at ${event?.location?.province}`}
           subtitle={event?.date}
           style={styles.card}
           left={() =>
@@ -38,7 +38,7 @@ const EventListItem = ({ event }: { event: Event }) => {
 
 const styles = StyleSheet.create({
   card: {
-    overflow: 'visible',
+    width: '55%',
   },
 });
 

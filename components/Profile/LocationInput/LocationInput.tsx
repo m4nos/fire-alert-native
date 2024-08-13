@@ -15,11 +15,11 @@ const LocationInput = () => {
   useEffect(() => {
     const fetchReadableLocation = async () => {
       if (latitude !== 0 && longitude !== 0) {
-        const district = await getReverseGeolocation({
+        const { state_district } = await getReverseGeolocation({
           latitude,
           longitude,
         });
-        setReadableLocation(district);
+        setReadableLocation(state_district);
       }
     };
 

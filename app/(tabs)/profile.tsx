@@ -81,6 +81,7 @@ const Profile = () => {
           <Button
             onPress={() => storeDispatch(logout())}
             loading={loading.logout}
+            disabled={loading.logout}
             mode="outlined"
           >
             Logout

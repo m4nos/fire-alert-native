@@ -30,7 +30,7 @@ export default CreateEvent;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 30,
+    flex: 1,
   },
   segmentedButtons: {},
 });

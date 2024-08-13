@@ -13,6 +13,7 @@ export const fetchEvents = createAsyncThunk('events/fetchEvents', async () => {
       id: doc.id,
       ...doc.data(),
       date: String(new Date(doc.data().date.seconds)),
+      time: String(new Date(doc.data().time.seconds)),
     })) as Event[];
 
     return events;
@@ -32,7 +33,13 @@ export const createEvent = createAsyncThunk(
   ) => {
     try {
       const docRef = await addDoc(collection(FirebaseStore, 'events'), event);
-      return { ...event, id: docRef.id };
+      console.log();
+      return {
+        ...event,
+        id: docRef.id,
+        date: String(event.date),
+        time: String(event.time),
+      };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

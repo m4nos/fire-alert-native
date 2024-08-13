@@ -12,8 +12,7 @@ export const getReverseGeolocation = async ({
     if (response.ok) {
       const data = await response.json();
       const { address } = data;
-      const district: string = address.state_district || address.state;
-      return district;
+      return address;
     }
     throw new Error('No results found');
   } catch (error) {

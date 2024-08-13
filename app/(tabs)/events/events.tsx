@@ -14,7 +14,11 @@ export const Events = () => {
   }, []);
 
   const { events } = useAppSelector((state) => state.events);
+  const { fetchingEvents } = useAppSelector((state) => state.events.loading);
   const { appUser } = useAppSelector((state) => state.user);
+
+  console.log('events', events);
+
   // sort emergencies on top
   const sortedEvents = useMemo(() => {
     return events
@@ -36,9 +40,11 @@ export const Events = () => {
         <FlatList
           data={sortedEvents}
           renderItem={({ item }) => <EventListItem event={item} />}
+          onRefresh={() => dispatch(fetchEvents())}
+          refreshing={fetchingEvents}
         />
       )}
-      {appUser?.isAdmin && (
+      {appUser?.isAdmin && !fetchingEvents && (
         <FAB
           icon="plus"
           style={styles.FAB}
