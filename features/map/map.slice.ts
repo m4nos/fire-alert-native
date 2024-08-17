@@ -8,7 +8,7 @@ const initialState: MapState = {
 };
 
 const mapSlice = createSlice({
-  name: 'map',
+  name: 'mapSlice',
   initialState,
   reducers: {
     setMarker: (state, action) => (state.markers = action.payload),

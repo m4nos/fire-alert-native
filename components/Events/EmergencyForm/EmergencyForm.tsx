@@ -1,14 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-const NewEmergencyForm = () => {
+export const EmergencyForm = () => {
   return (
     <View>
-      <Text>NewEmergencyForm</Text>
+      <Text>EmergencyForm</Text>
     </View>
   );
 };
-
-export default NewEmergencyForm;
 
 const styles = StyleSheet.create({});

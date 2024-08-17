@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { SegmentedButtons } from 'react-native-paper';
-import NewTrainingForm from '@components/Events/NewTrainingForm/NewTrainingForm';
-import NewEmergencyForm from '@components/Events/NewEmergencyForm';
+import TrainingForm from '@components/Events/TrainingForm';
+import EmergencyForm from '@components/Events/EmergencyForm';
 
 const CreateEvent = () => {
   const [segmentation, setSegmentation] = useState('training');
@@ -21,7 +21,7 @@ const CreateEvent = () => {
         ]}
         style={styles.segmentedButtons}
       />
-      {segmentation === 'training' ? <NewTrainingForm /> : <NewEmergencyForm />}
+      {segmentation === 'training' ? <TrainingForm /> : <EmergencyForm />}
     </View>
   );
 };

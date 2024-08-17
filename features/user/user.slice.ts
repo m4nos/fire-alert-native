@@ -22,7 +22,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'userSlice',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

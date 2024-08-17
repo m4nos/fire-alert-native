@@ -17,8 +17,6 @@ export const Events = () => {
   const { fetchingEvents } = useAppSelector((state) => state.events.loading);
   const { appUser } = useAppSelector((state) => state.user);
 
-  console.log('events', events);
-
   // sort emergencies on top
   const sortedEvents = useMemo(() => {
     return events
@@ -57,13 +55,14 @@ export const Events = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingRight: 20,
+    paddingLeft: 20,
     paddingTop: 50,
   },
   FAB: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    margin: 16,
+    margin: 0,
   },
 });

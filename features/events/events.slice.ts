@@ -1,17 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { EventsState } from './events.types';
-import { createEvent, fetchEvents } from '@store/events/events.thunk';
+import {
+  createEvent,
+  deleteEvent,
+  editEvent,
+  fetchEvents,
+} from '@store/events/events.thunk';
 
 const initialState: EventsState = {
   events: [],
   loading: {
     addingEvent: false,
     fetchingEvents: false,
+    editingEvent: false,
+    deletingEvent: false,
   },
 };
 
 const eventsSlice = createSlice({
-  name: 'events',
+  name: 'eventsSlice',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -46,6 +53,38 @@ const eventsSlice = createSlice({
         state.loading.addingEvent = false;
         state.events.push(action.payload);
         console.log('event added!', action.meta.requestStatus);
+      }),
+      ////////////////
+      // EDIT EVENT //
+      ////////////////
+      builder.addCase(editEvent.pending, (state, action) => {
+        state.loading.editingEvent = true;
+        console.log('editing event...', action.meta.requestStatus);
+      }),
+      builder.addCase(editEvent.rejected, (state, action) => {
+        state.loading.editingEvent = false;
+        state.error = action.payload as Error;
+      }),
+      builder.addCase(editEvent.fulfilled, (state, action) => {
+        state.loading.editingEvent = false;
+        // state.events = action.payload;
+        console.log('fetched events', action.meta.requestStatus);
+      }),
+      //////////////////
+      // DELETE EVENT //
+      //////////////////
+      builder.addCase(deleteEvent.pending, (state, action) => {
+        state.loading.fetchingEvents = true;
+        console.log('fetching events...', action.meta.requestStatus);
+      }),
+      builder.addCase(deleteEvent.rejected, (state, action) => {
+        state.loading.fetchingEvents = false;
+        state.error = action.payload as Error;
+      }),
+      builder.addCase(deleteEvent.fulfilled, (state, action) => {
+        state.loading.fetchingEvents = false;
+        // state.events = action.payload;
+        console.log('fetched events', action.meta.requestStatus);
       });
   },
 });

@@ -3,27 +3,28 @@ import React, { useState } from 'react';
 import { Button, SegmentedButtons, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { createEvent } from '@store/events/events.thunk';
-import { EventType } from '@store/events/events.types';
+import { createEvent, editEvent } from '@store/events/events.thunk';
 import MapView, { Marker } from 'react-native-maps';
 import getReverseGeolocation from '@services/useReverseGeocoding';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { ScrollView } from 'react-native-gesture-handler';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { z } from 'zod';
+import { EventType } from '@store/events/events.types';
 
 const initialValues = {
+  id: '',
   description: '',
-  date: new Date(),
-  time: new Date(),
-  type: EventType.TRAINING,
+  date: NaN,
+  time: NaN,
   location: {
     latitude: NaN,
     longitude: NaN,
     province: '',
     municipality: '',
   },
+  type: EventType.TRAINING,
 };
 
 const newTrainingFormValidationSchema = z.object({
@@ -33,18 +34,56 @@ const newTrainingFormValidationSchema = z.object({
     latitude: z.number(),
     longitude: z.number(),
   }),
+  date: z.number({
+    required_error: 'Date is required',
+  }),
+  time: z.number({
+    required_error: 'Time is required',
+  }),
 });
 
-const NewTrainingForm = () => {
+type TrainingFormProps = {
+  eventId?: string;
+};
+
+export const TrainingForm = (props: TrainingFormProps) => {
   const dispatch = useAppDispatch();
   const { firebaseUser } = useAppSelector((state) => state.user);
   const { addingEvent } = useAppSelector((state) => state.events.loading);
 
+  const { events } = useAppSelector((state) => state.events);
+
+  const eventToEdit = events.find((event) => event.id === props.eventId);
+
+  const transformedEventToEdit = {
+    ...eventToEdit,
+    date: eventToEdit?.timestamp,
+    time: eventToEdit?.timestamp,
+  };
+
   const [showDateSelection, setShowDateSelection] = useState(false);
   const [showTimeSelection, setShowTimeSelection] = useState(false);
 
-  const handleSubmit = async (values: typeof initialValues) =>
-    await dispatch(createEvent({ ...values, organizer: firebaseUser?.uid }));
+  const handleSubmit = async (values: typeof initialValues) => {
+    const { date, time, ...restValues } = values;
+
+    const combinedDateTime = set(values.date, {
+      hours: new Date(time).getHours(),
+      minutes: new Date(time).getMinutes(),
+    });
+    const timestamp = combinedDateTime.getTime();
+
+    if (eventToEdit)
+      return await dispatch(editEvent({ ...restValues, timestamp }));
+
+    return await dispatch(
+      createEvent({
+        ...restValues,
+        timestamp,
+        organizer: firebaseUser?.uid,
+      })
+    );
+  };
 
   const handleMapPress = async (e: any, setFieldValue: any) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
@@ -73,7 +112,7 @@ const NewTrainingForm = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={eventToEdit ? transformedEventToEdit : initialValues}
       onSubmit={handleSubmit}
       validationSchema={toFormikValidationSchema(
         newTrainingFormValidationSchema
@@ -91,6 +130,7 @@ const NewTrainingForm = () => {
         <SafeAreaView>
           <ScrollView style={styles.container}>
             <View style={styles.flexForm}>
+              {/* <>{console.log(values)}</> */}
               <TextInput
                 value={values.description}
                 onChangeText={handleChange('description')}
@@ -113,14 +153,14 @@ const NewTrainingForm = () => {
                 onPress={(e) => handleMapPress(e, setFieldValue)}
                 zoomControlEnabled
               >
-                {!!values.location.latitude && (
+                {!!values.location?.latitude && (
                   <Marker
                     coordinate={values.location}
                     title="Selected Location"
                   />
                 )}
               </MapView>
-              {!!values.location.latitude && (
+              {!!values.location?.latitude && (
                 <Text>
                   Selected Location: {values.location.municipality},
                   {values.location.province}
@@ -145,33 +185,31 @@ const NewTrainingForm = () => {
                 ]}
                 // style={styles.segmentedButtons}
               />
-              <Text style={styles.date}>
-                Selected date: {`${format(values.date, 'dd/MM/yy')}`}
-              </Text>
-              <Text style={styles.time}>
-                Selected time: {`${format(values.time, 'HH:mm')}`}
-              </Text>
+              {!!values.date && (
+                <Text style={styles.date}>
+                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
+                </Text>
+              )}
+              {!!values.time && (
+                <Text style={styles.time}>
+                  Selected time: {`${format(values.time, 'HH:mm')}`}
+                </Text>
+              )}
               {showDateSelection && (
                 <RNDateTimePicker
-                  value={values.date || new Date()}
+                  value={values.date ? new Date(values.date) : new Date()}
                   onChange={(newDate) => {
                     setShowDateSelection(false);
-                    setFieldValue(
-                      'date',
-                      new Date(newDate.nativeEvent.timestamp)
-                    );
+                    setFieldValue('date', newDate.nativeEvent.timestamp);
                   }}
                 />
               )}
               {showTimeSelection && (
                 <RNDateTimePicker
-                  value={values.time}
+                  value={values.time ? new Date(values.time) : new Date()}
                   onChange={(newDate) => {
                     setShowTimeSelection(false);
-                    setFieldValue(
-                      'time',
-                      new Date(newDate.nativeEvent.timestamp)
-                    );
+                    setFieldValue('time', newDate.nativeEvent.timestamp);
                   }}
                   mode="time"
                   minuteInterval={5}
@@ -192,8 +230,6 @@ const NewTrainingForm = () => {
     </Formik>
   );
 };
-
-export default NewTrainingForm;
 
 const styles = StyleSheet.create({
   container: {

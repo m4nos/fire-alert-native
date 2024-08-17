@@ -8,9 +8,7 @@ export const EventType = {
 export type Event = {
   id: string;
   type: keyof typeof EventType;
-  date: string;
-  time: string;
-  // participants: number;
+  timestamp: number;
   location: Coordinates & { municipality?: string; province: string };
   description: string;
   organizer?: string;
@@ -21,6 +19,8 @@ export type EventsState = {
   loading: {
     fetchingEvents: boolean;
     addingEvent: boolean;
+    editingEvent: boolean;
+    deletingEvent: boolean;
   };
   error?: Error;
 };
