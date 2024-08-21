@@ -1,4 +1,4 @@
-export const getReverseGeolocation = async ({
+export const useReverseGeolocation = async ({
   latitude,
   longitude,
 }: {

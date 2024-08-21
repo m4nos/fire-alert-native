@@ -67,15 +67,24 @@ const eventsSlice = createSlice({
       }),
       builder.addCase(editEvent.fulfilled, (state, action) => {
         state.loading.editingEvent = false;
-        // state.events = action.payload;
-        console.log('fetched events', action.meta.requestStatus);
+
+        const event = state.events.find(
+          (event) => event.id === action.payload.id
+        );
+        if (event) {
+          Object.assign(event, action.payload);
+        }
+        console.log('event edited successfully!', action.meta.requestStatus);
       }),
       //////////////////
       // DELETE EVENT //
       //////////////////
       builder.addCase(deleteEvent.pending, (state, action) => {
         state.loading.fetchingEvents = true;
-        console.log('fetching events...', action.meta.requestStatus);
+        console.log(
+          `deleting event ${action.meta.arg}...`,
+          action.meta.requestStatus
+        );
       }),
       builder.addCase(deleteEvent.rejected, (state, action) => {
         state.loading.fetchingEvents = false;
@@ -83,7 +92,9 @@ const eventsSlice = createSlice({
       }),
       builder.addCase(deleteEvent.fulfilled, (state, action) => {
         state.loading.fetchingEvents = false;
-        // state.events = action.payload;
+        state.events = state.events.filter(
+          (event) => event.id !== action.payload
+        );
         console.log('fetched events', action.meta.requestStatus);
       });
   },

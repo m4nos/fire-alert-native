@@ -5,16 +5,16 @@ import { Formik } from 'formik';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { createEvent, editEvent } from '@store/events/events.thunk';
 import MapView, { Marker } from 'react-native-maps';
-import getReverseGeolocation from '@services/useReverseGeocoding';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { ScrollView } from 'react-native-gesture-handler';
 import { format, set } from 'date-fns';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { z } from 'zod';
-import { EventType } from '@store/events/events.types';
+import { Event, EventType } from '@store/events/events.types';
+import useReverseGeolocation from '@hooks/useReverseGeolocation';
+import { router } from 'expo-router';
 
 const initialValues = {
-  id: '',
   description: '',
   date: NaN,
   time: NaN,
@@ -49,9 +49,11 @@ type TrainingFormProps = {
 export const TrainingForm = (props: TrainingFormProps) => {
   const dispatch = useAppDispatch();
   const { firebaseUser } = useAppSelector((state) => state.user);
-  const { addingEvent } = useAppSelector((state) => state.events.loading);
 
-  const { events } = useAppSelector((state) => state.events);
+  const {
+    events,
+    loading: { addingEvent, editingEvent },
+  } = useAppSelector((state) => state.events);
 
   const eventToEdit = events.find((event) => event.id === props.eventId);
 
@@ -64,7 +66,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
   const [showDateSelection, setShowDateSelection] = useState(false);
   const [showTimeSelection, setShowTimeSelection] = useState(false);
 
-  const handleSubmit = async (values: typeof initialValues) => {
+  const handleSubmit = async (values: typeof initialValues & Event) => {
     const { date, time, ...restValues } = values;
 
     const combinedDateTime = set(values.date, {
@@ -74,7 +76,9 @@ export const TrainingForm = (props: TrainingFormProps) => {
     const timestamp = combinedDateTime.getTime();
 
     if (eventToEdit)
-      return await dispatch(editEvent({ ...restValues, timestamp }));
+      return await dispatch(editEvent({ ...restValues, timestamp }))
+        .then(() => router.back())
+        .catch((e) => console.error(e));
 
     return await dispatch(
       createEvent({
@@ -82,7 +86,9 @@ export const TrainingForm = (props: TrainingFormProps) => {
         timestamp,
         organizer: firebaseUser?.uid,
       })
-    );
+    )
+      .then(() => router.back())
+      .catch((e) => console.error(e));
   };
 
   const handleMapPress = async (e: any, setFieldValue: any) => {
@@ -91,7 +97,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
     setFieldValue('location.longitude', longitude);
 
     try {
-      const locationDetails = await getReverseGeolocation({
+      const locationDetails = await useReverseGeolocation({
         latitude,
         longitude,
       });
@@ -112,6 +118,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
 
   return (
     <Formik
+      // @ts-expect-error Formik expects the same types as initial values
       initialValues={eventToEdit ? transformedEventToEdit : initialValues}
       onSubmit={handleSubmit}
       validationSchema={toFormikValidationSchema(
@@ -202,6 +209,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
                     setShowDateSelection(false);
                     setFieldValue('date', newDate.nativeEvent.timestamp);
                   }}
+                  minimumDate={new Date()}
                 />
               )}
               {showTimeSelection && (
@@ -217,9 +225,9 @@ export const TrainingForm = (props: TrainingFormProps) => {
               )}
               <Button
                 onPress={() => handleSubmit()}
-                loading={addingEvent}
+                loading={addingEvent || editingEvent}
                 mode="contained"
-                disabled={!isValid}
+                disabled={!isValid || addingEvent || editingEvent}
               >
                 Save
               </Button>

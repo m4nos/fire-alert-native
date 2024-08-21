@@ -1,10 +1,10 @@
 import { Alert, StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-import getReverseGeolocation from '@services/useReverseGeocoding';
 import { TextInput } from 'react-native-paper';
 import { useFormikContext } from 'formik';
 import { UserProfileFields } from '../ProfileInfo/types';
+import useReverseGeolocation from '@hooks/useReverseGeolocation';
 
 const LocationInput = () => {
   const { setFieldValue, values } = useFormikContext<UserProfileFields>();
@@ -15,7 +15,7 @@ const LocationInput = () => {
   useEffect(() => {
     const fetchReadableLocation = async () => {
       if (latitude !== 0 && longitude !== 0) {
-        const { state_district } = await getReverseGeolocation({
+        const { state_district } = await useReverseGeolocation({
           latitude,
           longitude,
         });
