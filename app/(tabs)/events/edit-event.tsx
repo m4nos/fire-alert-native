@@ -7,7 +7,7 @@ const EditEvent = () => {
   const { id } = useLocalSearchParams();
 
   return (
-    <View>
+    <View style={styles.container}>
       <TrainingForm eventId={id as string} />
     </View>
   );
@@ -15,4 +15,8 @@ const EditEvent = () => {
 
 export default EditEvent;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

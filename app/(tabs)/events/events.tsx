@@ -37,7 +37,9 @@ export const Events = () => {
       {!!events.length && (
         <FlatList
           data={sortedEvents}
-          renderItem={({ item }) => <EventListItem event={item} />}
+          renderItem={({ item }) => (
+            <EventListItem event={item} key={item.id} />
+          )}
           onRefresh={() => dispatch(fetchEvents())}
           refreshing={fetchingEvents}
         />
@@ -54,11 +56,7 @@ export const Events = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingRight: 20,
-    paddingLeft: 20,
-    paddingTop: 50,
-  },
+  container: {},
   FAB: {
     position: 'absolute',
     bottom: 0,

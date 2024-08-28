@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { Button, SegmentedButtons, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
@@ -8,39 +8,13 @@ import MapView, { Marker } from 'react-native-maps';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { ScrollView } from 'react-native-gesture-handler';
 import { format, set } from 'date-fns';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
-import { z } from 'zod';
-import { Event, EventType } from '@store/events/events.types';
+import { Event } from '@store/events/events.types';
 import useReverseGeolocation from '@hooks/useReverseGeolocation';
 import { router } from 'expo-router';
-
-const initialValues = {
-  description: '',
-  date: NaN,
-  time: NaN,
-  location: {
-    latitude: NaN,
-    longitude: NaN,
-    province: '',
-    municipality: '',
-  },
-  type: EventType.TRAINING,
-};
-
-const newTrainingFormValidationSchema = z.object({
-  description: z.string().min(1, 'Description must be more than 10 characters'),
-  // .minLength(10),
-  location: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-  }),
-  date: z.number({
-    required_error: 'Date is required',
-  }),
-  time: z.number({
-    required_error: 'Time is required',
-  }),
-});
+import {
+  newTrainingFormValidationSchema,
+  newTrainingInitialValues,
+} from './schema';
 
 type TrainingFormProps = {
   eventId?: string;
@@ -66,7 +40,9 @@ export const TrainingForm = (props: TrainingFormProps) => {
   const [showDateSelection, setShowDateSelection] = useState(false);
   const [showTimeSelection, setShowTimeSelection] = useState(false);
 
-  const handleSubmit = async (values: typeof initialValues & Event) => {
+  const handleSubmit = async (
+    values: typeof newTrainingInitialValues & Event
+  ) => {
     const { date, time, ...restValues } = values;
 
     const combinedDateTime = set(values.date, {
@@ -77,8 +53,9 @@ export const TrainingForm = (props: TrainingFormProps) => {
 
     if (eventToEdit)
       return await dispatch(editEvent({ ...restValues, timestamp }))
-        .then(() => router.back())
-        .catch((e) => console.error(e));
+        .then(() => Alert.alert('Event edited successfully!'))
+        .catch(() => Alert.alert('There was an error editing this event'))
+        .finally(() => router.back());
 
     return await dispatch(
       createEvent({
@@ -87,8 +64,11 @@ export const TrainingForm = (props: TrainingFormProps) => {
         organizer: firebaseUser?.uid,
       })
     )
-      .then(() => router.back())
-      .catch((e) => console.error(e));
+      .then(() => Alert.alert('New training event created successfully!'))
+      .catch(() =>
+        Alert.alert('There was an error creting a new training event')
+      )
+      .finally(() => router.back());
   };
 
   const handleMapPress = async (e: any, setFieldValue: any) => {
@@ -119,11 +99,11 @@ export const TrainingForm = (props: TrainingFormProps) => {
   return (
     <Formik
       // @ts-expect-error Formik expects the same types as initial values
-      initialValues={eventToEdit ? transformedEventToEdit : initialValues}
+      initialValues={
+        eventToEdit ? transformedEventToEdit : newTrainingInitialValues
+      }
       onSubmit={handleSubmit}
-      validationSchema={toFormikValidationSchema(
-        newTrainingFormValidationSchema
-      )}
+      validationSchema={newTrainingFormValidationSchema}
     >
       {({
         values,
@@ -134,7 +114,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
         handleChange,
         setFieldValue,
       }) => (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <ScrollView style={styles.container}>
             <View style={styles.flexForm}>
               {/* <>{console.log(values)}</> */}
@@ -150,7 +130,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
                 <Text style={styles.errorText}>{errors.description}</Text>
               )}
               <MapView
-                style={{ width: '100%', height: '50%' }}
+                style={{ width: '100%', height: 300 }}
                 initialRegion={{
                   latitude: 37.78825, // Initial latitude
                   longitude: -336, // Initial longitude
@@ -163,7 +143,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
                 {!!values.location?.latitude && (
                   <Marker
                     coordinate={values.location}
-                    title="Selected Location"
+                    title="Selected training location"
                   />
                 )}
               </MapView>
@@ -192,6 +172,46 @@ export const TrainingForm = (props: TrainingFormProps) => {
                 ]}
                 // style={styles.segmentedButtons}
               />
+              {!!values.date && (
+                <Text style={styles.date}>
+                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
+                </Text>
+              )}
+              {!!values.time && (
+                <Text style={styles.time}>
+                  Selected time: {`${format(values.time, 'HH:mm')}`}
+                </Text>
+              )}
+              {!!values.date && (
+                <Text style={styles.date}>
+                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
+                </Text>
+              )}
+              {!!values.time && (
+                <Text style={styles.time}>
+                  Selected time: {`${format(values.time, 'HH:mm')}`}
+                </Text>
+              )}
+              {!!values.date && (
+                <Text style={styles.date}>
+                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
+                </Text>
+              )}
+              {!!values.time && (
+                <Text style={styles.time}>
+                  Selected time: {`${format(values.time, 'HH:mm')}`}
+                </Text>
+              )}
+              {!!values.date && (
+                <Text style={styles.date}>
+                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
+                </Text>
+              )}
+              {!!values.time && (
+                <Text style={styles.time}>
+                  Selected time: {`${format(values.time, 'HH:mm')}`}
+                </Text>
+              )}
               {!!values.date && (
                 <Text style={styles.date}>
                   Selected date: {`${format(values.date, 'dd/MM/yy')}`}
@@ -241,8 +261,8 @@ export const TrainingForm = (props: TrainingFormProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    overflow: 'hidden',
     padding: 20,
+    flexGrow: 1,
   },
   flexForm: {
     gap: 10,

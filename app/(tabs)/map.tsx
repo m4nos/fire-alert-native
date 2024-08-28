@@ -36,6 +36,7 @@ const Map = () => {
                 latitude: Number(marker.latitude),
                 longitude: Number(marker.longitude),
               }}
+              image={require('assets/images/fire-1.png')}
             />
           ))}
       </MapView>

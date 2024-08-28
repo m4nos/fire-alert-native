@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useRef, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import { useAppSelector } from '@store/hooks';
@@ -14,7 +13,7 @@ const EventDetails = () => {
     <View style={styles.container}>
       <Text>EventDetails {eventId}</Text>
       <MapView
-        style={{ width: '100%', height: '50%' }}
+        style={{ width: '100%', height: '60%' }}
         initialRegion={{
           latitude: 37.78825, // Initial latitude
           longitude: -336, // Initial longitude
