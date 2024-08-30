@@ -13,9 +13,12 @@ export const Events = () => {
     dispatch(fetchEvents());
   }, []);
 
-  const { events } = useAppSelector((state) => state.events);
-  const { fetchingEvents } = useAppSelector((state) => state.events.loading);
-  const { appUser } = useAppSelector((state) => state.user);
+  const {
+    events,
+    loading: { fetchingEvents },
+  } = useAppSelector((state) => state.eventsSlice);
+
+  const { appUser } = useAppSelector((state) => state.userSlice);
 
   // sort emergencies on top
   const sortedEvents = useMemo(() => {

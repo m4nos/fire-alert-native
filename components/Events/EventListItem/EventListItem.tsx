@@ -1,13 +1,7 @@
 import React from 'react';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { Event, EventType } from '@store/events/events.types';
-import {
-  Button,
-  Card,
-  MD3Colors,
-  MD3LightTheme,
-  ThemeProvider,
-} from 'react-native-paper';
+import { Button, Card, MD3LightTheme } from 'react-native-paper';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert, StyleSheet } from 'react-native';
 import { format } from 'date-fns';
@@ -15,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { deleteEvent } from '@store/events/events.thunk';
 
 const EventListItem = ({ event }: { event: Event }) => {
-  const { firebaseUser } = useAppSelector((state) => state.user);
+  const { firebaseUser } = useAppSelector((state) => state.userSlice);
   const dispatch = useAppDispatch();
 
   const handleDelete = () =>

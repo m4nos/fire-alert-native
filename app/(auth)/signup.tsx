@@ -22,7 +22,7 @@ const signupSchema = z
   });
 
 const Signup = () => {
-  const { loading } = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.userSlice);
   const dispatch = useAppDispatch();
 
   const initialValues = {

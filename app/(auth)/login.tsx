@@ -15,7 +15,7 @@ const loginSchema = z.object({
 
 const Login = () => {
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.userSlice);
 
   const initialValues = {
     email: '',

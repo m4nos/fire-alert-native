@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 const EventDetails = () => {
   const { id: eventId } = useLocalSearchParams();
   const event = useAppSelector((state) =>
-    state.events.events.find((e) => e.id === eventId)
+    state.eventsSlice.events.find((e) => e.id === eventId)
   );
 
   return (

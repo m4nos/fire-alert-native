@@ -5,9 +5,9 @@ import eventsReducer from './events/events.slice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
-    map: mapReducer,
-    events: eventsReducer,
+    userSlice: userReducer,
+    mapSlice: mapReducer,
+    eventsSlice: eventsReducer,
   },
 });
 

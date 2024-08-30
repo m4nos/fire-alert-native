@@ -21,12 +21,12 @@ type TrainingFormProps = {
 
 export const TrainingForm = (props: TrainingFormProps) => {
   const dispatch = useAppDispatch();
-  const { firebaseUser } = useAppSelector((state) => state.user);
+  const { firebaseUser } = useAppSelector((state) => state.userSlice);
 
   const {
     events,
     loading: { addingEvent, editingEvent },
-  } = useAppSelector((state) => state.events);
+  } = useAppSelector((state) => state.eventsSlice);
 
   const eventToEdit = events.find((event) => event.id === props.eventId);
 

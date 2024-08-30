@@ -5,7 +5,7 @@ import { FirebaseAuth } from '../firebase';
 
 const Index = () => {
   const router = useRouter();
-  const { firebaseUser } = useAppSelector((state) => state.user);
+  const { firebaseUser } = useAppSelector((state) => state.userSlice);
 
   onAuthStateChanged(FirebaseAuth, () => {
     if (firebaseUser) {

@@ -9,7 +9,7 @@ const Map = () => {
 
   const mapRef = useRef(null);
 
-  const { markers } = useAppSelector((state) => state.map);
+  const { markers } = useAppSelector((state) => state.mapSlice);
 
   useEffect(() => {
     dispatch(fetchMarkers());

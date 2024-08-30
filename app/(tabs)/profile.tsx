@@ -15,7 +15,7 @@ import { AppUser } from '@store/user/user.types';
 const Profile = () => {
   const storeDispatch = useAppDispatch();
   const { firebaseUser, appUser, loading } = useAppSelector(
-    (state) => state.user
+    (state) => state.userSlice
   );
 
   const [segmentation, setSegmentation] = useState('profile');
