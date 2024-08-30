@@ -8,7 +8,6 @@ import MapView, { Marker } from 'react-native-maps';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { ScrollView } from 'react-native-gesture-handler';
 import { format, set } from 'date-fns';
-import { Event } from '@store/events/events.types';
 import useReverseGeolocation from '@hooks/useReverseGeolocation';
 import { router } from 'expo-router';
 import {
@@ -41,7 +40,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
   const [showTimeSelection, setShowTimeSelection] = useState(false);
 
   const handleSubmit = async (
-    values: typeof newTrainingInitialValues & Event
+    values: typeof newTrainingInitialValues & { id: string }
   ) => {
     const { date, time, ...restValues } = values;
 
@@ -182,46 +181,15 @@ export const TrainingForm = (props: TrainingFormProps) => {
                   Selected time: {`${format(values.time, 'HH:mm')}`}
                 </Text>
               )}
-              {!!values.date && (
-                <Text style={styles.date}>
-                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
-                </Text>
-              )}
-              {!!values.time && (
-                <Text style={styles.time}>
-                  Selected time: {`${format(values.time, 'HH:mm')}`}
-                </Text>
-              )}
-              {!!values.date && (
-                <Text style={styles.date}>
-                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
-                </Text>
-              )}
-              {!!values.time && (
-                <Text style={styles.time}>
-                  Selected time: {`${format(values.time, 'HH:mm')}`}
-                </Text>
-              )}
-              {!!values.date && (
-                <Text style={styles.date}>
-                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
-                </Text>
-              )}
-              {!!values.time && (
-                <Text style={styles.time}>
-                  Selected time: {`${format(values.time, 'HH:mm')}`}
-                </Text>
-              )}
-              {!!values.date && (
-                <Text style={styles.date}>
-                  Selected date: {`${format(values.date, 'dd/MM/yy')}`}
-                </Text>
-              )}
-              {!!values.time && (
-                <Text style={styles.time}>
-                  Selected time: {`${format(values.time, 'HH:mm')}`}
-                </Text>
-              )}
+              <Button
+                onPress={() => handleSubmit()}
+                style={styles.button}
+                loading={addingEvent || editingEvent}
+                mode="contained"
+                disabled={!isValid || addingEvent || editingEvent}
+              >
+                Save
+              </Button>
               {showDateSelection && (
                 <RNDateTimePicker
                   value={values.date ? new Date(values.date) : new Date()}
@@ -243,14 +211,6 @@ export const TrainingForm = (props: TrainingFormProps) => {
                   minuteInterval={5}
                 />
               )}
-              <Button
-                onPress={() => handleSubmit()}
-                loading={addingEvent || editingEvent}
-                mode="contained"
-                disabled={!isValid || addingEvent || editingEvent}
-              >
-                Save
-              </Button>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -274,6 +234,9 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 20,
     fontWeight: '500',
+  },
+  button: {
+    marginBottom: 40,
   },
   errorText: {
     color: 'red',
