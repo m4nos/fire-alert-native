@@ -45,6 +45,7 @@ const Login = () => {
           <TextInput
             label="Email"
             value={values.email}
+            keyboardType="email-address"
             style={styles.input}
             autoCapitalize="none"
             onChangeText={handleChange('email')}
