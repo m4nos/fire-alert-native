@@ -40,6 +40,15 @@ const TabsLayout = () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="shifts"
+        options={{
+          title: 'Shifts',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="binoculars" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };

@@ -2,6 +2,7 @@ import { User } from 'firebase/auth';
 import { Coordinates } from '../map/map.types';
 
 export type AppUser = {
+  uid: string;
   userName: string;
   phoneNumber: string;
   email: string;

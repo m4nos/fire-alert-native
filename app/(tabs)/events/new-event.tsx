@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
 import { SegmentedButtons } from 'react-native-paper';
 import TrainingForm from '@components/Events/TrainingForm';

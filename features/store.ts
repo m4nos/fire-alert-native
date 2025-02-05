@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './user/user.slice';
 import mapReducer from './map/map.slice';
 import eventsReducer from './events/events.slice';
+import shiftsReducer from './shifts/shifts.slice';
 
 export const store = configureStore({
   reducer: {
     userSlice: userReducer,
     mapSlice: mapReducer,
     eventsSlice: eventsReducer,
+    shiftsSlice: shiftsReducer,
   },
 });
 

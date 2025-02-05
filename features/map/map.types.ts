@@ -3,10 +3,8 @@ export type Coordinates = {
   longitude: number;
 };
 
-export type Marker = {
+export type Marker = Coordinates & {
   id: string;
-  latitude: string;
-  longitude: string;
   timestamp: number;
 };
 
