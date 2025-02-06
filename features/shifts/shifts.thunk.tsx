@@ -6,9 +6,10 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import { Shift } from './shifts.types';
+import { Shift, TimeSlot } from './shifts.types';
 import { RootState } from '../store';
 
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
@@ -27,9 +28,12 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   }
 });
 
-export const reserveShift = createAsyncThunk(
-  'shifts/reserveShift',
-  async (shiftId: string, { getState }) => {
+export const reserveSlot = createAsyncThunk(
+  'shifts/reserveSlot',
+  async (
+    { shiftId, slotId }: { shiftId: Shift['id']; slotId: TimeSlot['id'] },
+    { getState }
+  ) => {
     const {
       userSlice: { appUser },
     } = getState() as RootState;
@@ -43,7 +47,7 @@ export const reserveShift = createAsyncThunk(
 
       const shift = shiftSnapshot.data() as Shift;
 
-      if (shift.status !== 'available') {
+      if (shift.status !== 'active') {
         throw new Error('Shift is not available');
       }
 

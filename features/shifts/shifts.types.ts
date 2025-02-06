@@ -6,14 +6,23 @@ export type Location = Coordinates & {
   municipality: string;
 };
 
-export type Shift = {
+export type TimeSlot = {
   id: string;
   startTime: string;
   endTime: string;
-  location: Location;
-  description?: string;
-  reservedBy?: AppUser;
   status: 'available' | 'reserved' | 'completed';
+  reservedBy?: AppUser;
+};
+
+export type Shift = {
+  id: string;
+  startDate: Date;
+  endDate: Date;
+  timeSlots: TimeSlot[];
+  location: Location;
+  title: string;
+  description?: string;
+  status: 'active' | 'inactive';
   createdAt: string;
   updatedAt: string;
 };

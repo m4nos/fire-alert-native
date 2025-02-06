@@ -21,22 +21,22 @@ const ShiftDetails = () => {
           <Text variant="titleLarge">Shift Details</Text>
 
           <Text variant="bodyLarge" style={styles.detail}>
-            Start: {format(new Date(shift.startTime), 'PPpp')}
+            Start: {format(new Date(shift.startDate), 'PPpp')}
           </Text>
 
           <Text variant="bodyLarge" style={styles.detail}>
-            End: {format(new Date(shift.endTime), 'PPpp')}
+            End: {format(new Date(shift.endDate), 'PPpp')}
           </Text>
 
           <Text variant="bodyLarge" style={styles.detail}>
             Status: {shift.status}
           </Text>
 
-          {shift.reservedBy && (
+          {/* {shift.reservedBy && (
             <Text variant="bodyLarge" style={styles.detail}>
               Reserved by: {shift.reservedBy.userName}
             </Text>
-          )}
+          )} */}
         </Card.Content>
       </Card>
 

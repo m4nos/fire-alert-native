@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from 'features/hooks';
 import { FAB, Card, Text, Button } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { fetchShifts, reserveShift } from '@store/shifts/shifts.thunk';
+import { fetchShifts } from '@store/shifts/shifts.thunk';
 
 export const ShiftsScreen = () => {
   const dispatch = useAppDispatch();
@@ -14,17 +14,6 @@ export const ShiftsScreen = () => {
     dispatch(fetchShifts());
   }, []);
 
-  const handleReserve = async (shiftId: string) => {
-    if (!appUser) return;
-    await dispatch(
-      reserveShift({
-        shiftId,
-        userId: appUser.uid,
-        userName: appUser.userName,
-      })
-    );
-  };
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -34,32 +23,17 @@ export const ShiftsScreen = () => {
             style={styles.card}
             onPress={() => router.push(`/shifts/${item.id}`)}
           >
-            {/* <Card.Title
-              title={`${item.startTime
-                .toDate()
-                .toLocaleDateString()} ${item.startTime
-                .toDate()
-                .toLocaleTimeString()}`}
-              subtitle={`Location: ${item.location.name}`}
-            /> */}
-            <Card.Content>
+            <Card.Title
+              title={`${item.title}`}
+              subtitle={`Location: ${item.location.municipality}, ${item.location.province}`}
+            />
+            {/* <Card.Content>
               <Text>
                 {item.reservedBy
                   ? `Reserved by: ${item.reservedBy}`
                   : 'Available'}
               </Text>
-            </Card.Content>
-            {!item.reservedBy && (
-              <Card.Actions>
-                <Button
-                  mode="contained"
-                  onPress={() => handleReserve(item.id)}
-                  disabled={!appUser}
-                >
-                  Reserve Shift
-                </Button>
-              </Card.Actions>
-            )}
+            </Card.Content> */}
           </Card>
         )}
         onRefresh={() => dispatch(fetchShifts())}
