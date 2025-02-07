@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView, Dimensions } from 'react-native';
 import { Formik } from 'formik';
 import { useAppDispatch } from '@store/hooks';
 import { Button, TextInput, Text, IconButton } from 'react-native-paper';
@@ -6,8 +6,12 @@ import { createShift } from '@store/shifts/shifts.thunk';
 import { router } from 'expo-router';
 import * as z from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import MapView, { Marker } from 'react-native-maps';
+import { Portal, Modal } from 'react-native-paper';
+import { Timestamp } from 'firebase/firestore';
+import useReverseGeolocation from '@hooks/useReverseGeolocation';
 
 const timeSlotSchema = z.object({
   startTime: z.string(),
@@ -32,6 +36,67 @@ type TimeSlot = {
 const CreateShiftScreen = () => {
   const dispatch = useAppDispatch();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  }>({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  const [locationDetails, setLocationDetails] = useState<{
+    province?: string;
+    state?: string;
+    municipality?: string;
+  }>({});
+
+  const formatTimeInput = (value: string) => {
+    // Remove any non-digit characters
+    const numbers = value.replace(/\D/g, '');
+
+    // Handle backspacing
+    if (value.length < 3 && numbers.length === 2 && value.includes(':')) {
+      return numbers[0];
+    }
+
+    // Add leading zero for single digit hour
+    if (numbers.length === 1) {
+      const num = parseInt(numbers);
+      if (num > 2) {
+        return `0${num}:`;
+      }
+      return numbers;
+    }
+
+    // Add colon after hours
+    if (numbers.length === 2) {
+      const hours = parseInt(numbers);
+      if (hours > 23) {
+        return '23:';
+      }
+      return `${numbers}:`;
+    }
+
+    // Handle minutes input
+    if (numbers.length === 3) {
+      const minutes = parseInt(numbers[2]);
+      if (minutes > 5) {
+        return `${numbers.slice(0, 2)}:0`;
+      }
+      return `${numbers.slice(0, 2)}:${numbers[2]}`;
+    }
+
+    if (numbers.length === 4) {
+      const minutes = parseInt(numbers.slice(2));
+      if (minutes > 59) {
+        return `${numbers.slice(0, 2)}:59`;
+      }
+      return `${numbers.slice(0, 2)}:${numbers.slice(2)}`;
+    }
+
+    return numbers;
+  };
 
   const initialValues = {
     date: new Date(),
@@ -43,10 +108,25 @@ const CreateShiftScreen = () => {
     },
   };
 
+  const fetchLocationDetails = async (latitude: number, longitude: number) => {
+    try {
+      const address = await useReverseGeolocation({ latitude, longitude });
+      setLocationDetails({
+        province: address.province,
+        state: address.state,
+        municipality: address.municipality,
+      });
+    } catch (error) {
+      console.error('Error fetching location details:', error);
+    }
+  };
+
+  const handleConfirmLocation = () => {};
+
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       const shiftData = {
-        date: values.date,
+        startDate: Timestamp.fromDate(new Date(values.date)),
         timeSlots: values.timeSlots,
         location: values.location,
       };
@@ -59,25 +139,25 @@ const CreateShiftScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Formik
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(createShiftSchema)}
         onSubmit={handleSubmit}
       >
         {({ handleSubmit, setFieldValue, values }) => (
-          <View>
+          <View style={styles.formContainer}>
             <Text variant="titleLarge" style={styles.title}>
               Create New Shift
             </Text>
 
-            <Text variant="bodyLarge">Date</Text>
+            <Text variant="bodyLarge">Start Date</Text>
             <Button
               mode="outlined"
               onPress={() => setShowDatePicker(true)}
               style={styles.input}
             >
-              {values.date.toLocaleDateString()}
+              {values.date.toLocaleDateString('el-GR')}
             </Button>
             {showDatePicker && (
               <RNDateTimePicker
@@ -96,22 +176,30 @@ const CreateShiftScreen = () => {
             {values.timeSlots.map((slot, index) => (
               <View key={index} style={styles.timeSlotContainer}>
                 <TextInput
-                  label="Start Time (HH:MM)"
+                  label="Start Time"
                   value={slot.startTime}
-                  onChangeText={(text) =>
-                    setFieldValue(`timeSlots.${index}.startTime`, text)
-                  }
+                  mode="outlined"
+                  onChangeText={(text) => {
+                    const formatted = formatTimeInput(text);
+                    setFieldValue(`timeSlots.${index}.startTime`, formatted);
+                  }}
                   style={styles.timeInput}
                   placeholder="00:00"
+                  maxLength={5}
+                  keyboardType="numeric"
                 />
                 <TextInput
-                  label="End Time (HH:MM)"
+                  label="End Time"
                   value={slot.endTime}
-                  onChangeText={(text) =>
-                    setFieldValue(`timeSlots.${index}.endTime`, text)
-                  }
+                  mode="outlined"
+                  onChangeText={(text) => {
+                    const formatted = formatTimeInput(text);
+                    setFieldValue(`timeSlots.${index}.endTime`, formatted);
+                  }}
                   style={styles.timeInput}
-                  placeholder="02:00"
+                  placeholder="00:00"
+                  maxLength={5}
+                  keyboardType="numeric"
                 />
                 <IconButton
                   icon="delete"
@@ -138,55 +226,100 @@ const CreateShiftScreen = () => {
               Add Time Slot
             </Button>
 
-            <TextInput
-              label="Municipality"
-              value={values.location.municipality}
-              onChangeText={(text) =>
-                setFieldValue('location.municipality', text)
-              }
-              mode="outlined"
+            <Button
+              mode="contained"
+              onPress={() => setShowMap(true)}
               style={styles.input}
-            />
+            >
+              Select Location on Map
+            </Button>
 
-            <TextInput
-              label="Latitude"
-              value={String(values.location.latitude)}
-              onChangeText={(text) =>
-                setFieldValue('location.latitude', Number(text))
-              }
-              keyboardType="numeric"
-              mode="outlined"
-              style={styles.input}
-            />
+            <Portal>
+              <Modal
+                visible={showMap}
+                onDismiss={() => setShowMap(false)}
+                contentContainerStyle={styles.modalContainer}
+              >
+                <View style={styles.mapContainer}>
+                  <MapView
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: values.location.latitude || 37.9838,
+                      longitude: values.location.longitude || 23.7275,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}
+                    onPress={(e) => {
+                      const { latitude, longitude } = e.nativeEvent.coordinate;
+                      console.log(latitude, longitude);
+                      setLocation({ latitude, longitude });
+                    }}
+                    onPoiClick={(e) => {
+                      const { latitude, longitude } = e.nativeEvent.coordinate;
+                      console.log(latitude, longitude);
+                      setLocation({ latitude, longitude });
+                    }}
+                  >
+                    <Marker
+                      coordinate={{
+                        latitude: location.latitude || values.location.latitude,
+                        longitude:
+                          location.longitude || values.location.longitude,
+                      }}
+                    />
+                  </MapView>
+                </View>
+                <View style={styles.modalButtons}>
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      setFieldValue('location', location);
+                      fetchLocationDetails(
+                        location.latitude,
+                        location.longitude
+                      );
+                      setShowMap(false);
+                    }}
+                    style={styles.confirmButton}
+                  >
+                    Confirm Location
+                  </Button>
+                  <Button mode="outlined" onPress={() => setShowMap(false)}>
+                    Cancel
+                  </Button>
+                </View>
+              </Modal>
+            </Portal>
 
-            <TextInput
-              label="Longitude"
-              value={String(values.location.longitude)}
-              onChangeText={(text) =>
-                setFieldValue('location.longitude', Number(text))
-              }
-              keyboardType="numeric"
-              mode="outlined"
-              style={styles.input}
-            />
+            <Text variant="bodyLarge" style={styles.locationDetails}>
+              Province: {locationDetails.province || 'N/A'}
+            </Text>
+            <Text variant="bodyLarge" style={styles.locationDetails}>
+              State: {locationDetails.state || 'N/A'}
+            </Text>
+            <Text variant="bodyLarge" style={styles.locationDetails}>
+              Municipality: {locationDetails.municipality || 'N/A'}
+            </Text>
 
             <Button
               mode="contained"
               onPress={() => handleSubmit()}
               style={styles.button}
             >
-              Create Shifts
+              Create Shift
             </Button>
           </View>
         )}
       </Formik>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  formContainer: {
     padding: 16,
   },
   title: {
@@ -203,16 +336,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+    gap: 8,
   },
   timeInput: {
     flex: 1,
-    marginRight: 8,
+    minWidth: 120,
   },
   addButton: {
     marginBottom: 24,
   },
   button: {
     marginTop: 24,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 16,
+    margin: 16,
+    borderRadius: 8,
+    height: '80%',
+  },
+  mapContainer: {
+    flex: 1,
+    overflow: 'hidden',
+    borderRadius: 8,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  modalButtons: {
+    marginTop: 16,
+    gap: 8,
+  },
+  confirmButton: {
+    marginBottom: 8,
+  },
+  locationDetails: {
+    marginVertical: 8,
   },
 });
 
