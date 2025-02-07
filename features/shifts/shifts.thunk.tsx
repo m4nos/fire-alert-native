@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 import { Shift, TimeSlot } from './shifts.types';
 import { RootState } from '../store';
-
+import { Timestamp } from 'firebase/firestore';
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   try {
     const shiftsCollection = query(collection(FirebaseStore, 'shifts'));
@@ -65,7 +65,16 @@ export const reserveSlot = createAsyncThunk(
 
 export const createShift = createAsyncThunk(
   'shifts/createShift',
-  async (shiftData: Omit<Shift, 'id' | 'status' | 'reservedBy'>) => {
+  async (
+    shiftData: Omit<
+      Shift,
+      'id' | 'status' | 'reservedBy' | 'createdAt' | 'updatedAt'
+    >,
+    { getState }
+  ) => {
+    const {
+      userSlice: { appUser },
+    } = getState() as RootState;
     try {
       const shiftsCollection = collection(FirebaseStore, 'shifts');
       const newShiftDoc = doc(shiftsCollection);
@@ -73,7 +82,9 @@ export const createShift = createAsyncThunk(
       const newShift = {
         ...shiftData,
         status: 'available',
-        reservedBy: null,
+        createdBy: appUser?.uid,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
       };
 
       await setDoc(newShiftDoc, newShift);

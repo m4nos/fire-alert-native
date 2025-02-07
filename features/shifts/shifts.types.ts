@@ -16,13 +16,14 @@ export type TimeSlot = {
 
 export type Shift = {
   id: string;
-  startDate: Date;
-  endDate: Date;
   timeSlots: TimeSlot[];
   location: Location;
   title: string;
   description?: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
-};
+  status: "active" | "inactive";
+  createdBy: string;
+  createdAt: number;
+  updatedAt: number;
+  startDate: number;
+  endDate: number;
+}
