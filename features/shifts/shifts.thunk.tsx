@@ -1,5 +1,5 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { FirebaseStore } from 'firebase';
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import { FirebaseStore } from 'firebase'
 import {
   collection,
   doc,
@@ -7,94 +7,56 @@ import {
   getDocs,
   query,
   setDoc,
-  updateDoc,
-} from 'firebase/firestore';
-import { Shift, TimeSlot } from './shifts.types';
-import { RootState } from '../store';
-import { Timestamp } from 'firebase/firestore';
+  updateDoc
+} from 'firebase/firestore'
+import { Shift, TimeSlot } from './shifts.types'
+import { RootState } from '../store'
+
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   try {
-    const shiftsCollection = query(collection(FirebaseStore, 'shifts'));
-    const shiftsSnapshot = await getDocs(shiftsCollection);
+    const shiftsCollection = query(collection(FirebaseStore, 'shifts'))
+    const shiftsSnapshot = await getDocs(shiftsCollection)
 
     const shifts = shiftsSnapshot.docs.map((doc) => ({
       ...doc.data(),
-      id: doc.id,
-    })) as Shift[];
+      id: doc.id
+    })) as Shift[]
 
-    return shifts;
+    return shifts
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error)
   }
-});
-
-export const reserveSlot = createAsyncThunk(
-  'shifts/reserveSlot',
-  async (
-    { shiftId, slotId }: { shiftId: Shift['id']; slotId: TimeSlot['id'] },
-    { getState }
-  ) => {
-    const {
-      userSlice: { appUser },
-    } = getState() as RootState;
-    try {
-      const shiftDoc = doc(collection(FirebaseStore, 'shifts'), shiftId);
-      const shiftSnapshot = await getDoc(shiftDoc);
-
-      if (!shiftSnapshot.exists()) {
-        throw new Error('Shift not found');
-      }
-
-      const shift = shiftSnapshot.data() as Shift;
-
-      if (shift.status !== 'active') {
-        throw new Error('Shift is not available');
-      }
-
-      await updateDoc(shiftDoc, {
-        reservedBy: appUser?.uid,
-        status: 'reserved',
-      });
-
-      return shift;
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  }
-);
+})
 
 export const createShift = createAsyncThunk(
   'shifts/createShift',
   async (
-    shiftData: Omit<
-      Shift,
-      'id' | 'status' | 'reservedBy' | 'createdAt' | 'updatedAt'
-    >,
+    shiftData: Omit<Shift, 'id' | 'createdAt' | 'updatedAt'>,
     { getState }
   ) => {
     const {
-      userSlice: { appUser },
-    } = getState() as RootState;
+      userSlice: { appUser }
+    } = getState() as RootState
     try {
-      const shiftsCollection = collection(FirebaseStore, 'shifts');
-      const newShiftDoc = doc(shiftsCollection);
+      const shiftsCollection = collection(FirebaseStore, 'shifts')
+      const newShiftDoc = doc(shiftsCollection)
 
       const newShift = {
         ...shiftData,
-        status: 'available',
-        createdBy: appUser?.uid,
+        status: 'active',
+        createdBy: appUser,
         createdAt: Date.now(),
-        updatedAt: Date.now(),
-      };
+        updatedAt: Date.now()
+      }
 
-      await setDoc(newShiftDoc, newShift);
+      await setDoc(newShiftDoc, newShift)
 
       return {
         ...newShift,
-        id: newShiftDoc.id,
-      } as unknown as Shift;
+        id: newShiftDoc.id
+      } as Shift
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error)
     }
   }
-);
+)
