@@ -1,12 +1,12 @@
-import { StyleSheet, View } from 'react-native';
-import React from 'react';
-import { router } from 'expo-router';
-import { useAppDispatch, useAppSelector } from 'features/hooks';
-import { signUp } from '@store/user/user.thunk';
-import { Button, Text, TextInput } from 'react-native-paper';
-import { isValid, z } from 'zod';
-import { Formik } from 'formik';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { StyleSheet, View } from 'react-native'
+import React from 'react'
+import { router } from 'expo-router'
+import { useAppDispatch, useAppSelector } from 'features/hooks'
+import { signUp } from '@store/user/user.thunk'
+import { Button, Text, TextInput } from 'react-native-paper'
+import { isValid, z } from 'zod'
+import { Formik } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 const signupSchema = z
   .object({
@@ -14,26 +14,26 @@ const signupSchema = z
     password: z.string().min(6, 'Password must be at least 6 characters long'),
     confirmPassword: z
       .string()
-      .min(6, 'Password must be at least 6 characters long'),
+      .min(6, 'Password must be at least 6 characters long')
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'], // Set the path of the error
-  });
+    path: ['confirmPassword'] // Set the path of the error
+  })
 
 const Signup = () => {
-  const { loading } = useAppSelector((state) => state.userSlice);
-  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.userSlice)
+  const dispatch = useAppDispatch()
 
   const initialValues = {
     email: '',
     password: '',
-    confirmPassword: '',
-  };
+    confirmPassword: ''
+  }
 
   const handleLogin = (values: typeof initialValues) => {
-    dispatch(signUp(values));
-  };
+    dispatch(signUp(values))
+  }
 
   return (
     <Formik
@@ -47,7 +47,7 @@ const Signup = () => {
         handleSubmit,
         values,
         errors,
-        touched,
+        touched
       }) => (
         <View style={styles.container}>
           <TextInput
@@ -100,10 +100,10 @@ const Signup = () => {
         </View>
       )}
     </Formik>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup
 
 const styles = StyleSheet.create({
   container: {
@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     display: 'flex',
-    gap: 25,
+    gap: 25
   },
   input: {},
   errorText: {
     color: 'red',
     fontSize: 12,
     top: -16,
-    marginBottom: -37,
-  },
-});
+    marginBottom: -37
+  }
+})

@@ -1,9 +1,9 @@
-import * as z from 'zod';
-import { UserProfileFields } from './ProfileInfo/types';
+import * as z from 'zod'
+import { UserProfileFields } from './ProfileInfo/types'
 
 const equipmentSchema = z.object({
-  car: z.string().optional(),
-});
+  car: z.string().optional()
+})
 
 export const profileValidationSchema = z.object({
   userName: z.string().min(1, 'Username is required'),
@@ -12,10 +12,10 @@ export const profileValidationSchema = z.object({
     .length(10, 'Phone number must be exactly 10 characters long'),
   location: z.object({
     latitude: z.number(),
-    longitude: z.number(),
+    longitude: z.number()
   }),
-  equipment: equipmentSchema,
-});
+  equipment: equipmentSchema
+})
 
 export const initialValues: UserProfileFields = {
   email: '',
@@ -23,6 +23,6 @@ export const initialValues: UserProfileFields = {
   phoneNumber: '',
   location: { latitude: 0, longitude: 0 },
   equipment: {
-    car: '',
-  },
-};
+    car: ''
+  }
+}

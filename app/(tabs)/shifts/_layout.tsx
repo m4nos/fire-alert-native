@@ -1,5 +1,5 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React from 'react'
+import { Stack } from 'expo-router'
 
 const _layout = () => {
   return (
@@ -14,7 +14,7 @@ const _layout = () => {
         options={{ headerShown: true, title: 'Create shift' }}
       />
     </Stack>
-  );
-};
+  )
+}
 
-export default _layout;
+export default _layout

@@ -1,3 +1,3 @@
-import { EmergencyForm } from './EmergencyForm';
+import { EmergencyForm } from './EmergencyForm'
 
-export default EmergencyForm;
+export default EmergencyForm

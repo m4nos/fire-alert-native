@@ -1,19 +1,19 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useEffect, useRef } from 'react';
-import MapView, { Marker } from 'react-native-maps';
-import { useAppDispatch, useAppSelector } from 'features/hooks';
-import { fetchMarkers } from '@store/map/map.thunk';
+import { StyleSheet, View } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import MapView, { Marker } from 'react-native-maps'
+import { useAppDispatch, useAppSelector } from 'features/hooks'
+import { fetchMarkers } from '@store/map/map.thunk'
 
 const Map = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
-  const mapRef = useRef(null);
+  const mapRef = useRef(null)
 
-  const { markers } = useAppSelector((state) => state.mapSlice);
+  const { markers } = useAppSelector((state) => state.mapSlice)
 
   useEffect(() => {
-    dispatch(fetchMarkers());
-  }, []);
+    dispatch(fetchMarkers())
+  }, [])
 
   return (
     <View>
@@ -22,7 +22,7 @@ const Map = () => {
           latitude: 37.78825,
           longitude: -336,
           latitudeDelta: 13,
-          longitudeDelta: 4,
+          longitudeDelta: 4
         }}
         mapType="terrain"
         ref={mapRef}
@@ -34,16 +34,16 @@ const Map = () => {
               key={index}
               coordinate={{
                 latitude: Number(marker.latitude),
-                longitude: Number(marker.longitude),
+                longitude: Number(marker.longitude)
               }}
               image={require('assets/images/fire-1.png')}
             />
           ))}
       </MapView>
     </View>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

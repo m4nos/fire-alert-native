@@ -1,13 +1,13 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppUser } from '@store/user/user.types';
-import { router } from 'expo-router';
-import { FirebaseAuth, FirebaseStore } from 'firebase';
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import { AppUser } from '@store/user/user.types'
+import { router } from 'expo-router'
+import { FirebaseAuth, FirebaseStore } from 'firebase'
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
-  User,
-} from 'firebase/auth';
+  User
+} from 'firebase/auth'
 import {
   addDoc,
   collection,
@@ -15,13 +15,13 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
-} from 'firebase/firestore';
-import { Alert } from 'react-native';
+  where
+} from 'firebase/firestore'
+import { Alert } from 'react-native'
 
 interface AuthCredentials {
-  email: string;
-  password: string;
+  email: string
+  password: string
 }
 
 export const login = createAsyncThunk<User | null, AuthCredentials>(
@@ -32,17 +32,17 @@ export const login = createAsyncThunk<User | null, AuthCredentials>(
         FirebaseAuth,
         email,
         password
-      );
+      )
       if (response.user.emailVerified) {
-        router.replace('/(tabs)/profile');
-        return response.user.toJSON() as User;
-      } else alert('You need to verify your email first!');
+        router.replace('/(tabs)/profile')
+        return response.user.toJSON() as User
+      } else alert('You need to verify your email first!')
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-    return null;
+    return null
   }
-);
+)
 
 export const signUp = createAsyncThunk<void, AuthCredentials>(
   'user/signUp',
@@ -53,42 +53,42 @@ export const signUp = createAsyncThunk<void, AuthCredentials>(
         email,
         password
       ).catch((error) => {
-        throw new Error(error);
-      });
+        throw new Error(error)
+      })
 
       await addDoc(collection(FirebaseStore, 'users'), {
         email,
-        uid: user.uid,
+        uid: user.uid
       }).catch((error) => {
-        throw new Error(error);
-      });
+        throw new Error(error)
+      })
 
       await sendEmailVerification(user, {
         handleCodeInApp: true,
-        url: 'https://fire-alert-d86d4.firebaseapp.com',
+        url: 'https://fire-alert-d86d4.firebaseapp.com'
       })
         .then(() => {
-          Alert.alert('email verification sent!');
+          Alert.alert('email verification sent!')
         })
         .catch((error) => {
-          throw new Error(error);
-        });
+          throw new Error(error)
+        })
 
-      router.push('/(auth)/login');
+      router.push('/(auth)/login')
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
-);
+)
 
 export const logout = createAsyncThunk<void>('user/logout', async () => {
   try {
-    await FirebaseAuth.signOut();
-    router.replace('/(auth)/login');
+    await FirebaseAuth.signOut()
+    router.replace('/(auth)/login')
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-});
+})
 
 export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
   'user/fetchAppUser',
@@ -98,25 +98,25 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
       const userQuery = query(
         collection(FirebaseStore, 'users'),
         where('uid', '==', uid)
-      );
-      const querySnapshot = await getDocs(userQuery);
+      )
+      const querySnapshot = await getDocs(userQuery)
 
       // Check if any matching documents were found
       if (!querySnapshot.empty) {
         // Get the first document (assuming unique uid)
-        const userDoc = querySnapshot.docs[0];
+        const userDoc = querySnapshot.docs[0]
         // Extract user data from document
-        const userData = userDoc.data() as AppUser;
-        return userData;
+        const userData = userDoc.data() as AppUser
+        return userData
       } else {
         // No matching user found
-        return null;
+        return null
       }
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error)
     }
   }
-);
+)
 
 export const updateAppUser = createAsyncThunk(
   'user/updateAppUser',
@@ -126,24 +126,24 @@ export const updateAppUser = createAsyncThunk(
       const userQuery = query(
         collection(FirebaseStore, 'users'),
         where('email', '==', profileData.email)
-      );
-      const querySnapshot = await getDocs(userQuery);
+      )
+      const querySnapshot = await getDocs(userQuery)
 
       // Check if any documents match the query
       if (!querySnapshot.empty) {
         // Get the first document
-        const userDoc = querySnapshot.docs[0];
-        const userDocRef = doc(FirebaseStore, 'users', userDoc.id);
+        const userDoc = querySnapshot.docs[0]
+        const userDocRef = doc(FirebaseStore, 'users', userDoc.id)
 
         // Update the existing document with the new user data
-        await updateDoc(userDocRef, profileData);
-        return profileData;
+        await updateDoc(userDocRef, profileData)
+        return profileData
       } else {
-        return rejectWithValue('No matching document found for the user email');
+        return rejectWithValue('No matching document found for the user email')
       }
     } catch (error) {
-      console.error('Error updating user data: ', error);
-      return rejectWithValue('An error occurred while updating user data');
+      console.error('Error updating user data: ', error)
+      return rejectWithValue('An error occurred while updating user data')
     }
   }
-);
+)

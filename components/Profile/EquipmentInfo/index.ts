@@ -1,3 +1,3 @@
-import EquipmentInfo from './EquipmentInfo';
+import EquipmentInfo from './EquipmentInfo'
 
-export default EquipmentInfo;
+export default EquipmentInfo

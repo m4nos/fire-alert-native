@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { useFormikContext } from 'formik';
-import LocationInput from '@components/Profile/LocationInput';
-import { UserProfileFields } from './types';
+import React from 'react'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { TextInput } from 'react-native-paper'
+import { useFormikContext } from 'formik'
+import LocationInput from '@components/Profile/LocationInput'
+import { UserProfileFields } from './types'
 
 const ProfileInfo = () => {
   const { values, handleChange, handleBlur, errors, touched, setFieldValue } =
-    useFormikContext<UserProfileFields>();
+    useFormikContext<UserProfileFields>()
 
   return (
     <ScrollView>
@@ -38,8 +38,8 @@ const ProfileInfo = () => {
         <LocationInput />
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -47,15 +47,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     display: 'flex',
     gap: 25,
-    overflow: 'scroll',
+    overflow: 'scroll'
   },
   input: {},
   errorText: {
     color: 'red',
     fontSize: 12,
     top: -19,
-    marginBottom: -42,
-  },
-});
+    marginBottom: -42
+  }
+})
 
-export default React.memo(ProfileInfo);
+export default React.memo(ProfileInfo)

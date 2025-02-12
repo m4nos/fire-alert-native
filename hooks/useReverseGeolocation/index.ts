@@ -1,3 +1,3 @@
-import { useReverseGeolocation } from './useReverseGeolocation';
+import { useReverseGeolocation } from './useReverseGeolocation'
 
-export default useReverseGeolocation;
+export default useReverseGeolocation

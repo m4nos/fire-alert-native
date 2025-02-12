@@ -1,4 +1,4 @@
 export type ReadableLocation = {
-  city: string;
-  province: string;
-};
+  city: string
+  province: string
+}

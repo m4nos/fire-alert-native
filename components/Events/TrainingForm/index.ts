@@ -1,3 +1,3 @@
-import { TrainingForm } from './TrainingForm';
+import { TrainingForm } from './TrainingForm'
 
-export default TrainingForm;
+export default TrainingForm

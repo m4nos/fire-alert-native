@@ -1,15 +1,15 @@
 export type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
+  latitude: number
+  longitude: number
+}
 
 export type Marker = Coordinates & {
-  id: string;
-  timestamp: number;
-};
+  id: string
+  timestamp: number
+}
 
 export type MapState = {
-  markers: Marker[];
-  loading: boolean;
-  error?: Error;
-};
+  markers: Marker[]
+  loading: boolean
+  error?: Error
+}

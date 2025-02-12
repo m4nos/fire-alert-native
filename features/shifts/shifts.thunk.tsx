@@ -22,6 +22,8 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
       id: doc.id
     })) as Shift[]
 
+    console.log(shifts)
+
     return shifts
   } catch (error: any) {
     throw new Error(error)

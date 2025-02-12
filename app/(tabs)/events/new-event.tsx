@@ -1,11 +1,11 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
-import { SegmentedButtons } from 'react-native-paper';
-import TrainingForm from '@components/Events/TrainingForm';
-import EmergencyForm from '@components/Events/EmergencyForm';
+import { StyleSheet, View } from 'react-native'
+import React, { useState } from 'react'
+import { SegmentedButtons } from 'react-native-paper'
+import TrainingForm from '@components/Events/TrainingForm'
+import EmergencyForm from '@components/Events/EmergencyForm'
 
 const CreateEvent = () => {
-  const [segmentation, setSegmentation] = useState('training');
+  const [segmentation, setSegmentation] = useState('training')
   return (
     <View style={styles.container}>
       <SegmentedButtons
@@ -16,21 +16,21 @@ const CreateEvent = () => {
           {
             value: 'emergency',
             label: 'Emergency',
-            icon: 'alert',
-          },
+            icon: 'alert'
+          }
         ]}
         style={styles.segmentedButtons}
       />
       {segmentation === 'training' ? <TrainingForm /> : <EmergencyForm />}
     </View>
-  );
-};
+  )
+}
 
-export default CreateEvent;
+export default CreateEvent
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
-  segmentedButtons: {},
-});
+  segmentedButtons: {}
+})

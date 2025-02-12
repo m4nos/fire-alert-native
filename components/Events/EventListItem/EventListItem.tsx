@@ -1,21 +1,21 @@
-import React from 'react';
-import { router } from 'expo-router';
-import { Event, EventType } from '@store/events/events.types';
-import { Button, Card, MD3LightTheme } from 'react-native-paper';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Alert, StyleSheet } from 'react-native';
-import { format } from 'date-fns';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { deleteEvent } from '@store/events/events.thunk';
+import React from 'react'
+import { router } from 'expo-router'
+import { Event, EventType } from '@store/events/events.types'
+import { Button, Card, MD3LightTheme } from 'react-native-paper'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Alert, StyleSheet } from 'react-native'
+import { format } from 'date-fns'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { deleteEvent } from '@store/events/events.thunk'
 
 const EventListItem = ({ event }: { event: Event }) => {
-  const { firebaseUser } = useAppSelector((state) => state.userSlice);
-  const dispatch = useAppDispatch();
+  const { firebaseUser } = useAppSelector((state) => state.userSlice)
+  const dispatch = useAppDispatch()
 
   const handleDelete = () =>
     dispatch(deleteEvent(event.id))
       .then(() => Alert.alert('Event deleted successfully!'))
-      .catch(() => Alert.alert('Event deletion failed'));
+      .catch(() => Alert.alert('Event deletion failed'))
 
   return (
     <Card
@@ -52,7 +52,7 @@ const EventListItem = ({ event }: { event: Event }) => {
             onPress={() =>
               router.push({
                 pathname: '/events/edit-event',
-                params: { id: event.id },
+                params: { id: event.id }
               })
             }
           >
@@ -67,16 +67,16 @@ const EventListItem = ({ event }: { event: Event }) => {
         </Card.Actions>
       )}
     </Card>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   card: {
     margin: 5,
     borderRadius: 2,
-    backgroundColor: MD3LightTheme.colors.background,
+    backgroundColor: MD3LightTheme.colors.background
   },
-  title: {},
-});
+  title: {}
+})
 
-export default EventListItem;
+export default EventListItem

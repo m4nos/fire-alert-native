@@ -1,30 +1,30 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { router } from 'expo-router';
-import { useAppDispatch, useAppSelector } from 'features/hooks';
-import { login } from '@store/user/user.thunk';
-import { Button, TextInput } from 'react-native-paper';
-import { Formik } from 'formik';
-import * as z from 'zod';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
+import React from 'react'
+import { StyleSheet, View, Text } from 'react-native'
+import { router } from 'expo-router'
+import { useAppDispatch, useAppSelector } from 'features/hooks'
+import { login } from '@store/user/user.thunk'
+import { Button, TextInput } from 'react-native-paper'
+import { Formik } from 'formik'
+import * as z from 'zod'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters long'),
-});
+  password: z.string().min(6, 'Password must be at least 6 characters long')
+})
 
 const Login = () => {
-  const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.userSlice);
+  const dispatch = useAppDispatch()
+  const { loading } = useAppSelector((state) => state.userSlice)
 
   const initialValues = {
     email: '',
-    password: '',
-  };
+    password: ''
+  }
 
   const handleLogin = (values: typeof initialValues) => {
-    dispatch(login(values));
-  };
+    dispatch(login(values))
+  }
 
   return (
     <Formik
@@ -39,7 +39,7 @@ const Login = () => {
         values,
         errors,
         touched,
-        isValid,
+        isValid
       }) => (
         <View style={styles.container}>
           <TextInput
@@ -84,8 +84,8 @@ const Login = () => {
         </View>
       )}
     </Formik>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -93,15 +93,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     display: 'flex',
-    gap: 25,
+    gap: 25
   },
   input: {},
   errorText: {
     color: 'red',
     fontSize: 12,
     top: -16,
-    marginBottom: -37,
-  },
-});
+    marginBottom: -37
+  }
+})
 
-export default Login;
+export default Login

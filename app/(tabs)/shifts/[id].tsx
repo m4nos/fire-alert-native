@@ -1,18 +1,19 @@
-import { StyleSheet, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { useAppSelector } from '@store/hooks';
-import { Card, Text, Button } from 'react-native-paper';
-import MapView, { Marker } from 'react-native-maps';
-import { format } from 'date-fns';
+import { StyleSheet, View } from 'react-native'
+import { useLocalSearchParams } from 'expo-router'
+import { useAppSelector } from '@store/hooks'
+import { Card, Text, Button } from 'react-native-paper'
+import MapView, { Marker } from 'react-native-maps'
+import { format } from 'date-fns'
 
 const ShiftDetails = () => {
-  const { id: shiftId } = useLocalSearchParams();
+  const { id: shiftId } = useLocalSearchParams()
   const shift = useAppSelector((state) =>
     state.shiftsSlice.shifts.find((s) => s.id === shiftId)
-  );
-  const { appUser } = useAppSelector((state) => state.userSlice);
+  )
 
-  if (!shift) return null;
+  const { appUser } = useAppSelector((state) => state.userSlice)
+
+  if (!shift) return null
 
   return (
     <View style={styles.container}>
@@ -21,12 +22,12 @@ const ShiftDetails = () => {
           <Text variant="titleLarge">Shift Details</Text>
 
           <Text variant="bodyLarge" style={styles.detail}>
-            Start: {format(new Date(shift.startDate), 'PPpp')}
+            Start: {format(new Date(shift.startDate.seconds * 1000), 'PPpp')}
           </Text>
 
-          <Text variant="bodyLarge" style={styles.detail}>
-            End: {format(new Date(shift.endDate), 'PPpp')}
-          </Text>
+          {/* <Text variant="bodyLarge" style={styles.detail}>
+            End: {format(new Date(shift.endDate.seconds), 'PPpp')}
+          </Text> */}
 
           <Text variant="bodyLarge" style={styles.detail}>
             Status: {shift.status}
@@ -58,24 +59,24 @@ const ShiftDetails = () => {
         />
       </MapView> */}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   card: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   detail: {
-    marginVertical: 8,
+    marginVertical: 8
   },
   map: {
     flex: 1,
-    borderRadius: 8,
-  },
-});
+    borderRadius: 8
+  }
+})
 
-export default ShiftDetails;
+export default ShiftDetails

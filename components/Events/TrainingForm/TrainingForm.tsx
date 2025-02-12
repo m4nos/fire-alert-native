@@ -1,99 +1,99 @@
-import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
-import { Button, SegmentedButtons, TextInput } from 'react-native-paper';
-import { Formik } from 'formik';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { createEvent, editEvent } from '@store/events/events.thunk';
-import MapView, { Marker } from 'react-native-maps';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
-import { ScrollView } from 'react-native-gesture-handler';
-import { format, set } from 'date-fns';
-import useReverseGeolocation from '@hooks/useReverseGeolocation';
-import { router } from 'expo-router';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { Button, SegmentedButtons, TextInput } from 'react-native-paper'
+import { Formik } from 'formik'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { createEvent, editEvent } from '@store/events/events.thunk'
+import MapView, { Marker } from 'react-native-maps'
+import RNDateTimePicker from '@react-native-community/datetimepicker'
+import { ScrollView } from 'react-native-gesture-handler'
+import { format, set } from 'date-fns'
+import useReverseGeolocation from '@hooks/useReverseGeolocation'
+import { router } from 'expo-router'
 import {
   newTrainingFormValidationSchema,
-  newTrainingInitialValues,
-} from './schema';
+  newTrainingInitialValues
+} from './schema'
 
 type TrainingFormProps = {
-  eventId?: string;
-};
+  eventId?: string
+}
 
 export const TrainingForm = (props: TrainingFormProps) => {
-  const dispatch = useAppDispatch();
-  const { firebaseUser } = useAppSelector((state) => state.userSlice);
+  const dispatch = useAppDispatch()
+  const { firebaseUser } = useAppSelector((state) => state.userSlice)
 
   const {
     events,
-    loading: { addingEvent, editingEvent },
-  } = useAppSelector((state) => state.eventsSlice);
+    loading: { addingEvent, editingEvent }
+  } = useAppSelector((state) => state.eventsSlice)
 
-  const eventToEdit = events.find((event) => event.id === props.eventId);
+  const eventToEdit = events.find((event) => event.id === props.eventId)
 
   const transformedEventToEdit = {
     ...eventToEdit,
     date: eventToEdit?.timestamp,
-    time: eventToEdit?.timestamp,
-  };
+    time: eventToEdit?.timestamp
+  }
 
-  const [showDateSelection, setShowDateSelection] = useState(false);
-  const [showTimeSelection, setShowTimeSelection] = useState(false);
+  const [showDateSelection, setShowDateSelection] = useState(false)
+  const [showTimeSelection, setShowTimeSelection] = useState(false)
 
   const handleSubmit = async (
     values: typeof newTrainingInitialValues & { id: string }
   ) => {
-    const { date, time, ...restValues } = values;
+    const { date, time, ...restValues } = values
 
     const combinedDateTime = set(values.date, {
       hours: new Date(time).getHours(),
-      minutes: new Date(time).getMinutes(),
-    });
-    const timestamp = combinedDateTime.getTime();
+      minutes: new Date(time).getMinutes()
+    })
+    const timestamp = combinedDateTime.getTime()
 
     if (eventToEdit)
       return await dispatch(editEvent({ ...restValues, timestamp }))
         .then(() => Alert.alert('Event edited successfully!'))
         .catch(() => Alert.alert('There was an error editing this event'))
-        .finally(() => router.back());
+        .finally(() => router.back())
 
     return await dispatch(
       createEvent({
         ...restValues,
         timestamp,
-        organizer: firebaseUser?.uid,
+        organizer: firebaseUser?.uid
       })
     )
       .then(() => Alert.alert('New training event created successfully!'))
       .catch(() =>
         Alert.alert('There was an error creting a new training event')
       )
-      .finally(() => router.back());
-  };
+      .finally(() => router.back())
+  }
 
   const handleMapPress = async (e: any, setFieldValue: any) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    setFieldValue('location.latitude', latitude);
-    setFieldValue('location.longitude', longitude);
+    const { latitude, longitude } = e.nativeEvent.coordinate
+    setFieldValue('location.latitude', latitude)
+    setFieldValue('location.longitude', longitude)
 
     try {
       const locationDetails = await useReverseGeolocation({
         latitude,
-        longitude,
-      });
+        longitude
+      })
       setFieldValue(
         'location.municipality',
         locationDetails.municipality ||
           locationDetails.city ||
           locationDetails.village
-      );
+      )
       setFieldValue(
         'location.province',
         locationDetails.province || locationDetails.county
-      );
+      )
     } catch (error) {
-      console.error('Error fetching reverse geolocation:', error);
+      console.error('Error fetching reverse geolocation:', error)
     }
-  };
+  }
 
   return (
     <Formik
@@ -111,7 +111,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
         errors,
         handleSubmit,
         handleChange,
-        setFieldValue,
+        setFieldValue
       }) => (
         <SafeAreaView style={{ flex: 1 }}>
           <ScrollView style={styles.container}>
@@ -134,7 +134,7 @@ export const TrainingForm = (props: TrainingFormProps) => {
                   latitude: 37.78825, // Initial latitude
                   longitude: -336, // Initial longitude
                   latitudeDelta: 13,
-                  longitudeDelta: 4,
+                  longitudeDelta: 4
                 }}
                 onPress={(e) => handleMapPress(e, setFieldValue)}
                 zoomControlEnabled
@@ -160,14 +160,14 @@ export const TrainingForm = (props: TrainingFormProps) => {
                     value: '_date',
                     label: 'Select date',
                     icon: 'calendar',
-                    onPress: () => setShowDateSelection(true),
+                    onPress: () => setShowDateSelection(true)
                   },
                   {
                     value: '_time',
                     label: 'Select time',
                     icon: 'clock',
-                    onPress: () => setShowTimeSelection(true),
-                  },
+                    onPress: () => setShowTimeSelection(true)
+                  }
                 ]}
                 // style={styles.segmentedButtons}
               />
@@ -194,8 +194,8 @@ export const TrainingForm = (props: TrainingFormProps) => {
                 <RNDateTimePicker
                   value={values.date ? new Date(values.date) : new Date()}
                   onChange={(newDate) => {
-                    setShowDateSelection(false);
-                    setFieldValue('date', newDate.nativeEvent.timestamp);
+                    setShowDateSelection(false)
+                    setFieldValue('date', newDate.nativeEvent.timestamp)
                   }}
                   minimumDate={new Date()}
                 />
@@ -204,8 +204,8 @@ export const TrainingForm = (props: TrainingFormProps) => {
                 <RNDateTimePicker
                   value={values.time ? new Date(values.time) : new Date()}
                   onChange={(newDate) => {
-                    setShowTimeSelection(false);
-                    setFieldValue('time', newDate.nativeEvent.timestamp);
+                    setShowTimeSelection(false)
+                    setFieldValue('time', newDate.nativeEvent.timestamp)
                   }}
                   mode="time"
                   minuteInterval={5}
@@ -216,30 +216,30 @@ export const TrainingForm = (props: TrainingFormProps) => {
         </SafeAreaView>
       )}
     </Formik>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flexGrow: 1,
+    flexGrow: 1
   },
   flexForm: {
-    gap: 10,
+    gap: 10
   },
   date: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   time: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   button: {
-    marginBottom: 40,
+    marginBottom: 40
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
-  },
-});
+    fontSize: 12
+  }
+})

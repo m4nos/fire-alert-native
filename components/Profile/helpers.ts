@@ -1,4 +1,4 @@
-import { AppUser } from '@store/user/user.types';
+import { AppUser } from '@store/user/user.types'
 
 export const mapUserDataToInitialValues = (userData: AppUser) => ({
   email: userData.email || '',
@@ -6,6 +6,6 @@ export const mapUserDataToInitialValues = (userData: AppUser) => ({
   phoneNumber: userData.phoneNumber || '',
   location: userData.location || { latitude: 0, longitude: 0 },
   equipment: {
-    car: userData.equipment?.car || '',
-  },
-});
+    car: userData.equipment?.car || ''
+  }
+})

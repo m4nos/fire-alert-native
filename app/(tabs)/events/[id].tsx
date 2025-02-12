@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import MapView, { Marker } from 'react-native-maps';
-import { useAppSelector } from '@store/hooks';
-import { format } from 'date-fns';
+import { StyleSheet, Text, View } from 'react-native'
+import { useLocalSearchParams } from 'expo-router'
+import MapView, { Marker } from 'react-native-maps'
+import { useAppSelector } from '@store/hooks'
+import { format } from 'date-fns'
 
 const EventDetails = () => {
-  const { id: eventId } = useLocalSearchParams();
+  const { id: eventId } = useLocalSearchParams()
   const event = useAppSelector((state) =>
     state.eventsSlice.events.find((e) => e.id === eventId)
-  );
+  )
 
   return (
     <View style={styles.container}>
@@ -19,14 +19,14 @@ const EventDetails = () => {
           latitude: 37.78825,
           longitude: -336,
           latitudeDelta: 13,
-          longitudeDelta: 4,
+          longitudeDelta: 4
         }}
       >
         {event?.location && (
           <Marker
             coordinate={{
               latitude: Number(event.location.latitude),
-              longitude: Number(event.location.longitude),
+              longitude: Number(event.location.longitude)
             }}
             title="Selected Location"
           />
@@ -43,21 +43,21 @@ const EventDetails = () => {
         </Text>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default EventDetails;
+export default EventDetails
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 10
   },
   date: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   time: {
     fontSize: 20,
-    fontWeight: '500',
-  },
-});
+    fontWeight: '500'
+  }
+})

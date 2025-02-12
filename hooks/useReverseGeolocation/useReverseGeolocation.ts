@@ -1,9 +1,9 @@
 export const useReverseGeolocation = async ({
   latitude,
-  longitude,
+  longitude
 }: {
-  latitude: number;
-  longitude: number;
+  latitude: number
+  longitude: number
 }) => {
   try {
     const response = await fetch(
@@ -11,18 +11,18 @@ export const useReverseGeolocation = async ({
       {
         headers: {
           'User-Agent': 'FireAlertApp/1.0 (ben.jonson61@yahoo.com)',
-          'Accept-Language': 'en-US,en;q=0.9',
-        },
+          'Accept-Language': 'en-US,en;q=0.9'
+        }
       }
-    );
+    )
     if (response.ok) {
-      const data = await response.json();
-      const { address } = data;
-      return address;
+      const data = await response.json()
+      const { address } = data
+      return address
     }
-    throw new Error('No results found');
+    throw new Error('No results found')
   } catch (error) {
-    console.error('Error during reverse geocoding:', error);
-    throw error;
+    console.error('Error during reverse geocoding:', error)
+    throw error
   }
-};
+}

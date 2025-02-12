@@ -1,12 +1,12 @@
-import React from 'react';
-import { Text, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { useFormikContext } from 'formik';
-import { UserProfileFields } from '../ProfileInfo/types';
+import React from 'react'
+import { Text, View } from 'react-native'
+import { TextInput } from 'react-native-paper'
+import { useFormikContext } from 'formik'
+import { UserProfileFields } from '../ProfileInfo/types'
 
 const EquipmentInfo = () => {
   const { values, handleChange, handleBlur, errors, touched } =
-    useFormikContext<UserProfileFields>();
+    useFormikContext<UserProfileFields>()
 
   return (
     <View>
@@ -22,7 +22,7 @@ const EquipmentInfo = () => {
         <Text>{errors.equipment.car}</Text>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default EquipmentInfo;
+export default EquipmentInfo

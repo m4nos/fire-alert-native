@@ -1,13 +1,13 @@
-import { Event, EventType } from '@store/events/events.types';
-import { z } from 'zod';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { Event, EventType } from '@store/events/events.types'
+import { z } from 'zod'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 export type NewTrainingFormFields = {
-  description: string;
-  location: Event['location'];
-  date: Date;
-  time: Date;
-};
+  description: string
+  location: Event['location']
+  date: Date
+  time: Date
+}
 
 export const newTrainingInitialValues = {
   description: '',
@@ -17,10 +17,10 @@ export const newTrainingInitialValues = {
     latitude: NaN,
     longitude: NaN,
     province: '',
-    municipality: '',
+    municipality: ''
   },
-  type: EventType.TRAINING,
-};
+  type: EventType.TRAINING
+}
 
 export const newTrainingFormValidationSchema = toFormikValidationSchema(
   z.object({
@@ -30,13 +30,13 @@ export const newTrainingFormValidationSchema = toFormikValidationSchema(
     // .minLength(10),
     location: z.object({
       latitude: z.number(),
-      longitude: z.number(),
+      longitude: z.number()
     }),
     date: z.number({
-      required_error: 'Date is required',
+      required_error: 'Date is required'
     }),
     time: z.number({
-      required_error: 'Time is required',
-    }),
+      required_error: 'Time is required'
+    })
   })
-);
+)
