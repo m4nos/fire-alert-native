@@ -7,11 +7,11 @@ const _layout = () => {
       <Stack.Screen name="index" options={{ title: 'Shifts' }} />
       <Stack.Screen
         name="[id]"
-        options={{ headerShown: true, title: 'Shift' }}
+        options={{ title: 'Shift', headerShown: true }}
       />
       <Stack.Screen
         name="create"
-        options={{ headerShown: true, title: 'Create shift' }}
+        options={{ title: 'Create shift', headerShown: true }}
       />
     </Stack>
   )

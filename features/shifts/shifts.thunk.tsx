@@ -3,13 +3,12 @@ import { FirebaseStore } from 'firebase'
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   setDoc,
-  updateDoc
+  Timestamp
 } from 'firebase/firestore'
-import { Shift, TimeSlot } from './shifts.types'
+import { Shift } from './shifts.types'
 import { RootState } from '../store'
 
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
@@ -33,7 +32,7 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
 export const createShift = createAsyncThunk(
   'shifts/createShift',
   async (
-    shiftData: Omit<Shift, 'id' | 'createdAt' | 'updatedAt'>,
+    shiftData: Pick<Shift, 'title' | 'timeSlots' | 'startDate' | 'location'>,
     { getState }
   ) => {
     const {
@@ -47,8 +46,8 @@ export const createShift = createAsyncThunk(
         ...shiftData,
         status: 'active',
         createdBy: appUser,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
       }
 
       await setDoc(newShiftDoc, newShift)
@@ -56,7 +55,7 @@ export const createShift = createAsyncThunk(
       return {
         ...newShift,
         id: newShiftDoc.id
-      } as Shift
+      } as unknown as Shift
     } catch (error: any) {
       throw new Error(error)
     }

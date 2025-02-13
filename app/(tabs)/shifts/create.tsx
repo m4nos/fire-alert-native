@@ -19,12 +19,15 @@ const timeSlotSchema = z.object({
 })
 
 const createShiftSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
   date: z.date(),
   timeSlots: z.array(timeSlotSchema),
   location: z.object({
     latitude: z.number(),
     longitude: z.number(),
-    municipality: z.string().min(1, 'Municipality is required')
+    municipality: z.string().optional(),
+    province: z.string().optional(),
+    state: z.string().optional()
   })
 })
 
@@ -99,12 +102,15 @@ const CreateShiftScreen = () => {
   }
 
   const initialValues = {
+    title: '',
     date: new Date(),
     timeSlots: [] as TimeSlot[],
     location: {
       latitude: 0,
       longitude: 0,
-      municipality: ''
+      municipality: '',
+      province: '',
+      state: ''
     }
   }
 
@@ -126,12 +132,14 @@ const CreateShiftScreen = () => {
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       const shiftData = {
+        title: values.title,
         startDate: Timestamp.fromDate(new Date(values.date)),
         timeSlots: values.timeSlots,
         location: values.location
       }
 
       await dispatch(createShift(shiftData)).unwrap()
+      alert('Shift created successfully')
       router.back()
     } catch (error) {
       console.error('Failed to create shift:', error)
@@ -145,11 +153,20 @@ const CreateShiftScreen = () => {
         validationSchema={toFormikValidationSchema(createShiftSchema)}
         onSubmit={handleSubmit}
       >
-        {({ handleSubmit, setFieldValue, values }) => (
+        {({ handleSubmit, setFieldValue, values, errors }) => (
           <View style={styles.formContainer}>
             <Text variant="titleLarge" style={styles.title}>
               Create New Shift
             </Text>
+
+            <TextInput
+              label="Title"
+              value={values.title}
+              mode="outlined"
+              onChangeText={(text) => setFieldValue('title', text)}
+              style={styles.input}
+              placeholder="Enter shift title"
+            />
 
             <Text variant="bodyLarge">Start Date</Text>
             <Button

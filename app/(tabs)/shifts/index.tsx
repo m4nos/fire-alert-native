@@ -4,6 +4,7 @@ import { FAB, Card, Text, Button } from 'react-native-paper'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { fetchShifts } from '@store/shifts/shifts.thunk'
+import ShiftListItem from '@components/Shifts/ShiftListItem'
 
 const ShiftsScreen = () => {
   const dispatch = useAppDispatch()
@@ -16,27 +17,9 @@ const ShiftsScreen = () => {
 
   return (
     <View style={styles.container}>
-      safd
       <FlatList
         data={shifts}
-        renderItem={({ item }) => (
-          <Card
-            style={styles.card}
-            onPress={() => router.push(`/shifts/${item.id}`)}
-          >
-            <Card.Title
-              title={`${item.title}`}
-              subtitle={`Location: ${item.location.municipality}, ${item.location.province}`}
-            />
-            {/* <Card.Content>
-              <Text>
-                {item.reservedBy
-                  ? `Reserved by: ${item.reservedBy}`
-                  : 'Available'}
-              </Text>
-            </Card.Content> */}
-          </Card>
-        )}
+        renderItem={({ item }) => <ShiftListItem shift={item} />}
         onRefresh={() => dispatch(fetchShifts())}
         refreshing={loading}
       />

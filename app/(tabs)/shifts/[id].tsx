@@ -4,6 +4,7 @@ import { useAppSelector } from '@store/hooks'
 import { Card, Text, Button } from 'react-native-paper'
 import MapView, { Marker } from 'react-native-maps'
 import { format } from 'date-fns'
+import SlotsContainer from '@components/Shifts/SlotsContainer/SlotsContainer'
 
 const ShiftDetails = () => {
   const { id: shiftId } = useLocalSearchParams()
@@ -21,8 +22,10 @@ const ShiftDetails = () => {
         <Card.Content>
           <Text variant="titleLarge">Shift Details</Text>
 
+          <SlotsContainer shift={shift} />
+
           <Text variant="bodyLarge" style={styles.detail}>
-            Start: {format(new Date(shift.startDate.seconds * 1000), 'PPpp')}
+            Start: {format(new Date(shift?.startDate?.seconds * 1000), 'PPpp')}
           </Text>
 
           {/* <Text variant="bodyLarge" style={styles.detail}>
