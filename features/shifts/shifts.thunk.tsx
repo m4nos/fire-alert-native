@@ -8,8 +8,9 @@ import {
   setDoc,
   Timestamp
 } from 'firebase/firestore'
-import { Shift } from './shifts.types'
+import { Shift, FB_Shift } from './shifts.types'
 import { RootState } from '../store'
+import { fromFirebase, toFirebase } from './shifts.adapters'
 
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   try {
@@ -19,11 +20,9 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
     const shifts = shiftsSnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id
-    })) as Shift[]
+    })) as FB_Shift[]
 
-    console.log(shifts)
-
-    return shifts
+    return shifts.map(fromFirebase)
   } catch (error: any) {
     throw new Error(error)
   }
@@ -32,7 +31,10 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
 export const createShift = createAsyncThunk(
   'shifts/createShift',
   async (
-    shiftData: Pick<Shift, 'title' | 'timeSlots' | 'startDate' | 'location'>,
+    shiftData: Pick<
+      Shift,
+      'title' | 'timeSlots' | 'startDate' | 'location' | 'description'
+    >,
     { getState }
   ) => {
     const {
@@ -42,13 +44,14 @@ export const createShift = createAsyncThunk(
       const shiftsCollection = collection(FirebaseStore, 'shifts')
       const newShiftDoc = doc(shiftsCollection)
 
-      const newShift = {
+      const newShift = toFirebase({
         ...shiftData,
         status: 'active',
-        createdBy: appUser,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
-      }
+        createdBy: appUser!,
+        id: newShiftDoc.id,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      })
 
       await setDoc(newShiftDoc, newShift)
 

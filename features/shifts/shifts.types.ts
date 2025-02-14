@@ -13,17 +13,32 @@ export type TimeSlot = {
   endTime: string
 }
 
+export type FB_Shift = Pick<
+  Shift,
+  | 'id'
+  | 'title'
+  | 'timeSlots'
+  | 'slots'
+  | 'location'
+  | 'description'
+  | 'status'
+  | 'createdBy'
+> & {
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  startDate: Timestamp
+}
+
 export type Shift = {
   id: string
   title: string
   timeSlots: TimeSlot[]
-  slots: Slot[]
+  slots?: Slot[]
   location: Location
   description?: string
   status: 'active' | 'inactive'
   createdBy: AppUser
-  createdAt: Timestamp
-  updatedAt: Timestamp
-  startDate: Timestamp
-  endDate: Timestamp
+  createdAt: number
+  updatedAt: number
+  startDate: number
 }
