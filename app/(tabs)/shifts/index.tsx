@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from 'features/hooks'
-import { FAB, Card, Text, Button } from 'react-native-paper'
+import { FAB } from 'react-native-paper'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { fetchShifts } from '@store/shifts/shifts.thunk'
