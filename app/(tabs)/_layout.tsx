@@ -44,6 +44,8 @@ const TabsLayout = () => {
         name="shifts"
         options={{
           title: 'Shifts',
+          headerShown: false,
+          tabBarActiveTintColor: MD3LightTheme.colors.primary,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="binoculars" color={color} />
           )

@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, Dimensions } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { Formik } from 'formik'
 import { useAppDispatch } from '@store/hooks'
 import { Button, TextInput, Text, IconButton } from 'react-native-paper'
@@ -6,11 +6,10 @@ import { createShift } from '@store/shifts/shifts.thunk'
 import { router } from 'expo-router'
 import * as z from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import MapView, { Marker } from 'react-native-maps'
 import { Portal, Modal } from 'react-native-paper'
-import { Timestamp } from 'firebase/firestore'
 import useReverseGeolocation from '@hooks/useReverseGeolocation'
 
 const timeSlotSchema = z.object({
@@ -20,6 +19,7 @@ const timeSlotSchema = z.object({
 
 const createShiftSchema = z.object({
   title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
   date: z.date(),
   timeSlots: z.array(timeSlotSchema),
   location: z.object({
@@ -103,6 +103,7 @@ const CreateShiftScreen = () => {
 
   const initialValues = {
     title: '',
+    description: '',
     date: new Date(),
     timeSlots: [] as TimeSlot[],
     location: {
@@ -133,7 +134,7 @@ const CreateShiftScreen = () => {
     try {
       const shiftData = {
         title: values.title,
-        startDate: Timestamp.fromDate(new Date(values.date)),
+        startDate: values.date,
         timeSlots: values.timeSlots,
         location: values.location
       }
@@ -166,6 +167,15 @@ const CreateShiftScreen = () => {
               onChangeText={(text) => setFieldValue('title', text)}
               style={styles.input}
               placeholder="Enter shift title"
+            />
+
+            <TextInput
+              label="Description"
+              value={values.description}
+              mode="outlined"
+              onChangeText={(text) => setFieldValue('description', text)}
+              style={styles.input}
+              placeholder="Enter shift description"
             />
 
             <Text variant="bodyLarge">Start Date</Text>

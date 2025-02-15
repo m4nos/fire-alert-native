@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, router } from 'expo-router'
 import { useAppSelector } from '@store/hooks'
 import { Card, Text, Button } from 'react-native-paper'
 import MapView, { Marker } from 'react-native-maps'
@@ -25,7 +25,7 @@ const ShiftDetails = () => {
           <SlotsContainer shift={shift} />
 
           <Text variant="bodyLarge" style={styles.detail}>
-            Start: {format(new Date(shift?.startDate?.seconds * 1000), 'PPpp')}
+            Start: {format(new Date(shift?.startDate), 'PPpp')}
           </Text>
 
           {/* <Text variant="bodyLarge" style={styles.detail}>
@@ -41,6 +41,14 @@ const ShiftDetails = () => {
               Reserved by: {shift.reservedBy.userName}
             </Text>
           )} */}
+
+          <Button
+            mode="contained"
+            onPress={() => router.push(`/shifts/${shiftId}/reserve`)}
+            style={styles.reserveButton}
+          >
+            Reserve a Slot
+          </Button>
         </Card.Content>
       </Card>
 
@@ -79,6 +87,9 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
     borderRadius: 8
+  },
+  reserveButton: {
+    marginTop: 16
   }
 })
 

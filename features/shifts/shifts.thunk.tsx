@@ -10,19 +10,20 @@ import {
 } from 'firebase/firestore'
 import { Shift, FB_Shift } from './shifts.types'
 import { RootState } from '../store'
-import { fromFirebase, toFirebase } from './shifts.adapters'
+import { fromFirebase } from './shifts.adapters'
 
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   try {
     const shiftsCollection = query(collection(FirebaseStore, 'shifts'))
     const shiftsSnapshot = await getDocs(shiftsCollection)
 
-    const shifts = shiftsSnapshot.docs.map((doc) => ({
+    const fb_shifts = shiftsSnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id
     })) as FB_Shift[]
 
-    return shifts.map(fromFirebase)
+    const shifts = fb_shifts.map((shift) => fromFirebase(shift))
+    return shifts
   } catch (error: any) {
     throw new Error(error)
   }
@@ -33,8 +34,8 @@ export const createShift = createAsyncThunk(
   async (
     shiftData: Pick<
       Shift,
-      'title' | 'timeSlots' | 'startDate' | 'location' | 'description'
-    >,
+      'title' | 'timeSlots' | 'location' | 'description'
+    > & { startDate: Date },
     { getState }
   ) => {
     const {
@@ -44,21 +45,24 @@ export const createShift = createAsyncThunk(
       const shiftsCollection = collection(FirebaseStore, 'shifts')
       const newShiftDoc = doc(shiftsCollection)
 
-      const newShift = toFirebase({
+      const newShift = {
         ...shiftData,
-        status: 'active',
+        status: 'active' as const,
         createdBy: appUser!,
         id: newShiftDoc.id,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      })
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
 
       await setDoc(newShiftDoc, newShift)
 
       return {
         ...newShift,
-        id: newShiftDoc.id
-      } as unknown as Shift
+        id: newShiftDoc.id,
+        startDate: newShift.startDate.getTime(),
+        createdAt: newShift.createdAt.getTime(),
+        updatedAt: newShift.updatedAt.getTime()
+      }
     } catch (error: any) {
       throw new Error(error)
     }

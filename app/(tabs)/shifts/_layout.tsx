@@ -10,6 +10,10 @@ const _layout = () => {
         options={{ title: 'Shift', headerShown: true }}
       />
       <Stack.Screen
+        name="[id]/reserve"
+        options={{ title: 'Reserve Slot', headerShown: true }}
+      />
+      <Stack.Screen
         name="create"
         options={{ title: 'Create shift', headerShown: true }}
       />

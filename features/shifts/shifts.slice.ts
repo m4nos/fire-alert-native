@@ -38,6 +38,7 @@ const shiftsSlice = createSlice({
       })
       .addCase(createShift.fulfilled, (state, action) => {
         state.shifts.push(action.payload)
+        state.loading = false
       })
   }
 })

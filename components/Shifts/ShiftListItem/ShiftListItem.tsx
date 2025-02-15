@@ -18,9 +18,10 @@ const ShiftListItem = ({ shift }: { shift: Shift }) => {
     >
       <Card.Title
         title={shift.title}
-        subtitle={`${
-          shift.location.municipality || shift.location.province
-        } - ${format(new Date(shift.startDate), 'dd/MM/yyyy')}`}
+        subtitle={`${shift.id} - ${format(
+          new Date(shift.startDate),
+          'dd/MM/yyyy'
+        )}`}
         left={() => (
           <FontAwesome
             name="calendar"
