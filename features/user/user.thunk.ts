@@ -1,3 +1,4 @@
+import { UserProfileFields } from '@components/Profile/ProfileInfo/types'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { AppUser } from '@store/user/user.types'
 import { router } from 'expo-router'
@@ -120,7 +121,7 @@ export const fetchAppUser = createAsyncThunk<AppUser | null, string>(
 
 export const updateAppUser = createAsyncThunk(
   'user/updateAppUser',
-  async (profileData: AppUser, { rejectWithValue }) => {
+  async (profileData: UserProfileFields, { rejectWithValue }) => {
     try {
       // Query Firestore to find the document with the user's email
       const userQuery = query(

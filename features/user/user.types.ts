@@ -7,6 +7,7 @@ export type AppUser = {
   phoneNumber: string
   email: string
   location: Coordinates
+  equipment: { car: string }
   isAdmin?: boolean
   [key: string]: any // Add index signature to accommodate dynamic keys
 }
