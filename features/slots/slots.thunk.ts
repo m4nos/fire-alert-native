@@ -1,28 +1,33 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { FirebaseStore } from 'firebase'
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc
-} from 'firebase/firestore'
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 import { Shift } from '../shifts/shifts.types'
 import { RootState } from '../store'
-import { Slot } from './slots.types'
+import { FB_Slot, Slot } from './slots.types'
+import { slotFromFirebase } from './slots.adapter'
 
 export const fetchSlots = createAsyncThunk(
   'slots/fetchSlots',
-  async ({ shiftId }: { shiftId: Shift['id'] }) => {
-    try {
-      const slotsCollection = query(
-        collection(FirebaseStore, 'shifts', shiftId, 'slots')
-      )
-      const slotsSnapshot = await getDocs(slotsCollection)
+  async ({ shiftId }: { shiftId?: Shift['id'] }) => {
+    if (!shiftId) {
+      console.error('no shift id')
+      throw new Error('Shift ID is required')
+    }
 
-      const slots = slotsSnapshot.docs.map((doc) => doc.data()) as Slot[]
+    try {
+      const slotsQuery = query(
+        collection(FirebaseStore, 'slots'),
+        where('shiftId', '==', shiftId)
+      )
+
+      const slotsSnapshot = await getDocs(slotsQuery)
+
+      const fb_slots = slotsSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id
+      })) as FB_Slot[]
+
+      const slots = fb_slots.map((slot) => slotFromFirebase(slot))
 
       return slots
     } catch (error: any) {
@@ -31,35 +36,48 @@ export const fetchSlots = createAsyncThunk(
   }
 )
 
+type ReserveSlotPayload = {
+  shiftId: Shift['id']
+  startTime: Date
+  endTime: Date
+}
+
 export const reserveSlot = createAsyncThunk(
   'slots/reserveSlot',
-  async (
-    { shiftId, slotId }: { shiftId: Shift['id']; slotId: Slot['id'] },
-    { getState }
-  ) => {
+  async ({ shiftId, startTime, endTime }: ReserveSlotPayload, { getState }) => {
     const {
       userSlice: { appUser }
     } = getState() as RootState
+
+    if (!appUser) {
+      console.error('user not in redux store')
+      throw new Error('User not found')
+    }
+
     try {
-      const slotDoc = doc(collection(FirebaseStore, 'shifts'), shiftId)
-      const shiftSnapshot = await getDoc(slotDoc)
+      const newSlotData = {
+        shiftId,
+        startTime,
+        endTime,
+        reservedBy: appUser,
+        reservedAt: new Date()
+      }
+      const docRef = await addDoc(
+        collection(FirebaseStore, 'slots'),
+        newSlotData
+      )
 
-      if (!shiftSnapshot.exists()) {
-        throw new Error('Shift not found')
+      // Convert timestamps to numbers for the frontend
+      const slot: Slot = {
+        id: docRef.id,
+        shiftId,
+        startTime: startTime.getTime(),
+        endTime: endTime.getTime(),
+        reservedBy: appUser,
+        reservedAt: new Date().getTime()
       }
 
-      const shift = shiftSnapshot.data() as Shift
-
-      if (shift.status !== 'active') {
-        throw new Error('Shift is not available')
-      }
-
-      await updateDoc(slotDoc, {
-        reservedBy: appUser?.uid,
-        status: 'reserved'
-      })
-
-      return shift
+      return slot
     } catch (error: any) {
       throw new Error(error)
     }

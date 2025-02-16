@@ -1,6 +1,9 @@
 import AgendaItem from '@components/Shifts/SlotsContainer/AgendaItem/AgendaItem'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { fetchSlots } from '@store/slots/slots.thunk'
+import { format } from 'date-fns'
 import { useLocalSearchParams } from 'expo-router'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
 import {
   AgendaList,
@@ -84,6 +87,57 @@ export const agendaItems = [
 
 const ReserveSlot = () => {
   const { id: shiftId } = useLocalSearchParams()
+  const dispatch = useAppDispatch()
+  const { slots, loading, error } = useAppSelector((state) => state.slotsSlice)
+
+  const shift = useAppSelector((state) =>
+    state.shiftsSlice.shifts.find((s) => s.id === shiftId)
+  )
+
+  useEffect(() => {
+    dispatch(fetchSlots({ shiftId: shift?.id }))
+  }, [dispatch, shiftId])
+
+  // Generate dates array (7 consecutive days starting from today)
+  const dates = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date()
+    date.setDate(date.getDate() + index)
+    return date.toISOString().split('T')[0]
+  })
+
+  // Generate agenda items from shift time slots
+  const agendaItems = dates.map((date) => ({
+    title: date,
+    data:
+      shift?.timeSlots.map((slot) => {
+        const [startHours, startMinutes] = slot.startTime.split(':').map(Number)
+        const [endHours, endMinutes] = slot.endTime.split(':').map(Number)
+
+        // Calculate duration in minutes
+        const startTotalMinutes = startHours * 60 + startMinutes
+        const endTotalMinutes = endHours * 60 + endMinutes
+        const durationHours = (endTotalMinutes - startTotalMinutes) / 60
+
+        // Create a timestamp for the candidate slot by combining the date and the time slot's startTime.
+        const candidateTimestamp = new Date(
+          `${date}T${slot.startTime}:00`
+        ).getTime()
+
+        // Check if this slot is already reserved by comparing timestamps.
+        const isReserved = slots.some((existingSlot) => {
+          return existingSlot.startTime === candidateTimestamp
+        })
+
+        return {
+          startHour: slot.startTime,
+          endHour: slot.endTime,
+          date,
+          duration: `${durationHours.toFixed()}h`,
+          title: shift.title,
+          disabled: isReserved
+        }
+      }) || []
+  }))
 
   const renderItem = useCallback(({ item }: any) => {
     return <AgendaItem item={item} />
@@ -91,17 +145,9 @@ const ReserveSlot = () => {
 
   return (
     <View style={styles.container}>
-      <CalendarProvider date={new Date().toISOString().split('T')[0]}>
-        <ExpandableCalendar
-        // Add any necessary props for your calendar
-        />
-        <AgendaList
-          sections={agendaItems}
-          renderItem={renderItem}
-          //   scrollToNextEvent
-          //   sectionStyle={styles.section}
-          // dayFormat={'yyyy-MM-d'}
-        />
+      <CalendarProvider date={dates[0]}>
+        <ExpandableCalendar />
+        <AgendaList sections={agendaItems} renderItem={renderItem} />
       </CalendarProvider>
     </View>
   )

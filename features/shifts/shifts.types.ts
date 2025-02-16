@@ -9,8 +9,8 @@ export type Location = Coordinates & {
 }
 
 export type TimeSlot = {
-  startTime: string
-  endTime: string
+  startTime: string // "10:00"
+  endTime: string // "11:00"
 }
 
 export type FB_Shift = Pick<

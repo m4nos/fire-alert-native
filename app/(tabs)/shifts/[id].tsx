@@ -22,7 +22,7 @@ const ShiftDetails = () => {
         <Card.Content>
           <Text variant="titleLarge">Shift Details</Text>
 
-          <SlotsContainer shift={shift} />
+          {/* <SlotsContainer shift={shift} /> */}
 
           <Text variant="bodyLarge" style={styles.detail}>
             Start: {format(new Date(shift?.startDate), 'PPpp')}

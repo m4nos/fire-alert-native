@@ -1,16 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { FirebaseStore } from 'firebase'
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  Timestamp
-} from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc } from 'firebase/firestore'
 import { Shift, FB_Shift } from './shifts.types'
 import { RootState } from '../store'
-import { fromFirebase } from './shifts.adapters'
+import { shiftFromFirebase } from './shifts.adapters'
 
 export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
   try {
@@ -22,7 +15,7 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
       id: doc.id
     })) as FB_Shift[]
 
-    const shifts = fb_shifts.map((shift) => fromFirebase(shift))
+    const shifts = fb_shifts.map((shift) => shiftFromFirebase(shift))
     return shifts
   } catch (error: any) {
     throw new Error(error)
@@ -41,6 +34,9 @@ export const createShift = createAsyncThunk(
     const {
       userSlice: { appUser }
     } = getState() as RootState
+
+    if (!appUser) throw new Error('No user in redux state')
+
     try {
       const shiftsCollection = collection(FirebaseStore, 'shifts')
       const newShiftDoc = doc(shiftsCollection)
@@ -48,7 +44,7 @@ export const createShift = createAsyncThunk(
       const newShift = {
         ...shiftData,
         status: 'active' as const,
-        createdBy: appUser!,
+        createdBy: appUser,
         id: newShiftDoc.id,
         createdAt: new Date(),
         updatedAt: new Date()
