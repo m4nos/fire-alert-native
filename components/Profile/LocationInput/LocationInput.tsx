@@ -44,7 +44,7 @@ const LocationInput = () => {
 
   return (
     <View>
-      {latitude !== 0 ? (
+      {latitude !== 0 && longitude !== 0 ? (
         <TextInput
           label="Location"
           value={readableLocation}

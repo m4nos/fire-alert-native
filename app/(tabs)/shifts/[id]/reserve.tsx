@@ -1,7 +1,6 @@
-import AgendaItem from '@components/Shifts/SlotsContainer/AgendaItem/AgendaItem'
+import AgendaItem from '@components/Shifts/AgendaItem'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { fetchSlots } from '@store/slots/slots.thunk'
-import { format } from 'date-fns'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useCallback, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'

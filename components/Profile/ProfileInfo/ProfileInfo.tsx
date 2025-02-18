@@ -6,7 +6,7 @@ import LocationInput from '@components/Profile/LocationInput'
 import { UserProfileFields } from './types'
 
 const ProfileInfo = () => {
-  const { values, handleChange, handleBlur, errors, touched, setFieldValue } =
+  const { values, handleChange, handleBlur, errors, touched } =
     useFormikContext<UserProfileFields>()
 
   return (

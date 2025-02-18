@@ -7,5 +7,13 @@
   "semi": false,
   "bracketSpacing": true,
   "arrowParens": "always",
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.test.tsx",
+      "options": {
+        "semi": true
+      }
+    }
+  ]
 }
