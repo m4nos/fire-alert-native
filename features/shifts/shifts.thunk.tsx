@@ -1,6 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { FirebaseStore } from 'firebase'
-import { collection, doc, getDocs, query, setDoc } from 'firebase/firestore'
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc
+} from 'firebase/firestore'
 import { Shift, FB_Shift } from './shifts.types'
 import { RootState } from '../store'
 import { shiftFromFirebase } from './shifts.adapters'
@@ -21,6 +28,19 @@ export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
     throw new Error(error)
   }
 })
+
+export const deleteShift = createAsyncThunk(
+  'shifts/deleteShift',
+  async (shiftId: string) => {
+    try {
+      const shiftRef = doc(FirebaseStore, 'shifts', shiftId)
+      await deleteDoc(shiftRef)
+      return shiftId
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
+  }
+)
 
 export const createShift = createAsyncThunk(
   'shifts/createShift',

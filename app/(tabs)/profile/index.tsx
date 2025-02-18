@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from 'features/hooks'
 import { fetchAppUser, logout, updateAppUser } from '@store/user/user.thunk'
-import { Button, SegmentedButtons } from 'react-native-paper'
+import {
+  Button,
+  SegmentedButtons,
+  ActivityIndicator,
+  Portal
+} from 'react-native-paper'
 import { Formik } from 'formik'
 import ProfileInfo from '@components/Profile/ProfileInfo'
 import EquipmentInfo from '@components/Profile/EquipmentInfo'
@@ -11,6 +16,7 @@ import { profileValidationSchema } from '@components/Profile/user.schema'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { mapUserDataToInitialValues } from '@components/Profile/helpers'
 import { AppUser } from '@store/user/user.types'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 const Profile = () => {
   const storeDispatch = useAppDispatch()
@@ -60,6 +66,7 @@ const Profile = () => {
     >
       {({ handleSubmit, isValid }) => (
         <View style={styles.container}>
+          <LoadingSpinner loading={loading.fetchAppUser} />
           <Text>welcome {initialValues.email}</Text>
           <SegmentedButtons
             value={segmentation}
@@ -70,22 +77,26 @@ const Profile = () => {
             ]}
           />
           {segmentation === 'profile' ? <ProfileInfo /> : <EquipmentInfo />}
-          <Button
-            onPress={() => handleSubmit()}
-            loading={loading.updateAppUser}
-            mode="contained"
-            disabled={!isValid}
-          >
-            Save
-          </Button>
-          <Button
-            onPress={() => storeDispatch(logout())}
-            loading={loading.logout}
-            disabled={loading.logout}
-            mode="outlined"
-          >
-            Logout
-          </Button>
+          <TouchableOpacity>
+            <Button
+              onPress={() => handleSubmit()}
+              loading={loading.updateAppUser}
+              mode="contained"
+              disabled={!isValid}
+            >
+              Save
+            </Button>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Button
+              onPress={() => storeDispatch(logout())}
+              loading={loading.logout}
+              disabled={loading.logout}
+              mode="outlined"
+            >
+              Logout
+            </Button>
+          </TouchableOpacity>
         </View>
       )}
     </Formik>
@@ -98,7 +109,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 50,
     gap: 20
   }
 })

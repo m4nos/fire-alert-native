@@ -11,6 +11,7 @@ import testIDs from '../testIDs'
 import { useAppDispatch } from '@store/hooks'
 import { reserveSlot } from '@store/slots/slots.thunk'
 import { useLocalSearchParams } from 'expo-router'
+import { AppUser } from '@store/user/user.types'
 
 type ItemProps = {
   item: {
@@ -20,6 +21,7 @@ type ItemProps = {
     duration: string
     title: string
     disabled: boolean
+    reservedBy?: AppUser
   }
 }
 
@@ -86,7 +88,9 @@ const AgendaItem = ({ item }: ItemProps) => {
         </Text>
         <Text style={styles.itemDurationText}>{item.duration}</Text>
       </View>
-      <Text style={styles.itemTitleText}>{item.title}</Text>
+      <Text style={styles.itemTitleText}>
+        {item.reservedBy?.userName || item.title}
+      </Text>
       <View style={styles.itemButtonContainer}>
         <Button
           color={'grey'}

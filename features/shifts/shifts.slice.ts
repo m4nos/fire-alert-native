@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Shift } from './shifts.types'
-import { createShift, fetchShifts } from './shifts.thunk'
+import { createShift, deleteShift, fetchShifts } from './shifts.thunk'
 
 interface ShiftsState {
   shifts: Shift[]
@@ -38,6 +38,17 @@ const shiftsSlice = createSlice({
       })
       .addCase(createShift.fulfilled, (state, action) => {
         state.shifts.push(action.payload)
+        state.loading = false
+      })
+      .addCase(deleteShift.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(deleteShift.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Failed to delete shift'
+      })
+      .addCase(deleteShift.fulfilled, (state, action) => {
+        state.shifts = state.shifts.filter(shift => shift.id !== action.payload)
         state.loading = false
       })
   }

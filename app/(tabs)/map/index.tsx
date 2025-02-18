@@ -3,13 +3,14 @@ import React, { useEffect, useRef } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 import { useAppDispatch, useAppSelector } from 'features/hooks'
 import { fetchMarkers } from '@store/map/map.thunk'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 const Map = () => {
   const dispatch = useAppDispatch()
 
   const mapRef = useRef(null)
 
-  const { markers } = useAppSelector((state) => state.mapSlice)
+  const { markers, loading } = useAppSelector((state) => state.mapSlice)
 
   useEffect(() => {
     dispatch(fetchMarkers())
@@ -17,6 +18,7 @@ const Map = () => {
 
   return (
     <View>
+      <LoadingSpinner loading={loading} />
       <MapView
         initialRegion={{
           latitude: 37.78825,

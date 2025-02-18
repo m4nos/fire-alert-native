@@ -5,6 +5,7 @@ import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { fetchShifts } from '@store/shifts/shifts.thunk'
 import ShiftListItem from '@components/Shifts/ShiftListItem'
+import LoadingSpinner from '@components/LoadingSpinner'
 
 const ShiftsScreen = () => {
   const dispatch = useAppDispatch()
@@ -17,6 +18,7 @@ const ShiftsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <LoadingSpinner loading={loading} />
       <FlatList
         data={shifts}
         renderItem={({ item }) => <ShiftListItem shift={item} />}
@@ -38,10 +40,12 @@ export default ShiftsScreen
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16
+    flex: 1
   },
-  segmentedButtons: {},
-  card: {},
-  fab: {}
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0
+  }
 })

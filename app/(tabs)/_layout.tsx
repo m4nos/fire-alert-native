@@ -30,17 +30,6 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="events"
-        options={{
-          title: 'Events',
-          headerShown: false,
-          tabBarActiveTintColor: MD3LightTheme.colors.primary,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="calendar" color={color} />
-          )
-        }}
-      />
-      <Tabs.Screen
         name="shifts"
         options={{
           title: 'Shifts',
