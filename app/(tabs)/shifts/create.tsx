@@ -278,12 +278,10 @@ const CreateShiftScreen = () => {
                     }}
                     onPress={(e) => {
                       const { latitude, longitude } = e.nativeEvent.coordinate
-                      console.log(latitude, longitude)
                       setLocation({ latitude, longitude })
                     }}
                     onPoiClick={(e) => {
                       const { latitude, longitude } = e.nativeEvent.coordinate
-                      console.log(latitude, longitude)
                       setLocation({ latitude, longitude })
                     }}
                   >

@@ -1,10 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import { useAppSelector } from '@store/hooks'
-import { Card, Text, Button } from 'react-native-paper'
+import { Card, Text, Button, Chip } from 'react-native-paper'
 import MapView, { Marker } from 'react-native-maps'
 import { format } from 'date-fns'
-import SlotsContainer from '@components/Shifts/SlotsContainer/SlotsContainer'
 
 const ShiftDetails = () => {
   const { id: shiftId } = useLocalSearchParams()
@@ -20,28 +19,25 @@ const ShiftDetails = () => {
     <View style={styles.container}>
       <Card style={styles.card}>
         <Card.Content>
-          <Text variant="titleLarge">Shift Details</Text>
+          <Text variant="titleLarge">{shift.title}</Text>
+          <Text variant="titleMedium">Shift Details</Text>
+          <Text variant="bodyMedium">{shift.description}</Text>
 
           {/* <SlotsContainer shift={shift} /> */}
 
           <Text variant="bodyLarge" style={styles.detail}>
-            Start: {format(new Date(shift?.startDate), 'PPpp')}
+            Start: {format(new Date(shift?.startDate), 'PPP')}
           </Text>
 
           {/* <Text variant="bodyLarge" style={styles.detail}>
             End: {format(new Date(shift.endDate.seconds), 'PPpp')}
           </Text> */}
-
-          <Text variant="bodyLarge" style={styles.detail}>
-            Status: {shift.status}
-          </Text>
-
-          {/* {shift.reservedBy && (
+          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
             <Text variant="bodyLarge" style={styles.detail}>
-              Reserved by: {shift.reservedBy.userName}
+              Status:
             </Text>
-          )} */}
-
+            <Chip>{shift.status}</Chip>
+          </View>
           <Button
             mode="contained"
             onPress={() => router.push(`/shifts/${shiftId}/reserve`)}
@@ -52,23 +48,23 @@ const ShiftDetails = () => {
         </Card.Content>
       </Card>
 
-      {/* <MapView
+      <MapView
         style={styles.map}
         initialRegion={{
           latitude: shift.location.latitude,
           longitude: shift.location.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.01
         }}
       >
         <Marker
           coordinate={{
             latitude: shift.location.latitude,
-            longitude: shift.location.longitude,
+            longitude: shift.location.longitude
           }}
           title={shift.location.municipality}
         />
-      </MapView> */}
+      </MapView>
     </View>
   )
 }
