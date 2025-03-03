@@ -1,4 +1,5 @@
 import { UserProfileFields } from '@components/Profile/ProfileInfo/types'
+import { useAsyncStorage } from '@hooks/useAsyncStorage/useAsyncStorage'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { AppUser } from '@store/user/user.types'
 import { router } from 'expo-router'
@@ -25,6 +26,8 @@ interface AuthCredentials {
   password: string
 }
 
+const { saveUser, removeUser } = useAsyncStorage()
+
 export const login = createAsyncThunk<User | null, AuthCredentials>(
   'user/login',
   async ({ email, password }) => {
@@ -35,6 +38,7 @@ export const login = createAsyncThunk<User | null, AuthCredentials>(
         password
       )
       if (response.user.emailVerified) {
+        saveUser(response.user)
         router.replace('/(tabs)/profile')
         return response.user.toJSON() as User
       } else alert('You need to verify your email first!')
@@ -85,6 +89,7 @@ export const signUp = createAsyncThunk<void, AuthCredentials>(
 export const logout = createAsyncThunk<void>('user/logout', async () => {
   try {
     await FirebaseAuth.signOut()
+    removeUser()
     router.replace('/(auth)/login')
   } catch (error) {
     console.error(error)

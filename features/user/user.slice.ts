@@ -24,7 +24,11 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: 'userSlice',
   initialState,
-  reducers: {},
+  reducers: {
+    setStoredUser: (state, action) => {
+      state.firebaseUser = action.payload
+    }
+  },
   extraReducers: (builder) => {
     ///////////
     // LOGIN //
@@ -114,4 +118,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const {} = userSlice.actions
+export const { setStoredUser } = userSlice.actions

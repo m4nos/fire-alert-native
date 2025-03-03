@@ -1,19 +1,28 @@
 import { Redirect, useRouter } from 'expo-router'
-import { useAppSelector } from 'features/hooks'
-import { onAuthStateChanged } from 'firebase/auth'
-import { FirebaseAuth } from '../firebase'
+import { useAppDispatch } from 'features/hooks'
+import { useAsyncStorage } from '@hooks/useAsyncStorage/useAsyncStorage'
+import { useEffect } from 'react'
+import { setStoredUser } from '@store/user/user.slice'
 
 const Index = () => {
   const router = useRouter()
-  const { firebaseUser } = useAppSelector((state) => state.userSlice)
+  const dispatch = useAppDispatch()
 
-  onAuthStateChanged(FirebaseAuth, () => {
-    if (firebaseUser) {
-      router.replace('/(tabs)/profile') // Use replace to delete history stack
-    } else {
-      router.replace('/(auth)/login')
+  const { getStoredUser } = useAsyncStorage()
+
+  useEffect(() => {
+    const initializeUser = async () => {
+      const storedUser = await getStoredUser()
+      if (storedUser) {
+        dispatch(setStoredUser(storedUser))
+        router.replace('/(tabs)/profile')
+      } else {
+        router.replace('/(auth)/login')
+      }
     }
-  })
+
+    initializeUser()
+  }, [])
 
   return <Redirect href={'/(tabs)'} />
 }
