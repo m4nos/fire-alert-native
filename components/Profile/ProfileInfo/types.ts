@@ -1,9 +1,9 @@
-import { Coordinates } from '@store/map/map.types'
+import { Location } from '@store/shifts/shifts.types'
 
 export type UserProfileFields = {
   userName: string
   email: string
   phoneNumber: string
-  location: Coordinates
+  location: Location
   equipment: { car: string }
 }

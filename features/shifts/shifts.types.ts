@@ -4,8 +4,7 @@ import { AppUser } from '@store/user/user.types'
 import { Timestamp } from 'firebase/firestore'
 
 export type Location = Coordinates & {
-  province: string
-  municipality: string
+  stateDistrict: string
 }
 
 export type TimeSlot = {

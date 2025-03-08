@@ -2,12 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from 'features/hooks'
 import { fetchAppUser, logout, updateAppUser } from '@store/user/user.thunk'
-import {
-  Button,
-  SegmentedButtons,
-  ActivityIndicator,
-  Portal
-} from 'react-native-paper'
+import { Button, SegmentedButtons } from 'react-native-paper'
 import { Formik } from 'formik'
 import ProfileInfo from '@components/Profile/ProfileInfo'
 import EquipmentInfo from '@components/Profile/EquipmentInfo'
@@ -31,7 +26,8 @@ const Profile = () => {
     phoneNumber: '',
     location: {
       latitude: 0,
-      longitude: 0
+      longitude: 0,
+      stateDistrict: ''
     },
     equipment: {
       car: ''

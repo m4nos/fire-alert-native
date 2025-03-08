@@ -20,14 +20,12 @@ const timeSlotSchema = z.object({
 const createShiftSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
-  date: z.date(),
+  startDate: z.date(),
   timeSlots: z.array(timeSlotSchema),
   location: z.object({
     latitude: z.number(),
     longitude: z.number(),
-    municipality: z.string().optional(),
-    province: z.string().optional(),
-    state: z.string().optional()
+    stateDistrict: z.string()
   })
 })
 
@@ -47,12 +45,6 @@ const CreateShiftScreen = () => {
     latitude: 0,
     longitude: 0
   })
-
-  const [locationDetails, setLocationDetails] = useState<{
-    province?: string
-    state?: string
-    municipality?: string
-  }>({})
 
   const formatTimeInput = (value: string) => {
     // Remove any non-digit characters
@@ -104,42 +96,18 @@ const CreateShiftScreen = () => {
   const initialValues = {
     title: '',
     description: '',
-    date: new Date(),
+    startDate: new Date(),
     timeSlots: [] as TimeSlot[],
     location: {
       latitude: 0,
       longitude: 0,
-      municipality: '',
-      province: '',
-      state: ''
+      stateDistrict: ''
     }
   }
-
-  const fetchLocationDetails = async (latitude: number, longitude: number) => {
-    try {
-      const address = await useReverseGeolocation({ latitude, longitude })
-      setLocationDetails({
-        province: address.province,
-        state: address.state,
-        municipality: address.municipality
-      })
-    } catch (error) {
-      console.error('Error fetching location details:', error)
-    }
-  }
-
-  const handleConfirmLocation = () => {}
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      const shiftData = {
-        title: values.title,
-        startDate: values.date,
-        timeSlots: values.timeSlots,
-        location: values.location
-      }
-
-      await dispatch(createShift(shiftData)).unwrap()
+      await dispatch(createShift(values)).unwrap()
       alert('Shift created successfully')
       router.back()
     } catch (error) {
@@ -167,7 +135,11 @@ const CreateShiftScreen = () => {
               onChangeText={(text) => setFieldValue('title', text)}
               style={styles.input}
               placeholder="Enter shift title"
+              error={Boolean(errors.title)}
             />
+            {errors.title && (
+              <Text style={styles.errorText}>{errors.title}</Text>
+            )}
 
             <TextInput
               label="Description"
@@ -184,15 +156,15 @@ const CreateShiftScreen = () => {
               onPress={() => setShowDatePicker(true)}
               style={styles.input}
             >
-              {values.date.toLocaleDateString('el-GR')}
+              {values.startDate.toLocaleDateString('el-GR')}
             </Button>
             {showDatePicker && (
               <RNDateTimePicker
-                value={values.date}
+                value={values.startDate}
                 mode="date"
                 onChange={(event, date) => {
                   setShowDatePicker(false)
-                  if (date) setFieldValue('date', date)
+                  if (date) setFieldValue('startDate', date)
                 }}
               />
             )}
@@ -297,12 +269,16 @@ const CreateShiftScreen = () => {
                 <View style={styles.modalButtons}>
                   <Button
                     mode="contained"
-                    onPress={() => {
-                      setFieldValue('location', location)
-                      fetchLocationDetails(
-                        location.latitude,
-                        location.longitude
-                      )
+                    onPress={async () => {
+                      const { state_district = '' } =
+                        await useReverseGeolocation({
+                          latitude: location.latitude,
+                          longitude: location.longitude
+                        })
+                      setFieldValue('location', {
+                        ...location,
+                        stateDistrict: state_district
+                      })
                       setShowMap(false)
                     }}
                     style={styles.confirmButton}
@@ -315,15 +291,8 @@ const CreateShiftScreen = () => {
                 </View>
               </Modal>
             </Portal>
-
             <Text variant="bodyLarge" style={styles.locationDetails}>
-              Province: {locationDetails.province || 'N/A'}
-            </Text>
-            <Text variant="bodyLarge" style={styles.locationDetails}>
-              State: {locationDetails.state || 'N/A'}
-            </Text>
-            <Text variant="bodyLarge" style={styles.locationDetails}>
-              Municipality: {locationDetails.municipality || 'N/A'}
+              State district: {values.location.stateDistrict || 'N/A'}
             </Text>
 
             <Button
@@ -356,6 +325,11 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    top: -8
   },
   timeSlotContainer: {
     flexDirection: 'row',

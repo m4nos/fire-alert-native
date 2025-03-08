@@ -12,7 +12,8 @@ export const profileValidationSchema = z.object({
     .length(10, 'Phone number must be exactly 10 characters long'),
   location: z.object({
     latitude: z.number(),
-    longitude: z.number()
+    longitude: z.number(),
+    stateDistrict: z.string()
   }),
   equipment: equipmentSchema
 })
@@ -21,7 +22,7 @@ export const initialValues: UserProfileFields = {
   email: '',
   userName: '',
   phoneNumber: '',
-  location: { latitude: 0, longitude: 0 },
+  location: { latitude: 0, longitude: 0, stateDistrict: '' },
   equipment: {
     car: ''
   }

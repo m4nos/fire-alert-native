@@ -4,7 +4,11 @@ export const mapUserDataToInitialValues = (userData: AppUser) => ({
   email: userData.email || '',
   userName: userData.userName || '',
   phoneNumber: userData.phoneNumber || '',
-  location: userData.location || { latitude: 0, longitude: 0 },
+  location: userData.location || {
+    latitude: 0,
+    longitude: 0,
+    stateDistrict: ''
+  },
   equipment: {
     car: userData.equipment?.car || ''
   }

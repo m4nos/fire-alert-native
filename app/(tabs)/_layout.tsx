@@ -2,15 +2,21 @@ import React from 'react'
 import { Tabs } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
 import { MD3LightTheme } from 'react-native-paper'
+import { TouchableOpacity } from 'react-native'
 
 const TabBarIcon = (props: {
   name: React.ComponentProps<typeof FontAwesome>['name']
   color: string
-}) => <FontAwesome size={20} {...props} />
+}) => <FontAwesome size={24} {...props} />
 
 const TabsLayout = () => {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        // @ts-ignore
+        tabBarButton: (props) => <TouchableOpacity {...props} />
+      }}
+    >
       <Tabs.Screen
         name="profile"
         options={{

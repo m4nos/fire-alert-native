@@ -22,23 +22,29 @@ const shiftsSlice = createSlice({
     builder
       .addCase(fetchSlots.pending, (state) => {
         state.loading = true
+        console.log('fetching slots...')
       })
       .addCase(fetchSlots.rejected, (state) => {
         state.loading = true
+        console.error('error fetching slots!')
       })
       .addCase(fetchSlots.fulfilled, (state, action) => {
         state.slots = action.payload
         state.loading = false
+        console.log('slots fetched!')
       })
       .addCase(reserveSlot.pending, (state) => {
         state.loading = true
+        console.log('reserving slot...')
       })
       .addCase(reserveSlot.rejected, (state) => {
         state.loading = false
+        console.error('error reserving slot!')
       })
       .addCase(reserveSlot.fulfilled, (state, action) => {
         state.slots.push(action.payload)
         state.loading = false
+        console.log('slot reserved!')
       })
   }
 })

@@ -1,12 +1,12 @@
 import { User } from 'firebase/auth'
-import { Coordinates } from '../map/map.types'
+import { Location } from '@store/shifts/shifts.types'
 
 export type AppUser = {
   uid: string
   userName: string
   phoneNumber: string
   email: string
-  location: Coordinates
+  location: Location
   equipment: { car: string }
   isAdmin?: boolean
   [key: string]: any // Add index signature to accommodate dynamic keys

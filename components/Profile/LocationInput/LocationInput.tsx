@@ -1,5 +1,5 @@
+import React from 'react'
 import { Alert, StyleSheet, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
 import * as Location from 'expo-location'
 import { TextInput } from 'react-native-paper'
 import { useFormikContext } from 'formik'
@@ -8,23 +8,7 @@ import useReverseGeolocation from '@hooks/useReverseGeolocation'
 
 const LocationInput = () => {
   const { setFieldValue, values } = useFormikContext<UserProfileFields>()
-  const { latitude, longitude } = values.location
-
-  const [readableLocation, setReadableLocation] = useState<string>()
-
-  useEffect(() => {
-    const fetchReadableLocation = async () => {
-      if (latitude !== 0 && longitude !== 0) {
-        const { state_district } = await useReverseGeolocation({
-          latitude,
-          longitude
-        })
-        setReadableLocation(state_district)
-      }
-    }
-
-    fetchReadableLocation()
-  }, [latitude, longitude])
+  const { stateDistrict } = values.location
 
   const handleLocationAccess = async () => {
     try {
@@ -33,10 +17,18 @@ const LocationInput = () => {
         return Alert.alert('Permission to access location was denied')
       }
 
-      let location = await Location.getCurrentPositionAsync()
+      const location = await Location.getCurrentPositionAsync()
       const { latitude, longitude } = location.coords
+      const address = await useReverseGeolocation({
+        latitude,
+        longitude
+      })
 
-      setFieldValue('location', { latitude, longitude })
+      setFieldValue('location', {
+        latitude,
+        longitude,
+        stateDistrict: address.state_district || address.state
+      })
     } catch (error) {
       console.error(error)
     }
@@ -44,10 +36,10 @@ const LocationInput = () => {
 
   return (
     <View>
-      {latitude !== 0 && longitude !== 0 ? (
+      {stateDistrict ? (
         <TextInput
           label="Location"
-          value={readableLocation}
+          value={stateDistrict}
           disabled
           multiline
           mode="outlined"
