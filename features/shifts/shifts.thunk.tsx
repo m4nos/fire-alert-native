@@ -11,23 +11,55 @@ import {
 import { Shift, FB_Shift } from './shifts.types'
 import { RootState } from '../store'
 import { shiftFromFirebase } from './shifts.adapters'
+import haversine from 'haversine-distance'
 
-export const fetchShifts = createAsyncThunk('shifts/fetchShifts', async () => {
-  try {
-    const shiftsCollection = query(collection(FirebaseStore, 'shifts'))
-    const shiftsSnapshot = await getDocs(shiftsCollection)
+export const fetchShifts = createAsyncThunk(
+  'shifts/fetchShifts',
+  async (_, { getState }) => {
+    try {
+      const {
+        userSlice: { appUser }
+      } = getState() as RootState
 
-    const fb_shifts = shiftsSnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id
-    })) as FB_Shift[]
+      if (!appUser) throw new Error('No user in redux state')
 
-    const shifts = fb_shifts.map((shift) => shiftFromFirebase(shift))
-    return shifts
-  } catch (error: any) {
-    throw new Error(error)
+      const shiftsCollection = query(collection(FirebaseStore, 'shifts'))
+      const shiftsSnapshot = await getDocs(shiftsCollection)
+
+      const fb_shifts = shiftsSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id
+      })) as FB_Shift[]
+
+      const shifts = fb_shifts.map((shift) => shiftFromFirebase(shift))
+
+      const userLocation = {
+        latitude: appUser.location.latitude,
+        longitude: appUser.location.longitude
+      }
+
+      // Sort shifts by distance from user
+      shifts.sort((a, b) => {
+        const aLocation = {
+          latitude: a.location.latitude,
+          longitude: a.location.longitude
+        }
+        const bLocation = {
+          latitude: b.location.latitude,
+          longitude: b.location.longitude
+        }
+        return (
+          haversine(userLocation, aLocation) -
+          haversine(userLocation, bLocation)
+        )
+      })
+
+      return shifts
+    } catch (error: any) {
+      throw new Error(error)
+    }
   }
-})
+)
 
 export const deleteShift = createAsyncThunk(
   'shifts/deleteShift',
