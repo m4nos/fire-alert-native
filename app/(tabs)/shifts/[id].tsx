@@ -20,24 +20,25 @@ const ShiftDetails = () => {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleLarge">{shift.title}</Text>
-          <Text variant="titleMedium">Shift Details</Text>
-          <Text variant="bodyMedium">{shift.description}</Text>
-
-          {/* <SlotsContainer shift={shift} /> */}
+          {shift.description && (
+            <>
+              <Text variant="titleMedium">Shift Details</Text>
+              <Text variant="bodyMedium">{shift.description}</Text>
+            </>
+          )}
 
           <Text variant="bodyLarge" style={styles.detail}>
             Start: {format(new Date(shift?.startDate), 'PPP')}
           </Text>
-
-          {/* <Text variant="bodyLarge" style={styles.detail}>
-            End: {format(new Date(shift.endDate.seconds), 'PPpp')}
-          </Text> */}
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
             <Text variant="bodyLarge" style={styles.detail}>
               Status:
             </Text>
             <Chip>{shift.status}</Chip>
           </View>
+          <Text variant="bodyLarge" style={styles.detail}>
+            Created by: {shift.createdBy.userName}
+          </Text>
           <Button
             mode="contained"
             onPress={() => router.push(`/shifts/${shiftId}/reserve`)}
@@ -62,7 +63,7 @@ const ShiftDetails = () => {
             latitude: shift.location.latitude,
             longitude: shift.location.longitude
           }}
-          title={shift.location.municipality}
+          title={shift.title}
         />
       </MapView>
     </View>

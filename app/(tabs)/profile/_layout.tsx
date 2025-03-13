@@ -6,7 +6,7 @@ const _layout = () => {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: 'Profile', headerShown: true }}
+        options={{ title: 'Profile', headerShown: false }}
       />
       {/* Add more screens here if needed */}
     </Stack>

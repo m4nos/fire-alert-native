@@ -78,7 +78,7 @@ const ReserveSlot = () => {
             }
           }) || []
       })),
-    []
+    [slots]
   )
 
   const renderItem = useCallback(({ item }: any) => {
