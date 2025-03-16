@@ -10,11 +10,13 @@ export const profileValidationSchema = z.object({
   phoneNumber: z
     .string()
     .length(10, 'Phone number must be exactly 10 characters long'),
-  location: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-    stateDistrict: z.string()
-  }),
+  location: z
+    .object({
+      latitude: z.number(),
+      longitude: z.number(),
+      stateDistrict: z.string().optional()
+    })
+    .optional(),
   equipment: equipmentSchema
 })
 

@@ -24,9 +24,9 @@ const shiftsSlice = createSlice({
         state.loading = true
         console.log('fetching shifts...')
       })
-      .addCase(fetchShifts.rejected, (state) => {
-        state.loading = true
-        console.error('error fetching shifts!')
+      .addCase(fetchShifts.rejected, (state, action) => {
+        state.loading = false
+        console.error('error fetching shifts!', action.error)
       })
       .addCase(fetchShifts.fulfilled, (state, action) => {
         state.shifts = action.payload

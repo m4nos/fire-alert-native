@@ -33,26 +33,27 @@ export const fetchShifts = createAsyncThunk(
 
       const shifts = fb_shifts.map((shift) => shiftFromFirebase(shift))
 
-      const userLocation = {
-        latitude: appUser.location.latitude,
-        longitude: appUser.location.longitude
-      }
-
       // Sort shifts by distance from user
-      shifts.sort((a, b) => {
-        const aLocation = {
-          latitude: a.location.latitude,
-          longitude: a.location.longitude
+      if (appUser.location?.latitude && appUser.location?.longitude) {
+        const userLocation = {
+          latitude: appUser.location.latitude,
+          longitude: appUser.location.longitude
         }
-        const bLocation = {
-          latitude: b.location.latitude,
-          longitude: b.location.longitude
-        }
-        return (
-          haversine(userLocation, aLocation) -
-          haversine(userLocation, bLocation)
-        )
-      })
+        shifts.sort((a, b) => {
+          const aLocation = {
+            latitude: a.location.latitude,
+            longitude: a.location.longitude
+          }
+          const bLocation = {
+            latitude: b.location.latitude,
+            longitude: b.location.longitude
+          }
+          return (
+            haversine(userLocation, aLocation) -
+            haversine(userLocation, bLocation)
+          )
+        })
+      }
 
       return shifts
     } catch (error: any) {
