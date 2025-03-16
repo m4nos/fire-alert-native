@@ -1,6 +1,9 @@
 import { User } from 'firebase/auth'
 import { Location } from '@store/shifts/shifts.types'
 
+const userRoles = ['admin', 'user'] as const
+export type UserRole = (typeof userRoles)[number]
+
 export type AppUser = {
   uid: string
   userName: string
@@ -8,7 +11,9 @@ export type AppUser = {
   email: string
   location: Location
   equipment: { car: string }
-  isAdmin?: boolean
+  role: UserRole
+  // createdAt: number
+  // updatedAt: number
   [key: string]: any // Add index signature to accommodate dynamic keys
 }
 

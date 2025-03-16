@@ -25,7 +25,7 @@ const ShiftsScreen = () => {
         onRefresh={() => dispatch(fetchShifts())}
         refreshing={loading}
       />
-      {appUser?.isAdmin && (
+      {appUser?.role === 'admin' && (
         <FAB
           icon="plus"
           style={styles.fab}
