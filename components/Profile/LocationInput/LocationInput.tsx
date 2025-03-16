@@ -17,7 +17,10 @@ const LocationInput = () => {
         return Alert.alert('Permission to access location was denied')
       }
 
-      const location = await Location.getCurrentPositionAsync()
+      // Accurate to the nearest three kilometers.
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Lowest
+      })
       const { latitude, longitude } = location.coords
       const address = await useReverseGeolocation({
         latitude,
