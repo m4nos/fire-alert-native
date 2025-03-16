@@ -31,7 +31,7 @@ const Signup = () => {
     confirmPassword: ''
   }
 
-  const handleLogin = (values: typeof initialValues) => {
+  const handleSignUp = (values: typeof initialValues) => {
     dispatch(signUp(values))
   }
 
@@ -39,7 +39,7 @@ const Signup = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={toFormikValidationSchema(signupSchema)}
-      onSubmit={handleLogin}
+      onSubmit={handleSignUp}
     >
       {({
         handleChange,

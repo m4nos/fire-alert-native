@@ -1,7 +1,7 @@
 import { UserProfileFields } from '@components/Profile/ProfileInfo/types'
 import { useAsyncStorage } from '@hooks/useAsyncStorage/useAsyncStorage'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { AppUser } from '@store/user/user.types'
+import { type AppUser, UserRole } from '@store/user/user.types'
 import { router } from 'expo-router'
 import { FirebaseAuth, FirebaseStore } from 'firebase'
 import {
@@ -63,6 +63,9 @@ export const signUp = createAsyncThunk<void, AuthCredentials>(
 
       await addDoc(collection(FirebaseStore, 'users'), {
         email,
+        role: 'user' as UserRole,
+        // createdAt: Date.now(),
+        // updatedAt: Date.now(),
         uid: user.uid
       }).catch((error) => {
         throw new Error(error)
