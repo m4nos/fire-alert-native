@@ -1,6 +1,6 @@
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Formik } from 'formik'
-import { useAppDispatch } from '@store/hooks'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { Button, TextInput, Text, IconButton } from 'react-native-paper'
 import { createShift } from '@store/shifts/shifts.thunk'
 import { router } from 'expo-router'
@@ -13,8 +13,21 @@ import { Portal, Modal } from 'react-native-paper'
 import useReverseGeolocation from '@hooks/useReverseGeolocation'
 
 const timeSlotSchema = z.object({
-  startTime: z.string(),
-  endTime: z.string()
+  startTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, 'Start time must be in HH:MM format (e.g., 09:30)')
+    .refine((time) => {
+      const [hours, minutes] = time.split(':').map(Number)
+      return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59
+    }, 'Start time must be between 00:00 and 23:59'),
+  endTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, 'End time must be in HH:MM format (e.g., 17:30)')
+    .refine((time) => {
+      const [hours, minutes] = time.split(':').map(Number)
+      return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59
+    }, 'End time must be between 00:00 and 23:59'),
+  maxSlots: z.string().regex(/^\d+$/, 'Max slots must be a number')
 })
 
 const createShiftSchema = z.object({
@@ -23,8 +36,8 @@ const createShiftSchema = z.object({
   startDate: z.date(),
   timeSlots: z.array(timeSlotSchema),
   location: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
+    latitude: z.number().nonnegative(),
+    longitude: z.number().nonnegative(),
     stateDistrict: z.string()
   })
 })
@@ -32,6 +45,7 @@ const createShiftSchema = z.object({
 type TimeSlot = {
   startTime: string
   endTime: string
+  maxSlots: string
 }
 
 const CreateShiftScreen = () => {
@@ -45,6 +59,8 @@ const CreateShiftScreen = () => {
     latitude: 0,
     longitude: 0
   })
+
+  const isSubmitting = useAppSelector((state) => state.shiftsSlice.loading)
 
   const formatTimeInput = (value: string) => {
     // Remove any non-digit characters
@@ -137,10 +153,6 @@ const CreateShiftScreen = () => {
               placeholder="Enter shift title"
               error={Boolean(errors.title)}
             />
-            {errors.title && (
-              <Text style={styles.errorText}>{errors.title}</Text>
-            )}
-
             <TextInput
               label="Description"
               value={values.description}
@@ -186,6 +198,9 @@ const CreateShiftScreen = () => {
                   placeholder="00:00"
                   maxLength={5}
                   keyboardType="numeric"
+                  error={Boolean(
+                    (errors?.timeSlots?.[index] as any)?.startTime
+                  )}
                 />
                 <TextInput
                   label="End Time"
@@ -199,6 +214,18 @@ const CreateShiftScreen = () => {
                   placeholder="00:00"
                   maxLength={5}
                   keyboardType="numeric"
+                  error={Boolean((errors?.timeSlots?.[index] as any)?.endTime)}
+                />
+                <TextInput
+                  label="Slots"
+                  value={slot.maxSlots}
+                  mode="outlined"
+                  keyboardType="numeric"
+                  onChangeText={(text) =>
+                    setFieldValue(`timeSlots.${index}.maxSlots`, text)
+                  }
+                  style={styles.slotInput}
+                  error={Boolean((errors?.timeSlots?.[index] as any)?.maxSlots)}
                 />
                 <IconButton
                   icon="delete"
@@ -217,7 +244,7 @@ const CreateShiftScreen = () => {
               onPress={() =>
                 setFieldValue('timeSlots', [
                   ...values.timeSlots,
-                  { startTime: '', endTime: '' }
+                  { startTime: '', endTime: '', maxSlots: '' }
                 ])
               }
               style={styles.addButton}
@@ -299,8 +326,9 @@ const CreateShiftScreen = () => {
               mode="contained"
               onPress={() => handleSubmit()}
               style={styles.button}
+              disabled={Object.keys(errors).length > 0 || isSubmitting}
             >
-              Create Shift
+              {isSubmitting ? 'Creating Shift...' : 'Create Shift'}
             </Button>
           </View>
         )}
@@ -339,7 +367,10 @@ const styles = StyleSheet.create({
   },
   timeInput: {
     flex: 1,
-    minWidth: 120
+    minWidth: 100
+  },
+  slotInput: {
+    maxWidth: 70
   },
   addButton: {
     marginBottom: 24

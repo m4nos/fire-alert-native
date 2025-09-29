@@ -21,7 +21,9 @@ type ItemProps = {
     duration: string
     title: string
     disabled: boolean
-    reservedBy?: AppUser
+    reservedBy?: AppUser[]
+    currentReservations: number
+    maxSlots: number
   }
 }
 
@@ -88,9 +90,15 @@ const AgendaItem = ({ item }: ItemProps) => {
         </Text>
         <Text style={styles.itemDurationText}>{item.duration}</Text>
       </View>
-      <Text style={styles.itemTitleText}>
-        {item.reservedBy?.userName || item.title}
-      </Text>
+      <View style={styles.itemTitleContainer}>
+        <Text style={styles.itemTitleText}>{item.title}</Text>
+        {item.reservedBy && item.reservedBy.length > 0 && (
+          <Text style={styles.itemReservedByText}>
+            Reserved by:{' '}
+            {item.reservedBy.map((user) => user?.userName).join(', ')}
+          </Text>
+        )}
+      </View>
       <View style={styles.itemButtonContainer}>
         <Button
           color={'grey'}
@@ -98,6 +106,9 @@ const AgendaItem = ({ item }: ItemProps) => {
           onPress={buttonPressed}
           disabled={item.disabled}
         />
+        <Text style={styles.itemSlotCountText}>
+          {item.currentReservations}/{item.maxSlots} slots
+        </Text>
       </View>
     </TouchableOpacity>
   )
@@ -114,7 +125,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   itemHourText: {
-    color: 'black'
+    color: 'black',
+    fontWeight: 'bold'
   },
   itemDurationText: {
     color: 'grey',
@@ -122,11 +134,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginLeft: 4
   },
+  itemSlotCountText: {
+    color: 'grey',
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  itemTitleContainer: {
+    marginLeft: 16,
+    flex: 1
+  },
   itemTitleText: {
     color: 'black',
-    marginLeft: 16,
-    fontWeight: 'bold',
     fontSize: 16
+  },
+  itemReservedByText: {
+    color: 'grey',
+    fontSize: 12,
+    marginTop: 4
   },
   itemButtonContainer: {
     flex: 1,

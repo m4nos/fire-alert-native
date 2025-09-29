@@ -6,11 +6,7 @@ import { max } from 'date-fns'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { View, StyleSheet } from 'react-native'
-import {
-  AgendaList,
-  CalendarProvider,
-  ExpandableCalendar
-} from 'react-native-calendars'
+import { AgendaList, CalendarProvider } from 'react-native-calendars'
 
 const getDates = (shiftStartingDate?: Date) =>
   Array.from({ length: 7 }, (_, index) => {
@@ -21,6 +17,7 @@ const getDates = (shiftStartingDate?: Date) =>
 
 const ReserveSlot = () => {
   const { id: shiftId } = useLocalSearchParams()
+  const { appUser } = useAppSelector((state) => state.userSlice)
   const dispatch = useAppDispatch()
   const { slots, loading } = useAppSelector((state) => state.slotsSlice)
 
@@ -56,16 +53,17 @@ const ReserveSlot = () => {
               `${date}T${slot.startTime}:00`
             ).getTime()
 
-            // Check if this slot is already reserved by comparing timestamps.
-            let isReserved
-            let reservedBy
+            // Check how many slots are already reserved for this time slot by comparing timestamps.
+            const reservedSlots = slots.filter(
+              (existingSlot) => existingSlot.startTime === candidateTimestamp
+            )
 
-            slots.forEach((existingSlot) => {
-              if (existingSlot.startTime === candidateTimestamp) {
-                isReserved = true
-                reservedBy = existingSlot.reservedBy
-              }
-            })
+            const currentReservations = reservedSlots.length
+            const maxSlots = Number(slot.maxSlots)
+            const isFullyBooked = currentReservations >= maxSlots
+            const isReservedByCurrentUser = reservedSlots.some(
+              (s) => s.reservedBy?.uid === appUser?.uid
+            )
 
             return {
               startHour: slot.startTime,
@@ -73,8 +71,12 @@ const ReserveSlot = () => {
               date,
               duration: `${durationHours.toFixed()}h`,
               title: shift.title,
-              disabled: isReserved,
-              reservedBy
+              disabled: isFullyBooked || isReservedByCurrentUser,
+              reservedBy: reservedSlots
+                .map((s) => s.reservedBy)
+                .filter(Boolean),
+              currentReservations,
+              maxSlots
             }
           }) || []
       })),
@@ -90,7 +92,6 @@ const ReserveSlot = () => {
       <LoadingSpinner loading={loading} />
       {shift && (
         <CalendarProvider date={getDates(new Date(shift.startDate))[0]}>
-          <ExpandableCalendar />
           <AgendaList sections={agendaItems} renderItem={renderItem} />
         </CalendarProvider>
       )}

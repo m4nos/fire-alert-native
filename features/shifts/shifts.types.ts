@@ -10,6 +10,7 @@ export type Location = Coordinates & {
 export type TimeSlot = {
   startTime: string // "10:00"
   endTime: string // "11:00"
+  maxSlots: string // maximum number of slots available for this time slot
 }
 
 export type FB_Shift = Pick<
