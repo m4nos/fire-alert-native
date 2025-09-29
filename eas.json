@@ -11,8 +11,19 @@
     "preview": {
       "distribution": "internal"
     },
+    "preview-apk": {
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal"
+    },
     "production": {
       "autoIncrement": true
+    },
+    "production-apk": {
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
