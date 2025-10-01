@@ -42,3 +42,5 @@ expo-env.d.ts
 
 # firebase
 firebase.config.ts
+
+.env
